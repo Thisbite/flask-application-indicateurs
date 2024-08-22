@@ -22,6 +22,28 @@ def get_indicators(id_indicateur):
     return indicators
 
 
+def get_niveau_desagregation(code):
+    try:
+        with cf.create_connection() as conn:
+            cursor = conn.cursor()
+            query = "SELECT id, nom_niveau_desagregation FROM niveau_desagregation WHERE id = %s"
+            cursor.execute(query, (code,))
+            result = cursor.fetchone()
+
+            if result:
+                id, nom_niveau = result
+                return id, nom_niveau
+            else:
+                return None, "Niveau de désagrégation non trouvé"
+
+    except mysql.connector.Error as e:
+        print(f"Database error: {e}")
+        return None, f"Erreur de la base de données : {e}"
+    except Exception as e:
+        print(f"Exception in get_niveau_desagregation: {e}")
+        return None, f"Exception: {e}"
+
+
 def get_sexes():
     try:
         with cf.create_connection() as conn:

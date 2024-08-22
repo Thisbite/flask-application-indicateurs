@@ -9,47 +9,77 @@
 <body>
 <div id="form-wrapper">
     <!-- Formulaire de recherche -->
-    <form action="/" method="post" class="form-container">
-        <label for="id_indicateur">Entrez le code indicateur :</label>
-        <input type="text" id="id_indicateur" name="id_indicateur" required>
+   <form action="/" method="post" class="form-container2">
+    <label for="id_indicateur">Entrez le code indicateur :</label>
+    <input type="text" id="id_indicateur" name="id_indicateur" required>
 
-        <label for="id_code_entite">Code entité géographique :</label>
-        <input type="text" id="id_code_entite" name="id_code_entite" required>
+    <label for="id_code_entite">Code entité géographique :</label>
+    <input type="text" id="id_code_entite" name="id_code_entite" required>
 
-        <button type="submit">Recherche</button>
-    </form>
+    <label for="id_niveau_desagregation">Code du niveau de désagrégation :</label>
+    <input type="text" id="id_niveau_desagregation" name="id_niveau_desagregation" required>
 
-    {% if nom_ind %}
-    <div id="duplicate-wrapper" data-nom-ind="{{ nom_ind }}" data-nom-entite="{{ nom_entite }}">
-        <form action="/submit" method="post" class="form-container">
-            <div class="orange-frame">
-                <h2>Indicateur: {{ nom_ind }}</h2>
-                <h3>{{ id_entite }} : {{ nom_entite }}</h3>
+    <button type="submit">Recherche</button>
 
-                <label for="anne">Saisissez l'année :</label>
-                <input type="text" id="anne" name="anne" required>
+</form>
 
-                <input type="text" id="id_indicateur2" name="id_indicateur2" value="{{ id_indicateur }}" hidden>
-                <input type="text" id="id_code_entite2" name="id_code_entite2" value="{{ id_code_entite }}" hidden>
 
-                <br>
-            </div>
+   {% if nom_ind %}
+<div id="duplicate-wrapper" data-nom-ind="{{ nom_ind }}" data-nom-entite="{{ nom_entite }}">
+    <form action="/submit" method="post" class="form-container">
+        <div class="orange-frame">
+            <h2>Indicateur: {{ nom_ind }}</h2>
+            <h3>{{ id_entite }} : {{ nom_entite }}</h3>
+
+            <label for="anne">Saisissez l'année :</label>
+            <input type="text" id="anne" name="anne" required>
+
+            <input type="text" id="id_indicateur2" name="id_indicateur2" value="{{ id_indicateur }}" hidden>
+            <input type="text" id="id_code_entite2" name="id_code_entite2" value="{{ id_code_entite }}" hidden>
+
             <br>
-            <ul class="align-list">
-                {% for id, nom in nom_groupe_age %}
-                <li>
-                    <em>{{ nom }} ans</em>
-                    <input type="text" name="id_{{ id }}" placeholder="Entrez une valeur">
-                </li>
-                {% endfor %}
-            </ul>
-            <button type="submit">Envoyer</button>
-        </form>
-    </div>
-    {% endif %}
-</div>
+        </div>
+        <br>
 
-<!-- Affichage des messages flash -->
+        {% if nom_groupe_age %}
+        <ul class="align-list">
+            {% for id, nom in nom_groupe_age %}
+            <li>
+                <em>{{ nom }} ans</em>
+                <input type="text" name="id_{{ id }}" placeholder="Entrez une valeur">
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if nom_primaire %}
+        <ul class="align-list">
+            {% for id, nom in nom_primaire %}
+            <li>
+                <em>{{ nom }}</em>
+                <input type="text" name="id_{{ id }}" placeholder="Entrez une valeur">
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        {% if nom_cycle %}
+        <ul class="align-list">
+            {% for id, nom in nom_cycle %}
+            <li>
+                <em>{{ nom }}</em>
+                <input type="text" name="id_{{ id }}" placeholder="Entrez une valeur">
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+        <button type="submit">Envoyer</button>
+    </form>
+</div>
+{% endif %}
+
+    <!-- Affichage des messages flash -->
 {% with messages = get_flashed_messages() %}
     {% if messages %}
         <div class="flash-messages">
@@ -60,7 +90,12 @@
     {% endif %}
 {% endwith %}
 
-<button type="button" id="add-button">Ajouter</button>
+
+</div>
+
+
+ <button type="button" id="add-button">Ajouter</button>
+
 
 <!-- JavaScript pour ajouter un formulaire -->
 <script>
