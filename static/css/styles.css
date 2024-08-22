@@ -1,0 +1,139 @@
+/* Styles généraux du corps */
+body {
+    font-family: Arial, sans-serif; /* Police moderne et lisible */
+    background-color: #f4f4f9; /* Couleur de fond légère */
+    margin: 0; /* Enlève la marge par défaut */
+    padding: 0; /* Enlève le padding par défaut */
+    display: flex; /* Centre le contenu verticalement et horizontalement */
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Prend toute la hauteur de la fenêtre */
+    overflow: auto; /* Permet le défilement de la page */
+    display: flex;
+     justify-content: center;
+       align-items: center;
+       min-height: 100vh; /* Assure que le contenu est centré verticalement sur toute la hauteur de la fenêtre */
+
+}
+
+/* Styles du conteneur principal */
+#form-wrapper {
+    display: flex;
+    flex-direction: column; /* Empile les formulaires verticalement */
+    width: 150%; /* Prend toute la largeur disponible */
+    max-width: 720px; /* Largeur maximale du conteneur */
+    max-height: 80vh; /* Hauteur maximale du conteneur pour éviter qu'il prenne toute la hauteur */
+    overflow-y: auto; /* Permet le défilement vertical à l'intérieur du conteneur */
+    padding: 10px; /* Espacement interne pour le conteneur */
+}
+
+/* Styles des formulaires */
+.form-container {
+    background-color: #ffffff; /* Fond blanc pour le formulaire */
+    padding: 20px; /* Espacement interne */
+    border-radius: 8px; /* Coins arrondis */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre légère pour l'effet d'élévation */
+    margin-bottom: 20px; /* Espacement en bas entre les formulaires */
+    width: 100%; /* Prend toute la largeur disponible */
+}
+
+/* Styles du titre */
+h2 {
+    color: #333; /* Couleur du texte */
+    text-align: center; /* Centre le texte */
+    margin-bottom: 20px; /* Espacement sous le titre */
+}
+
+/* Styles de la liste alignée */
+.align-list {
+    list-style-type: none; /* Enlève les puces de la liste */
+    padding: 0; /* Enlève le padding par défaut */
+    margin: 0; /* Enlève la marge par défaut */
+    display: flex; /* Utilise flexbox pour aligner les éléments en ligne */
+    flex-wrap: wrap; /* Permet aux éléments de passer à la ligne suivante si nécessaire */
+}
+
+ .align-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Trois colonnes de taille égale */
+            gap: 10px; /* Espacement entre les éléments */
+            list-style-type: none; /* Supprime les puces */
+            padding: 0; /* Supprime les marges par défaut */
+        }
+
+        .align-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Espacement entre le texte et le champ de saisie */
+            border: 1px solid #ddd; /* Optionnel : ajoute une bordure légère pour une meilleure visibilité */
+            padding: 5px; /* Espacement interne */
+        }
+
+        .align-list input {
+            flex: 1; /* Le champ de saisie occupe l'espace restant */
+        }
+
+/* Styles des champs de saisie */
+input[type="text"] {
+    padding: 8px; /* Espacement interne du champ de saisie */
+    border: 1px solid #ddd; /* Bordure légère */
+    border-radius: 4px; /* Coins arrondis du champ de saisie */
+    width: 100px; /* Largeur ajustée pour un meilleur alignement */
+    box-sizing: border-box; /* Inclut la bordure et le padding dans la largeur totale */
+}
+
+/* Styles du bouton de soumission */
+button[type="submit"] {
+    background-color: #007bff; /* Couleur de fond bleue */
+    color: #fff; /* Couleur du texte */
+    border: none; /* Enlève la bordure par défaut */
+    padding: 10px 20px; /* Espacement interne du bouton */
+    border-radius: 4px; /* Coins arrondis du bouton */
+    cursor: pointer; /* Change le curseur pour indiquer que c'est cliquable */
+    font-size: 16px; /* Taille de police du texte */
+    margin-top: 20px; /* Espacement au-dessus du bouton */
+    display: block; /* Centrer le bouton */
+    width: 100%; /* Prend toute la largeur disponible */
+}
+
+/* Styles du bouton de soumission au survol */
+button[type="submit"]:hover {
+    background-color: #0056b3; /* Couleur de fond plus sombre au survol */
+}
+
+#add-button {
+    margin-top: 100px; /* Espacement au-dessus du bouton */
+    padding: 10px 20px; /* Espacement interne du bouton */
+    border: none; /* Enlève la bordure par défaut */
+    border-radius: 4px; /* Coins arrondis du bouton */
+    background-color: orange; /* Couleur de fond verte */
+    color: #fff; /* Couleur du texte */
+    font-size: 16px; /* Taille de police du texte */
+    cursor: pointer; /* Change le curseur pour indiquer que c'est cliquable */
+    display: block; /* Affiche le bouton comme un bloc pour qu'il soit sur une nouvelle ligne */
+    width: 10%; /* Prend toute la largeur disponible */
+}
+
+/* Styles du bouton Ajouter au survol */
+#add-button:hover {
+    background-color: #218838; /* Couleur de fond plus sombre au survol */
+}
+ .orange-frame {
+            border: 4px solid orange;
+            padding: 10px;
+            margin: 20px;
+            display: inline-block;
+        }
+
+
+  .flash-messages {
+    margin: 10px;
+}
+
+.flash-message {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}

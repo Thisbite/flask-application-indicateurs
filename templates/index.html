@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Index Page</title>
+    <!-- Lien vers le fichier CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+<div id="form-wrapper">
+    <!-- Formulaire de recherche -->
+    <form action="/" method="post" class="form-container">
+        <label for="id_indicateur">Entrez le code indicateur :</label>
+        <input type="text" id="id_indicateur" name="id_indicateur" required>
+
+        <label for="id_code_entite">Code entité géographique :</label>
+        <input type="text" id="id_code_entite" name="id_code_entite" required>
+
+        <button type="submit">Recherche</button>
+    </form>
+
+    {% if nom_ind %}
+    <div id="duplicate-wrapper" data-nom-ind="{{ nom_ind }}" data-nom-entite="{{ nom_entite }}">
+        <form action="/submit" method="post" class="form-container">
+            <div class="orange-frame">
+                <h2>Indicateur: {{ nom_ind }}</h2>
+                <h3>{{ id_entite }} : {{ nom_entite }}</h3>
+
+                <label for="anne">Saisissez l'année :</label>
+                <input type="text" id="anne" name="anne" required>
+
+                <input type="text" id="id_indicateur2" name="id_indicateur2" value="{{ id_indicateur }}" hidden>
+                <input type="text" id="id_code_entite2" name="id_code_entite2" value="{{ id_code_entite }}" hidden>
+
+                <br>
+            </div>
+            <br>
+            <ul class="align-list">
+                {% for id, nom in nom_groupe_age %}
+                <li>
+                    <em>{{ nom }} ans</em>
+                    <input type="text" name="id_{{ id }}" placeholder="Entrez une valeur">
+                </li>
+                {% endfor %}
+            </ul>
+            <button type="submit">Envoyer</button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Affichage des messages flash -->
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="flash-messages">
+            {% for message in messages %}
+                <div class="flash-message">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+<button type="button" id="add-button">Ajouter</button>
+
+<!-- JavaScript pour ajouter un formulaire -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Vérifie la validité des données
+        var duplicateWrapper = document.getElementById('duplicate-wrapper');
+        var nomInd = duplicateWrapper ? duplicateWrapper.getAttribute('data-nom-ind') : null;
+        var nomEntite = duplicateWrapper ? duplicateWrapper.getAttribute('data-nom-entite') : null;
+
+        // Si l'indicateur ou l'entité géographique n'est pas valide, on cache le formulaire
+        if (!nomInd || !nomEntite || nomInd === "" || nomEntite === "") {
+            if (duplicateWrapper) {
+                duplicateWrapper.style.display = 'none';
+            }
+        }
+    });
+
+    document.getElementById('add-button').addEventListener('click', function() {
+        var duplicateWrapper = document.getElementById('duplicate-wrapper').cloneNode(true);
+        duplicateWrapper.id = ''; // Retire l'ID pour éviter des duplications multiples
+        document.getElementById('form-wrapper').appendChild(duplicateWrapper);
+    });
+</script>
+</body>
+</html>
