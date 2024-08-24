@@ -580,7 +580,7 @@ def get_type_infrastructures_culturelles():
     return types_infrastructures_culturelles
 
 
-def get_type_de_patrimoines_culturels_immatériels():
+def get_type_de_patrimoines_culturels_immateriels():
     try:
         with cf.create_connection() as conn:
             cursor = conn.cursor()
@@ -1137,5 +1137,4 @@ def insert_rejet():
 
 insert_into_valeur_indicateur_libelle()
 insert_rejet()
-
 
