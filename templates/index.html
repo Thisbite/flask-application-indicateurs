@@ -9,22 +9,20 @@
 <body>
 <div id="form-wrapper">
     <!-- Formulaire de recherche -->
-   <form action="/" method="post" class="form-container2">
-    <label for="id_indicateur">Entrez le code indicateur :</label>
-    <input type="text" id="id_indicateur" name="id_indicateur" required>
+    <form action="/" method="post" class="form-container2" onsubmit="saveFormData()">
+        <label for="id_indicateur">Entrez le code indicateur :</label>
+        <input type="text" id="id_indicateur" name="id_indicateur" required>
 
-    <label for="id_code_entite">Code entité géographique :</label>
-    <input type="text" id="id_code_entite" name="id_code_entite" required>
+        <label for="id_code_entite">Code entité géographique :</label>
+        <input type="text" id="id_code_entite" name="id_code_entite" required>
 
-    <label for="id_niveau_desagregation">Code du niveau de désagrégation :</label>
-    <input type="text" id="id_niveau_desagregation" name="id_niveau_desagregation" required>
+        <label for="id_niveau_desagregation">Code du niveau de désagrégation :</label>
+        <input type="text" id="id_niveau_desagregation" name="id_niveau_desagregation" required>
 
-    <button type="submit">Recherche</button>
+        <button type="submit">Recherche</button>
+    </form>
 
-</form>
-
-
-   {% if nom_ind %}
+ {% if nom_ind %}
 <div id="duplicate-wrapper" data-nom-ind="{{ nom_ind }}" data-nom-entite="{{ nom_entite }}">
     <form action="/submit" method="post" class="form-container">
         <div class="orange-frame">
@@ -491,12 +489,19 @@
     {% endif %}
 {% endwith %}
 
-
+    <!-- Affichage des messages flash -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for message in messages %}
+                    <div class="flash-message">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
 </div>
 
-
-
-
+<button type="button" id="add-button">Ajouter</button>
 
 <!-- JavaScript pour ajouter un formulaire -->
 <script>
@@ -512,46 +517,33 @@
                 duplicateWrapper.style.display = 'none';
             }
         }
+
+        // Remplit les champs du formulaire avec les données stockées
+        fillFormData();
     });
+
+    function saveFormData() {
+        localStorage.setItem('id_indicateur', document.getElementById('id_indicateur').value);
+        localStorage.setItem('id_code_entite', document.getElementById('id_code_entite').value);
+        localStorage.setItem('id_niveau_desagregation', document.getElementById('id_niveau_desagregation').value);
+    }
+
+    function fillFormData() {
+        if (localStorage.getItem('id_indicateur')) {
+            document.getElementById('id_indicateur').value = localStorage.getItem('id_indicateur');
+        }
+        if (localStorage.getItem('id_code_entite')) {
+            document.getElementById('id_code_entite').value = localStorage.getItem('id_code_entite');
+        }
+        if (localStorage.getItem('id_niveau_desagregation')) {
+            document.getElementById('id_niveau_desagregation').value = localStorage.getItem('id_niveau_desagregation');
+        }
+    }
 
     document.getElementById('add-button').addEventListener('click', function() {
         var duplicateWrapper = document.getElementById('duplicate-wrapper').cloneNode(true);
         duplicateWrapper.id = ''; // Retire l'ID pour éviter des duplications multiples
         document.getElementById('form-wrapper').appendChild(duplicateWrapper);
-    });
-
-    document.getElementById('preview-button').addEventListener('click', function() {
-            var form = document.getElementById('data-form');
-            var tableBody = document.getElementById('preview-table').querySelector('tbody');
-            tableBody.innerHTML = ''; // Effacer le tableau d'aperçu
-
-            var formData = new FormData(form);
-            formData.forEach(function(value, key) {
-                var row = document.createElement('tr');
-                var cellKey = document.createElement('td');
-                var cellValue = document.createElement('td');
-                cellKey.textContent = key;
-                cellValue.textContent = value;
-                row.appendChild(cellKey);
-                row.appendChild(cellValue);
-                tableBody.appendChild(row);
-            });
-
-            // Afficher la section d'aperçu
-            document.getElementById('preview-section').style.display = 'block';
-            form.style.display = 'none'; // Masquer le formulaire initial
-        });
-
-        // Confirmer l'envoi des données
-        document.getElementById('confirm-button').addEventListener('click', function() {
-            document.getElementById('data-form').submit();
-        });
-
-        // Modifier les données saisies
-        document.getElementById('edit-button').addEventListener('click', function() {
-            document.getElementById('preview-section').style.display = 'none';
-            document.getElementById('data-form').style.display = 'block';
-        });
     });
 </script>
 </body>
