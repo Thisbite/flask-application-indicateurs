@@ -491,7 +491,7 @@
 <!-- Modale de confirmation -->
 <div id="confirmation-modal" style="display: none;">
     <div id="confirmation-content">
-        <h2>Confirmez les informations avant l'envoi</h2>
+        <h2>Confirmez-vous ses données saisies ?</h2>
         <table>
             <tr>
                 <th>Indicateur</th>
@@ -510,14 +510,14 @@
                 <td id="confirm-desagregations"></td>
             </tr>
         </table>
-        <button id="confirm-button">Confirmer</button>
-        <button id="cancel-button">Annuler</button>
+        <button id="confirm-button">Oui</button>
+        <button id="cancel-button">Non</button>
     </div>
 </div>
 
 
 
-<button type="button" id="add-button">Ajouter</button>
+<!--<button type="button" id="add-button">Ajouter</button>-->
 
 <!-- JavaScript pour ajouter un formulaire -->
 <script>
@@ -556,11 +556,11 @@
         }
     }
 
-    document.getElementById('add-button').addEventListener('click', function() {
-        var duplicateWrapper = document.getElementById('duplicate-wrapper').cloneNode(true);
-        duplicateWrapper.id = ''; // Retire l'ID pour éviter des duplications multiples
-        document.getElementById('form-wrapper').appendChild(duplicateWrapper);
-    });
+    //document.getElementById('add-button').addEventListener('click', function() {
+      //  var duplicateWrapper = document.getElementById('duplicate-wrapper').cloneNode(true);
+      //  duplicateWrapper.id = ''; // Retire l'ID pour éviter des duplications multiples
+       // document.getElementById('form-wrapper').appendChild(duplicateWrapper);
+    //});
     document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('.form-container').onsubmit = function(event) {
         event.preventDefault(); // Empêche la soumission immédiate du formulaire

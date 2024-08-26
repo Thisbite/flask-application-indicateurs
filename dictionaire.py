@@ -1,40 +1,34 @@
-# Dictionnaire pour mapper les niveaux de désagrégation aux fonctions correspondantes
-import db_queries as ag
-desagregation_functions = {
-                "1": ag.get_groupe_age,
-                "2": ag.get_sexes,
-                "3": ag.get_niveau_primaire,
-                "4":ag.get_cycle
-                # Ajoutez ici d'autres mappings pour d'autres niveaux
-            }
+from dotenv import load_dotenv
+import os
+from sqlalchemy import create_engine
 
-import config as cf
+load_dotenv()
 
-try:
-  # Connect to the database
-  conn = cf.create_connection()
-  cursor = conn.cursor()
+# Utiliser les variables d'environnement
+host = os.getenv('MYSQL_HOST')
+user = os.getenv('MYSQL_USER')
+password = os.getenv('MYSQL_PASSWORD')
+database = 'mabase'
+def create_connection2():
+    try:
+        # Connexion initiale sans spécifier la base de données
+        initial_connection_string = f"mysql+mysqlconnector://{user}:{password}@{host}/{database}"
+        engine = create_engine(initial_connection_string)
 
-  # DELETE statement with comments explaining each part
-  cursor.execute("""
-    DELETE FROM ValeursIndicateurs
-    WHERE Valeur = 2066 AND Annee=2066 ;
-  """)
+        # Créer la base de données si elle n'existe pas
+        with engine.connect() as conn:
+            print(f"Base de données `{database}` créée ou déjà existante.")
 
-  # Commit the changes
-  conn.commit()
+        # Connexion à la base de données spécifiée
+        connection_string_with_db = f"mysql+mysqlconnector://{user}:{password}@{host}/"
+        engine_with_db = create_engine(connection_string_with_db)
 
-except Exception as e:
-  print(f"An error occurred: {e}")
+        # Vérifier la connexion
+        with engine_with_db.connect() as connection:
+            print("Connexion à la base de données MySQL réussie avec la base spécifiée.")
+            return engine_with_db
 
-finally:
-  # Always close the cursor and connection, even if errors occur
-  if cursor:
-    cursor.close()
-  if conn:
-    conn.close()
-
-print("Duplicate rows deleted successfully!")
-
-
-
+    except Exception as e:
+        print(f"Erreur lors de la connexion à MySQL : {e}")
+        return None
+create_connection2()

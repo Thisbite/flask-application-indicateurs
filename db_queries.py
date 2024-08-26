@@ -882,7 +882,6 @@ def afficher_valeurs_indicateurs():
             GC.nom_type_groupes_culturels,
             MC.nom_type_manifestations_culturelles,
 
-
             TRIM.nom_trimestre,
             TDO.nom_etat_des_ouvrages,
             TABO.nom_type_abonnnement,
@@ -1115,7 +1114,6 @@ def insert_rejet():
         # Générer dynamiquement la liste des colonnes et des valeurs
         columns = ', '.join([desc[0] for desc in cursor.description])
         placeholders = ', '.join(['%s'] * len(cursor.description))
-
         # Construire la requête d'insertion
         query_insert = f"""
             INSERT INTO valeur_rejet ({columns}) VALUES ({placeholders})
@@ -1137,4 +1135,11 @@ def insert_rejet():
 
 insert_into_valeur_indicateur_libelle()
 insert_rejet()
+
+
+
+from sqlalchemy.orm import aliased
+from sqlalchemy import select, func
+
+
 
