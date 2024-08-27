@@ -509,6 +509,11 @@
                 <th>Désagrégations</th>
                 <td id="confirm-desagregations"></td>
             </tr>
+            <tr>
+    <td>Total :</td>
+    <td id="confirm-somme-desagregations"></td>
+</tr>
+
         </table>
         <button id="confirm-button">Oui</button>
         <button id="cancel-button">Non</button>
@@ -556,11 +561,7 @@
         }
     }
 
-    //document.getElementById('add-button').addEventListener('click', function() {
-      //  var duplicateWrapper = document.getElementById('duplicate-wrapper').cloneNode(true);
-      //  duplicateWrapper.id = ''; // Retire l'ID pour éviter des duplications multiples
-       // document.getElementById('form-wrapper').appendChild(duplicateWrapper);
-    //});
+
     document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('.form-container').onsubmit = function(event) {
         event.preventDefault(); // Empêche la soumission immédiate du formulaire
@@ -572,410 +573,435 @@
 
         // Récupère les valeurs des groupes d'âge
         var desagregations = [];
+        var sommeDesagregations = 0;
 
         {% if nom_groupe_age %}
-        {% for id, nom in nom_groupe_age %}
-            var valeur = document.querySelector('input[name="id_{{ id }}"]').value;
-            if (valeur) {
-                desagregations.push("{{ nom }} ans: " + valeur);
-            }
-        {% endfor %}
-        {% endif %}
+    {% for id, nom in nom_groupe_age %}
+        var valeurGroupeAge = document.querySelector('input[name="id_{{ id }}"]').value;
+        if (valeurGroupeAge) {
+            desagregations.push("{{ nom }} ans: " + valeurGroupeAge);
+            sommeDesagregations += parseFloat(valeurGroupeAge); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
+{% endif %}
 
-        // Récupère les valeurs des niveaux "Primaire"
-        {% if nom_primaire %}
-        {% for id, nom in nom_primaire %}
-            var valeurPrimaire = document.querySelector('input[name="idprimaire_{{ id }}"]').value;
-            if (valeurPrimaire) {
-                desagregations.push("{{ nom }}: " + valeurPrimaire);
-            }
-        {% endfor %}
-        {% endif %}
 
         // Récupère les valeurs des niveaux "Sexe"
 {% if nom_sexe %}
-{% for id, nom in nom_sexe %}
-    var valeurSexe = document.querySelector('input[name="sexe_{{ id }}"]').value;
-    if (valeurSexe) {
-        desagregations.push("{{ nom }}: " + valeurSexe);
-    }
-{% endfor %}
+    {% for id, nom in nom_sexe %}
+        var valeurSexe = document.querySelector('input[name="sexe_{{ id }}"]').value;
+        if (valeurSexe) {
+            desagregations.push("{{ nom }}: " + valeurSexe);
+            sommeDesagregations += parseFloat(valeurSexe); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
+
 
 // Récupère les valeurs des niveaux "Cycle"
 {% if nom_cycle %}
-{% for id, nom in nom_cycle %}
-    var valeurCycle = document.querySelector('input[name="idcycle_{{ id }}"]').value;
-    if (valeurCycle) {
-        desagregations.push("{{ nom }}: " + valeurCycle);
-    }
-{% endfor %}
+    {% for id, nom in nom_cycle %}
+        var valeurCycle = document.querySelector('input[name="idcycle_{{ id }}"]').value;
+        if (valeurCycle) {
+            desagregations.push("{{ nom }}: " + valeurCycle);
+            sommeDesagregations += parseFloat(valeurCycle); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
+{% endif %}
+
+
+ // Récupère les valeurs des niveaux "Primaire"
+ {% if nom_primaire %}
+    {% for id, nom in nom_primaire %}
+        var valeurPrimaire = document.querySelector('input[name="idprimaire_{{ id }}"]').value;
+        if (valeurPrimaire) {
+            desagregations.push("{{ nom }}: " + valeurPrimaire);
+            sommeDesagregations += parseFloat(valeurPrimaire); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
 // Récupère les valeurs des niveaux "Prescolaire"
 {% if nom_prescolaire %}
-{% for id, nom in nom_prescolaire %}
-    var valeurPrescolaire = document.querySelector('input[name="idprescolaire_{{ id }}"]').value;
-    if (valeurPrescolaire) {
-        desagregations.push("{{ nom }}: " + valeurPrescolaire);
-    }
-{% endfor %}
+    {% for id, nom in nom_prescolaire %}
+        var valeurPrescolaire = document.querySelector('input[name="idprescolaire_{{ id }}"]').value;
+        if (valeurPrescolaire) {
+            desagregations.push("{{ nom }}: " + valeurPrescolaire);
+            sommeDesagregations += parseFloat(valeurPrescolaire); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Répéter pour toutes les autres sections...
 
-// Exemple final pour toutes les sections
 {% if nom_secondaire_1er %}
-{% for id, nom in nom_secondaire_1er %}
-    var valeurSecondaire1 = document.querySelector('input[name="idsecondaire1_{{ id }}"]').value;
-    if (valeurSecondaire1) {
-        desagregations.push("{{ nom }}: " + valeurSecondaire1);
-    }
-{% endfor %}
+    {% for id, nom in nom_secondaire_1er %}
+        var valeurSecondaire1 = document.querySelector('input[name="idsecondaire1_{{ id }}"]').value;
+        if (valeurSecondaire1) {
+            desagregations.push("{{ nom }}: " + valeurSecondaire1);
+            sommeDesagregations += parseFloat(valeurSecondaire1); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Récupère les valeurs des niveaux "Secondaire 2nd"
 {% if nom_secondaire_2nd %}
-{% for id, nom in nom_secondaire_2nd %}
-    var valeurSecondaire2nd = document.querySelector('input[name="idsecondaire2_{{ id }}"]').value;
-    if (valeurSecondaire2nd) {
-        desagregations.push("{{ nom }}: " + valeurSecondaire2nd);
-    }
-{% endfor %}
+    {% for id, nom in nom_secondaire_2nd %}
+        var valeurSecondaire2nd = document.querySelector('input[name="idsecondaire2_{{ id }}"]').value;
+        if (valeurSecondaire2nd) {
+            desagregations.push("{{ nom }}: " + valeurSecondaire2nd);
+            sommeDesagregations += parseFloat(valeurSecondaire2nd); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Récupère les valeurs des niveaux "Technique"
 {% if nom_technique %}
-{% for id, nom in nom_technique %}
-    var valeurTechnique = document.querySelector('input[name="idtechnique_{{ id }}"]').value;
-    if (valeurTechnique) {
-        desagregations.push("{{ nom }}: " + valeurTechnique);
-    }
-{% endfor %}
+    {% for id, nom in nom_technique %}
+        var valeurTechnique = document.querySelector('input[name="idtechnique_{{ id }}"]').value;
+        if (valeurTechnique) {
+            desagregations.push("{{ nom }}: " + valeurTechnique);
+            sommeDesagregations += parseFloat(valeurTechnique); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Récupère les valeurs des niveaux "Supérieur"
 {% if nom_superieur %}
-{% for id, nom in nom_superieur %}
-    var valeurSuperieur = document.querySelector('input[name="idsuperieur_{{ id }}"]').value;
-    if (valeurSuperieur) {
-        desagregations.push("{{ nom }}: " + valeurSuperieur);
-    }
-{% endfor %}
+    {% for id, nom in nom_superieur %}
+        var valeurSuperieur = document.querySelector('input[name="idsuperieur_{{ id }}"]').value;
+        if (valeurSuperieur) {
+            desagregations.push("{{ nom }}: " + valeurSuperieur);
+            sommeDesagregations += parseFloat(valeurSuperieur); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
-// Récupère les valeurs des niveaux "Professionnel"
+
 {% if nom_professionnel %}
-{% for id, nom in nom_professionnel %}
-    var valeurProfessionnel = document.querySelector('input[name="idprofessionnel_{{ id }}"]').value;
-    if (valeurProfessionnel) {
-        desagregations.push("{{ nom }}: " + valeurProfessionnel);
-    }
-{% endfor %}
+    {% for id, nom in nom_professionnel %}
+        var valeurProfessionnel = document.querySelector('input[name="idprofessionnel_{{ id }}"]').value;
+        if (valeurProfessionnel) {
+            desagregations.push("{{ nom }}: " + valeurProfessionnel);
+            sommeDesagregations += parseFloat(valeurProfessionnel); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Récupère les valeurs des niveaux "Type Examen Scolaire"
+
+
+
 {% if nom_type_examen_scolaire %}
-{% for id, nom in nom_type_examen_scolaire %}
-    var valeurExamenScolaire = document.querySelector('input[name="idtypeexamenscolaire_{{ id }}"]').value;
-    if (valeurExamenScolaire) {
-        desagregations.push("{{ nom }}: " + valeurExamenScolaire);
-    }
-{% endfor %}
+    {% for id, nom in nom_type_examen_scolaire %}
+        var valeurExamenScolaire = document.querySelector('input[name="idtypeexamenscolaire_{{ id }}"]').value;
+        if (valeurExamenScolaire) {
+            desagregations.push("{{ nom }}: " + valeurExamenScolaire);
+            sommeDesagregations += parseFloat(valeurExamenScolaire); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Récupère les valeurs des niveaux "Infrastructure Sanitaire"
 {% if nom_infrastructure_sanitaire %}
-{% for id, nom in nom_infrastructure_sanitaire %}
-    var valeurInfrastructureSanitaire = document.querySelector('input[name="idinfrastructure_{{ id }}"]').value;
-    if (valeurInfrastructureSanitaire) {
-        desagregations.push("{{ nom }}: " + valeurInfrastructureSanitaire);
-    }
-{% endfor %}
+    {% for id, nom in nom_infrastructure_sanitaire %}
+        var valeurInfrastructureSanitaire = document.querySelector('input[name="idinfrastructure_{{ id }}"]').value;
+        if (valeurInfrastructureSanitaire) {
+            desagregations.push("{{ nom }}: " + valeurInfrastructureSanitaire);
+            sommeDesagregations += parseFloat(valeurInfrastructureSanitaire); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
-// Récupère les valeurs des niveaux "Lieu d'accouchement"
+
 {% if nom_lieu_accouchement %}
-{% for id, nom in nom_lieu_accouchement %}
-    var valeurLieuAccouchement = document.querySelector('input[name="idlieuaccouchement_{{ id }}"]').value;
-    if (valeurLieuAccouchement) {
-        desagregations.push("{{ nom }}: " + valeurLieuAccouchement);
-    }
-{% endfor %}
+    {% for id, nom in nom_lieu_accouchement %}
+        var valeurLieuAccouchement = document.querySelector('input[name="idlieuaccouchement_{{ id }}"]').value;
+        if (valeurLieuAccouchement) {
+            desagregations.push("{{ nom }}: " + valeurLieuAccouchement);
+            sommeDesagregations += parseFloat(valeurLieuAccouchement); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Récupère les valeurs des niveaux "État Vaccinal"
 {% if nom_etat_vaccinal %}
-{% for id, nom in nom_etat_vaccinal %}
-    var valeurEtatVaccinal = document.querySelector('input[name="idetatvaccinal_{{ id }}"]').value;
-    if (valeurEtatVaccinal) {
-        desagregations.push("{{ nom }}: " + valeurEtatVaccinal);
-    }
-{% endfor %}
+    {% for id, nom in nom_etat_vaccinal %}
+        var valeurEtatVaccinal = document.querySelector('input[name="idetatvaccinal_{{ id }}"]').value;
+        if (valeurEtatVaccinal) {
+            desagregations.push("{{ nom }}: " + valeurEtatVaccinal);
+            sommeDesagregations += parseFloat(valeurEtatVaccinal); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Récupère les valeurs des niveaux "Type de Vaccination"
 {% if nom_type_vaccination %}
-{% for id, nom in nom_type_vaccination %}
-    var valeurTypeVaccination = document.querySelector('input[name="idtypevaccination_{{ id }}"]').value;
-    if (valeurTypeVaccination) {
-        desagregations.push("{{ nom }}: " + valeurTypeVaccination);
-    }
-{% endfor %}
+    {% for id, nom in nom_type_vaccination %}
+        var valeurTypeVaccination = document.querySelector('input[name="idtypevaccination_{{ id }}"]').value;
+        if (valeurTypeVaccination) {
+            desagregations.push("{{ nom }}: " + valeurTypeVaccination);
+            sommeDesagregations += parseFloat(valeurTypeVaccination); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Récupère les valeurs des niveaux "Pathologie"
 {% if nom_pathologie %}
-{% for id, nom in nom_pathologie %}
-    var valeurPathologie = document.querySelector('input[name="idpathologie_{{ id }}"]').value;
-    if (valeurPathologie) {
-        desagregations.push("{{ nom }}: " + valeurPathologie);
-    }
-{% endfor %}
+    {% for id, nom in nom_pathologie %}
+        var valeurPathologie = document.querySelector('input[name="idpathologie_{{ id }}"]').value;
+        if (valeurPathologie) {
+            desagregations.push("{{ nom }}: " + valeurPathologie);
+            sommeDesagregations += parseFloat(valeurPathologie); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Récupère les valeurs des niveaux "Tranche d'âge"
+
+
+
 {% if nom_tranche_age %}
-{% for id, nom in nom_tranche_age %}
-    var valeurTrancheAge = document.querySelector('input[name="idtrancheage_{{ id }}"]').value;
-    if (valeurTrancheAge) {
-        desagregations.push("{{ nom }}: " + valeurTrancheAge);
-    }
-{% endfor %}
+    {% for id, nom in nom_tranche_age %}
+        var valeurTrancheAge = document.querySelector('input[name="idtrancheage_{{ id }}"]').value;
+        if (valeurTrancheAge) {
+            desagregations.push("{{ nom }}: " + valeurTrancheAge);
+            sommeDesagregations += parseFloat(valeurTrancheAge); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Récupère les valeurs des niveaux "Maladie PEV"
 {% if nom_maladie_pev %}
-{% for id, nom in nom_maladie_pev %}
-    var valeurMaladiePEV = document.querySelector('input[name="idmaladiepev_{{ id }}"]').value;
-    if (valeurMaladiePEV) {
-        desagregations.push("{{ nom }}: " + valeurMaladiePEV);
-    }
-{% endfor %}
+    {% for id, nom in nom_maladie_pev %}
+        var valeurMaladiePEV = document.querySelector('input[name="idmaladiepev_{{ id }}"]').value;
+        if (valeurMaladiePEV) {
+            desagregations.push("{{ nom }}: " + valeurMaladiePEV);
+            sommeDesagregations += parseFloat(valeurMaladiePEV); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Récupère les valeurs des niveaux "Maladie Infectieuse"
 {% if nom_maladie_infectieuse %}
-{% for id, nom in nom_maladie_infectieuse %}
-    var valeurMaladieInfectieuse = document.querySelector('input[name="idmaladieinfectieuse_{{ id }}"]').value;
-    if (valeurMaladieInfectieuse) {
-        desagregations.push("{{ nom }}: " + valeurMaladieInfectieuse);
-    }
-{% endfor %}
+    {% for id, nom in nom_maladie_infectieuse %}
+        var valeurMaladieInfectieuse = document.querySelector('input[name="idmaladieinfectieuse_{{ id }}"]').value;
+        if (valeurMaladieInfectieuse) {
+            desagregations.push("{{ nom }}: " + valeurMaladieInfectieuse);
+            sommeDesagregations += parseFloat(valeurMaladieInfectieuse); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Récupère les valeurs des niveaux "Infection Respiratoire"
 {% if nom_infection_respiratoire %}
-{% for id, nom in nom_infection_respiratoire %}
-    var valeurInfectionRespiratoire = document.querySelector('input[name="idinfectionrespiratoire_{{ id }}"]').value;
-    if (valeurInfectionRespiratoire) {
-        desagregations.push("{{ nom }}: " + valeurInfectionRespiratoire);
-    }
-{% endfor %}
+    {% for id, nom in nom_infection_respiratoire %}
+        var valeurInfectionRespiratoire = document.querySelector('input[name="idinfectionrespiratoire_{{ id }}"]').value;
+        if (valeurInfectionRespiratoire) {
+            desagregations.push("{{ nom }}: " + valeurInfectionRespiratoire);
+            sommeDesagregations += parseFloat(valeurInfectionRespiratoire); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Récupère les valeurs des niveaux "Maladie SIST"
 {% if nom_maladie_sist %}
-{% for id, nom in nom_maladie_sist %}
-    var valeurMaladieSIST = document.querySelector('input[name="idmaladiesist_{{ id }}"]').value;
-    if (valeurMaladieSIST) {
-        desagregations.push("{{ nom }}: " + valeurMaladieSIST);
-    }
-{% endfor %}
+    {% for id, nom in nom_maladie_sist %}
+        var valeurMaladieSIST = document.querySelector('input[name="idmaladiesist_{{ id }}"]').value;
+        if (valeurMaladieSIST) {
+            desagregations.push("{{ nom }}: " + valeurMaladieSIST);
+            sommeDesagregations += parseFloat(valeurMaladieSIST); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Récupère les valeurs des niveaux "Type de Maladie"
 {% if nom_type_maladie %}
-{% for id, nom in nom_type_maladie %}
-    var valeurTypeMaladie = document.querySelector('input[name="idtypemaladies_{{ id }}"]').value;
-    if (valeurTypeMaladie) {
-        desagregations.push("{{ nom }}: " + valeurTypeMaladie);
-    }
-{% endfor %}
+    {% for id, nom in nom_type_maladie %}
+        var valeurTypeMaladie = document.querySelector('input[name="idtypemaladies_{{ id }}"]').value;
+        if (valeurTypeMaladie) {
+            desagregations.push("{{ nom }}: " + valeurTypeMaladie);
+            sommeDesagregations += parseFloat(valeurTypeMaladie); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-
-// Récupère les valeurs des niveaux "Activité SIEC"
 {% if nom_activite_siec %}
-{% for id, nom in nom_activite_siec %}
-    var valeurActiviteSIEC = document.querySelector('input[name="idactivitesiec_{{ id }}"]').value;
-    if (valeurActiviteSIEC) {
-        desagregations.push("{{ nom }}: " + valeurActiviteSIEC);
-    }
-{% endfor %}
+    {% for id, nom in nom_activite_siec %}
+        var valeurActiviteSIEC = document.querySelector('input[name="idactivitesiec_{{ id }}"]').value;
+        if (valeurActiviteSIEC) {
+            desagregations.push("{{ nom }}: " + valeurActiviteSIEC);
+            sommeDesagregations += parseFloat(valeurActiviteSIEC); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Récupère les valeurs des niveaux "Service Médical"
+
+
+
 {% if nom_service_medical %}
-{% for id, nom in nom_service_medical %}
-    var valeurServiceMedical = document.querySelector('input[name="idservicesmedicaux_{{ id }}"]').value;
-    if (valeurServiceMedical) {
-        desagregations.push("{{ nom }}: " + valeurServiceMedical);
-    }
-{% endfor %}
+    {% for id, nom in nom_service_medical %}
+        var valeurServiceMedical = document.querySelector('input[name="idservicesmedicaux_{{ id }}"]').value;
+        if (valeurServiceMedical) {
+            desagregations.push("{{ nom }}: " + valeurServiceMedical);
+            sommeDesagregations += parseFloat(valeurServiceMedical); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Récupère les valeurs des niveaux "Infrastructure Organisation"
 {% if nom_infrastructure_organisation %}
-{% for id, nom in nom_infrastructure_organisation %}
-    var valeurInfrastructureOrganisation = document.querySelector('input[name="idinfrastructureorganisation_{{ id }}"]').value;
-    if (valeurInfrastructureOrganisation) {
-        desagregations.push("{{ nom }}: " + valeurInfrastructureOrganisation);
-    }
-{% endfor %}
+    {% for id, nom in nom_infrastructure_organisation %}
+        var valeurInfrastructureOrganisation = document.querySelector('input[name="idinfrastructureorganisation_{{ id }}"]').value;
+        if (valeurInfrastructureOrganisation) {
+            desagregations.push("{{ nom }}: " + valeurInfrastructureOrganisation);
+            sommeDesagregations += parseFloat(valeurInfrastructureOrganisation); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Récupère les valeurs des niveaux "Discipline Sportive"
 {% if nom_discipline_sportive %}
-{% for id, nom in nom_discipline_sportive %}
-    var valeurDisciplineSportive = document.querySelector('input[name="iddisciplinesportive_{{ id }}"]').value;
-    if (valeurDisciplineSportive) {
-        desagregations.push("{{ nom }}: " + valeurDisciplineSportive);
-    }
-{% endfor %}
+    {% for id, nom in nom_discipline_sportive %}
+        var valeurDisciplineSportive = document.querySelector('input[name="iddisciplinesportive_{{ id }}"]').value;
+        if (valeurDisciplineSportive) {
+            desagregations.push("{{ nom }}: " + valeurDisciplineSportive);
+            sommeDesagregations += parseFloat(valeurDisciplineSportive); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Récupère les valeurs des niveaux "Type Infrastructure Culturel"
 {% if nom_type_infrastructure_culturel %}
-{% for id, nom in nom_type_infrastructure_culturel %}
-    var valeurTypeInfrastructureCulturel = document.querySelector('input[name="idtypeinfrastructureculturel_{{ id }}"]').value;
-    if (valeurTypeInfrastructureCulturel) {
-        desagregations.push("{{ nom }}: " + valeurTypeInfrastructureCulturel);
-    }
-{% endfor %}
+    {% for id, nom in nom_type_infrastructure_culturel %}
+        var valeurTypeInfrastructureCulturel = document.querySelector('input[name="idtypeinfrastructureculturel_{{ id }}"]').value;
+        if (valeurTypeInfrastructureCulturel) {
+            desagregations.push("{{ nom }}: " + valeurTypeInfrastructureCulturel);
+            sommeDesagregations += parseFloat(valeurTypeInfrastructureCulturel); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Récupère les valeurs des niveaux "Type Patrimoine Culturel"
+
 {% if nom_type_patrimoine_culturel %}
-{% for id, nom in nom_type_patrimoine_culturel %}
-    var valeurTypePatrimoineCulturel = document.querySelector('input[name="idtypepatrimoineculturel_{{ id }}"]').value;
-    if (valeurTypePatrimoineCulturel) {
-        desagregations.push("{{ nom }}: " + valeurTypePatrimoineCulturel);
-    }
-{% endfor %}
+    {% for id, nom in nom_type_patrimoine_culturel %}
+        var valeurTypePatrimoineCulturel = document.querySelector('input[name="idtypepatrimoineculturel_{{ id }}"]').value;
+        if (valeurTypePatrimoineCulturel) {
+            desagregations.push("{{ nom }}: " + valeurTypePatrimoineCulturel);
+            sommeDesagregations += parseFloat(valeurTypePatrimoineCulturel); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Récupère les valeurs des niveaux "Type Actions Culturelles"
 {% if nom_type_actions_culturelles %}
-{% for id, nom in nom_type_actions_culturelles %}
-    var valeurTypeActionsCulturelles = document.querySelector('input[name="idtypeactionsculturelles_{{ id }}"]').value;
-    if (valeurTypeActionsCulturelles) {
-        desagregations.push("{{ nom }}: " + valeurTypeActionsCulturelles);
-    }
-{% endfor %}
+    {% for id, nom in nom_type_actions_culturelles %}
+        var valeurTypeActionsCulturelles = document.querySelector('input[name="idtypeactionsculturelles_{{ id }}"]').value;
+        if (valeurTypeActionsCulturelles) {
+            desagregations.push("{{ nom }}: " + valeurTypeActionsCulturelles);
+            sommeDesagregations += parseFloat(valeurTypeActionsCulturelles); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Récupère les valeurs des niveaux "Type Œuvre Esprit"
 {% if nom_type_oeuvre_esprit %}
-{% for id, nom in nom_type_oeuvre_esprit %}
-    var valeurTypeOeuvreEsprit = document.querySelector('input[name="idtypeoperateuroeuvreesprit_{{ id }}"]').value;
-    if (valeurTypeOeuvreEsprit) {
-        desagregations.push("{{ nom }}: " + valeurTypeOeuvreEsprit);
-    }
-{% endfor %}
+    {% for id, nom in nom_type_oeuvre_esprit %}
+        var valeurTypeOeuvreEsprit = document.querySelector('input[name="idtypeoperateuroeuvreesprit_{{ id }}"]').value;
+        if (valeurTypeOeuvreEsprit) {
+            desagregations.push("{{ nom }}: " + valeurTypeOeuvreEsprit);
+            sommeDesagregations += parseFloat(valeurTypeOeuvreEsprit); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Récupère les valeurs des niveaux "Type Groupe Culturel"
 {% if nom_type_groupe_culturel %}
-{% for id, nom in nom_type_groupe_culturel %}
-    var valeurTypeGroupeCulturel = document.querySelector('input[name="idtypedegroupeculturel_{{ id }}"]').value;
-    if (valeurTypeGroupeCulturel) {
-        desagregations.push("{{ nom }}: " + valeurTypeGroupeCulturel);
-    }
-{% endfor %}
+    {% for id, nom in nom_type_groupe_culturel %}
+        var valeurTypeGroupeCulturel = document.querySelector('input[name="idtypedegroupeculturel_{{ id }}"]').value;
+        if (valeurTypeGroupeCulturel) {
+            desagregations.push("{{ nom }}: " + valeurTypeGroupeCulturel);
+            sommeDesagregations += parseFloat(valeurTypeGroupeCulturel); // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Récupère les valeurs des niveaux "Type Manifestation Culturelle"
+
+
 {% if nom_type_manifestation_culturelle %}
-{% for id, nom in nom_type_manifestation_culturelle %}
-    var valeurTypeManifestationCulturelle = document.querySelector('input[name="idtypedemanifestationculturelle_{{ id }}"]').value;
-    if (valeurTypeManifestationCulturelle) {
-        desagregations.push("{{ nom }}: " + valeurTypeManifestationCulturelle);
-    }
-{% endfor %}
+    {% for id, nom in nom_type_manifestation_culturelle %}
+        var valeurTypeManifestationCulturelle = document.querySelector('input[name="idtypedemanifestationculturelle_{{ id }}"]').value;
+        if (valeurTypeManifestationCulturelle) {
+            desagregations.push("{{ nom }}: " + valeurTypeManifestationCulturelle);
+            sommeDesagregations += parseFloat(valeurTypeManifestationCulturelle) || 0; // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Récupère les valeurs des niveaux "Trimestre"
 {% if nom_trimestre %}
-{% for id, nom in nom_trimestre %}
-    var valeurTrimestre = document.querySelector('input[name="idtrimestre_{{ id }}"]').value;
-    if (valeurTrimestre) {
-        desagregations.push("{{ nom }}: " + valeurTrimestre);
-    }
-{% endfor %}
+    {% for id, nom in nom_trimestre %}
+        var valeurTrimestre = document.querySelector('input[name="idtrimestre_{{ id }}"]').value;
+        if (valeurTrimestre) {
+            desagregations.push("{{ nom }}: " + valeurTrimestre);
+            sommeDesagregations += parseFloat(valeurTrimestre) || 0; // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Récupère les valeurs des niveaux "État des Œuvres"
 {% if nom_etat_oeuvres %}
-{% for id, nom in nom_etat_oeuvres %}
-    var valeurEtatOeuvres = document.querySelector('input[name="idetatdesoeuvres_{{ id }}"]').value;
-    if (valeurEtatOeuvres) {
-        desagregations.push("{{ nom }}: " + valeurEtatOeuvres);
-    }
-{% endfor %}
+    {% for id, nom in nom_etat_oeuvres %}
+        var valeurEtatOeuvres = document.querySelector('input[name="idetatdesoeuvres_{{ id }}"]').value;
+        if (valeurEtatOeuvres) {
+            desagregations.push("{{ nom }}: " + valeurEtatOeuvres);
+            sommeDesagregations += parseFloat(valeurEtatOeuvres) || 0; // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-// Récupère les valeurs des niveaux "Type Abonnement"
 {% if nom_type_abonnement %}
-{% for id, nom in nom_type_abonnement %}
-    var valeurTypeAbonnement = document.querySelector('input[name="idtypeabonnement_{{ id }}"]').value;
-    if (valeurTypeAbonnement) {
-        desagregations.push("{{ nom }}: " + valeurTypeAbonnement);
-    }
-{% endfor %}
+    {% for id, nom in nom_type_abonnement %}
+        var valeurTypeAbonnement = document.querySelector('input[name="idtypeabonnement_{{ id }}"]').value;
+        if (valeurTypeAbonnement) {
+            desagregations.push("{{ nom }}: " + valeurTypeAbonnement);
+            sommeDesagregations += parseFloat(valeurTypeAbonnement) || 0; // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
-
-// Récupère les valeurs des niveaux "Type Suivi"
 {% if nom_type_suivi %}
-{% for id, nom in nom_type_suivi %}
-    var valeurTypeSuivi = document.querySelector('input[name="idtypedesuivi_{{ id }}"]').value;
-    if (valeurTypeSuivi) {
-        desagregations.push("{{ nom }}: " + valeurTypeSuivi);
-    }
-{% endfor %}
+    {% for id, nom in nom_type_suivi %}
+        var valeurTypeSuivi = document.querySelector('input[name="idtypedesuivi_{{ id }}"]').value;
+        if (valeurTypeSuivi) {
+            desagregations.push("{{ nom }}: " + valeurTypeSuivi);
+            sommeDesagregations += parseFloat(valeurTypeSuivi) || 0; // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
+
+
+
 
 // Récupère les valeurs des niveaux "Type Vulnérabilité"
 {% if nom_type_vulnerabilite %}
-{% for id, nom in nom_type_vulnerabilite %}
-    var valeurTypeVulnerabilite = document.querySelector('input[name="idtypedevulnerabilite_{{ id }}"]').value;
-    if (valeurTypeVulnerabilite) {
-        desagregations.push("{{ nom }}: " + valeurTypeVulnerabilite);
-    }
-{% endfor %}
+    {% for id, nom in nom_type_vulnerabilite %}
+        var valeurTypeVulnerabilite = document.querySelector('input[name="idtypedevulnerabilite_{{ id }}"]').value;
+        if (valeurTypeVulnerabilite) {
+            desagregations.push("{{ nom }}: " + valeurTypeVulnerabilite);
+            sommeDesagregations += parseFloat(valeurTypeVulnerabilite) || 0; // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
 // Récupère les valeurs des niveaux "Type Prise en Charge"
 {% if nom_type_prise_charge %}
-{% for id, nom in nom_type_prise_charge %}
-    var valeurTypePriseCharge = document.querySelector('input[name="idtypedeprisecharge_{{ id }}"]').value;
-    if (valeurTypePriseCharge) {
-        desagregations.push("{{ nom }}: " + valeurTypePriseCharge);
-    }
-{% endfor %}
+    {% for id, nom in nom_type_prise_charge %}
+        var valeurTypePriseCharge = document.querySelector('input[name="idtypedeprisecharge_{{ id }}"]').value;
+        if (valeurTypePriseCharge) {
+            desagregations.push("{{ nom }}: " + valeurTypePriseCharge);
+            sommeDesagregations += parseFloat(valeurTypePriseCharge) || 0; // Ajouter la valeur à la somme
+        }
+    {% endfor %}
+{% endif %}
+
+// Récupère les valeurs des niveaux "Niveau"
+{% if nom_niveau %}
+    {% for id, nom in nom_niveau %}
+        var valeurNiveau = document.querySelector('input[name="idniveau_{{ id }}"]').value;
+        if (valeurNiveau) {
+            desagregations.push("{{ nom }}: " + valeurNiveau);
+            sommeDesagregations += parseFloat(valeurNiveau) || 0; // Ajouter la valeur à la somme
+        }
+    {% endfor %}
 {% endif %}
 
 
 
-// Continuez ainsi pour tous les autres niveaux...
 
-
-        // Récupère les valeurs des niveaux "Cycle"
-        {% if nom_niveau %}
-        {% for id, nom in nom_niveau %}
-            var valeurNiveau = document.querySelector('input[name="idniveau_{{ id }}"]').value;
-            if (valeurNiveau) {
-                desagregations.push("{{ nom }}: " + valeurNiveau);
-            }
-        {% endfor %}
-        {% endif %}
-
-        // Ajoutez les autres sections si nécessaire (comme Sexe, Type de prise en charge, etc.)
-
-        // Insère les valeurs dans le tableau de confirmation
+       // Insère les valeurs dans le tableau de confirmation
         document.getElementById('confirm-id-indicateur').textContent = idIndicateur;
         document.getElementById('confirm-id-code-entite').textContent = idCodeEntite;
         document.getElementById('confirm-anne').textContent = anne;
         document.getElementById('confirm-desagregations').innerHTML = desagregations.join('<br>');
+
+        // Affiche la somme des désagrégations
+        document.getElementById('confirm-somme-desagregations').textContent = "Total : " + sommeDesagregations;
 
         // Affiche la fenêtre modale
         var modal = document.getElementById('confirmation-modal');
@@ -993,7 +1019,6 @@
         return false; // Empêche la soumission immédiate du formulaire
     };
 });
-
 </script>
 </body>
 </html>
