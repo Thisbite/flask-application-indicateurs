@@ -8,6 +8,9 @@
 </head>
 <body>
 <div id="form-wrapper">
+
+
+    
     <!-- Formulaire de recherche -->
     <form action="/" method="post" class="form-container2" onsubmit="saveFormData()">
         <label for="id_indicateur">Entrez le code indicateur :</label>
@@ -542,6 +545,27 @@
         // Remplit les champs du formulaire avec les données stockées
         fillFormData();
     });
+    document.getElementById('id_indicateur').addEventListener('change', function() {
+        var selectedValue = this.value;
+        
+        // Effectuer une requête AJAX pour obtenir les nouvelles données en fonction de l'indicateur sélectionné
+        fetch('/get-data?indicateur=' + selectedValue)
+            .then(response => response.json())
+            .then(data => {
+                // Mettre à jour les champs du formulaire avec les nouvelles données
+                updateFormFields(data);
+            })
+            .catch(error => console.error('Erreur:', error));
+    });
+    
+    function updateFormFields(data) {
+        // Exemple de mise à jour des champs du formulaire
+        document.getElementById('id_code_entite').value = data.code_entite;
+        document.getElementById('id_niveau_desagregation').value = data.niveau_desagregation;
+        // Autres mises à jour...
+    }
+    
+
 
     function saveFormData() {
         localStorage.setItem('id_indicateur', document.getElementById('id_indicateur').value);

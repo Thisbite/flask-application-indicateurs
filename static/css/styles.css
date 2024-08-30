@@ -1,132 +1,132 @@
 /* Styles généraux du corps */
 body {
-    font-family: Arial, sans-serif; /* Police moderne et lisible */
-    background-color: #f4f4f9; /* Couleur de fond légère */
-    margin: 0; /* Enlève la marge par défaut */
-    padding: 0; /* Enlève le padding par défaut */
-    display: flex; /* Centre le contenu verticalement et horizontalement */
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Prend toute la hauteur de la fenêtre */
-    overflow: auto; /* Permet le défilement de la page */
-    display: flex;
-     justify-content: center;
-       align-items: center;
-       min-height: 100vh; /* Assure que le contenu est centré verticalement sur toute la hauteur de la fenêtre */
-
+    min-height: 100vh;
+    overflow: auto;
 }
 
-/* Styles du conteneur principal */
+/* Styles pour le conteneur principal */
 #form-wrapper {
     display: flex;
-    flex-direction: column; /* Empile les formulaires verticalement */
-    width: 150%; /* Prend toute la largeur disponible */
-    max-width: 720px; /* Largeur maximale du conteneur */
-    max-height: 80vh; /* Hauteur maximale du conteneur pour éviter qu'il prenne toute la hauteur */
-    overflow-y: auto; /* Permet le défilement vertical à l'intérieur du conteneur */
-    padding: 10px; /* Espacement interne pour le conteneur */
+    flex-direction: column;
+    width: 100%;
+    max-width: 720px;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 20px;
+    background-color: #f4f4f9; /* Couleur de fond légère */
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); /* Ombre pour effet de profondeur */
 }
 
 /* Styles des formulaires */
 .form-container {
-    background-color: #ffffff; /* Fond blanc pour le formulaire */
-    padding: 20px; /* Espacement interne */
-    border-radius: 8px; /* Coins arrondis */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre légère pour l'effet d'élévation */
-    margin-bottom: 20px; /* Espacement en bas entre les formulaires */
-    width: 100%; /* Prend toute la largeur disponible */
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    width: 100%;
+    transition: transform 0.3s ease; /* Animation au survol */
+}
+
+.form-container:hover {
+    transform: translateY(-5px); /* Légère élévation au survol */
 }
 
 /* Styles du titre */
 h2 {
-    color: #333; /* Couleur du texte */
-    text-align: center; /* Centre le texte */
-    margin-bottom: 20px; /* Espacement sous le titre */
+    color: #0056b3; /* Couleur bleue */
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
 }
 
 /* Styles de la liste alignée */
 .align-list {
-    list-style-type: none; /* Enlève les puces de la liste */
-    padding: 0; /* Enlève le padding par défaut */
-    margin: 0; /* Enlève la marge par défaut */
-    display: flex; /* Utilise flexbox pour aligner les éléments en ligne */
-    flex-wrap: wrap; /* Permet aux éléments de passer à la ligne suivante si nécessaire */
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
 }
 
- .align-list {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); /* Trois colonnes de taille égale */
-            gap: 10px; /* Espacement entre les éléments */
-            list-style-type: none; /* Supprime les puces */
-            padding: 0; /* Supprime les marges par défaut */
-        }
+.align-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9; /* Fond léger pour les items */
+    transition: background-color 0.3s ease; /* Animation sur le changement de fond */
+}
 
-        .align-list li {
-            display: flex;
-            align-items: center;
-            gap: 10px; /* Espacement entre le texte et le champ de saisie */
-            border: 1px solid #ddd; /* Optionnel : ajoute une bordure légère pour une meilleure visibilité */
-            padding: 5px; /* Espacement interne */
-        }
-
-        .align-list input {
-            flex: 1; /* Le champ de saisie occupe l'espace restant */
-        }
+.align-list li:hover {
+    background-color: #e6f2ff; /* Fond bleu clair au survol */
+}
 
 /* Styles des champs de saisie */
 input[type="text"] {
-    padding: 8px; /* Espacement interne du champ de saisie */
-    border: 1px solid #ddd; /* Bordure légère */
-    border-radius: 4px; /* Coins arrondis du champ de saisie */
-    width: 100px; /* Largeur ajustée pour un meilleur alignement */
-    box-sizing: border-box; /* Inclut la bordure et le padding dans la largeur totale */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Animation sur le focus */
 }
 
-/* Styles du bouton de soumission */
-button[type="submit"] {
-    background-color: #2E8B57; /* Couleur verte*/
-    color: #fff; /* Couleur du texte */
-    border: none; /* Enlève la bordure par défaut */
-    padding: 10px 20px; /* Espacement interne du bouton */
-    border-radius: 4px; /* Coins arrondis du bouton */
-    cursor: pointer; /* Change le curseur pour indiquer que c'est cliquable */
-    font-size: 16px; /* Taille de police du texte */
-    margin-top: 20px; /* Espacement au-dessus du bouton */
-    display: block; /* Centrer le bouton */
-    width: 100%; /* Prend toute la largeur disponible */
+input[type="text"]:focus {
+    border-color: #FFA500; /* Bordure orange clair */
+    box-shadow: 0 0 5px rgba(255, 165, 0, 0.5); /* Ombre orange clair */
+    outline: none;
 }
 
-/* Styles du bouton de soumission au survol */
-button[type="submit"]:hover {
-    background-color: #0056b3; /* Couleur de fond plus sombre au survol */
+/* Styles des boutons */
+button[type="submit"],
+#add-button {
+    background-color: #0056b3; /* Bleu */
+    color: #fff;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Animation sur le hover */
+}
+
+button[type="submit"]:hover,
+#add-button:hover {
+    background-color: #004494; /* Bleu plus foncé au survol */
+    transform: translateY(-3px); /* Légère élévation au survol */
 }
 
 #add-button {
-    margin-top: 100px; /* Espacement au-dessus du bouton */
-    padding: 10px 20px; /* Espacement interne du bouton */
-    border: none; /* Enlève la bordure par défaut */
-    border-radius: 4px; /* Coins arrondis du bouton */
-    background-color: orange; /* Couleur de fond verte */
-    color: #fff; /* Couleur du texte */
-    font-size: 16px; /* Taille de police du texte */
-    cursor: pointer; /* Change le curseur pour indiquer que c'est cliquable */
-    display: block; /* Affiche le bouton comme un bloc pour qu'il soit sur une nouvelle ligne */
-    width: 10%; /* Prend toute la largeur disponible */
+    margin-top: 20px;
+    width: auto; /* Ajuste la largeur pour qu'elle corresponde au contenu */
 }
 
-/* Styles du bouton Ajouter au survol */
-#add-button:hover {
-    background-color: #218838; /* Couleur de fond plus sombre au survol */
+/* Styles du conteneur orange */
+.orange-frame {
+    border: 4px solid orange;
+    padding: 15px;
+    margin: 20px;
+    display: inline-block;
+    border-radius: 10px;
+    background-color: #fff3e0; /* Fond légèrement orange */
 }
- .orange-frame {
-            border: 4px solid orange;
-            padding: 10px;
-            margin: 20px;
-            display: inline-block;
-        }
 
-
-  .flash-messages {
+/* Styles des messages flash */
+.flash-messages {
     margin: 10px;
 }
 
@@ -138,63 +138,178 @@ button[type="submit"]:hover {
     margin-bottom: 10px;
 }
 
-
+/* Styles spécifiques du deuxième conteneur de formulaire */
 .form-container2 {
-    background-color: #FFFFFF; /* Blanc */
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
-    margin: 0 auto;
-    border: 5px solid #FFA500; /* Bordure orange clair */
+    background-color: #FFFFFF;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-width: 450px;
+    margin: 30px auto;
+    border: 6px solid #FFA500;
+    text-align: center; /* Centrer les éléments */
+    animation: fadeIn 1s ease-in-out; /* Animation d'entrée douce */
+}
+
+/* Animation pour une entrée en douceur */
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.form-container2 h2 {
+    font-size: 28px;
+    color: #2E8B57;
+    margin-bottom: 20px;
 }
 
 .form-container2 label {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     font-weight: bold;
-    color: #2E8B57; /* Vert foncé */
+    color: #2E8B57;
+    font-size: 16px;
 }
 
 .form-container2 input[type="text"] {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
+    padding: 12px;
+    margin-bottom: 25px;
     border: 1px solid #CCC;
-    border-radius: 5px;
+    border-radius: 8px;
     box-sizing: border-box;
+    font-size: 16px;
 }
 
-.form-container2 input[type="text"]:focus {
-    border-color: #FFA500; /* Orange clair */
-    outline: none;
-    box-shadow: 0 0 5px rgba(255, 165, 0, 0.5);
-}
-
+/* Styles du bouton de la .form-container2 */
 .form-container2 button {
-    background-color: #FFA500; /* Orange clair */
+    background-color: #FFA500;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.form-container2 button:hover {
+    background-color: #2E8B57;
+    transform: scale(1.05); /* Effet de survol pour le bouton */
+}
+
+/* Styles pour les messages d'erreur */
+.form-container2 .error {
+    color: #FF6347;
+    margin-top: -15px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+
+/* Styles du titre de formulaire */
+.form-title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #2E8B57;
+    font-size: 24px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* Styles du contenu de confirmation */
+/* Styles pour la modale de confirmation */
+#confirmation-modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fond sombre semi-transparent */
+    z-index: 1000;
+}
+
+/* Styles pour le contenu de la modale */
+#confirmation-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+/* Styles pour le titre de la modale */
+#confirmation-content h2 {
+    color: #0056b3; /* Bleu */
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Styles pour le tableau */
+#confirmation-content table {
+    width: 100%;
+    border-collapse: collapse; /* Supprime les espaces entre les cellules */
+    margin-bottom: 20px;
+}
+
+#confirmation-content th,
+#confirmation-content td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+    font-size: 16px;
+}
+
+#confirmation-content th {
+    background-color: #f4f4f9;
+    color: #0056b3; /* Bleu */
+    font-weight: bold;
+}
+
+#confirmation-content tr:nth-child(even) {
+    background-color: #f9f9f9; /* Couleur alternative pour les lignes paires */
+}
+
+/* Styles pour le total */
+#confirmation-content td[colspan="2"] {
+    text-align: right;
+    font-weight: bold;
+}
+
+/* Styles pour les boutons */
+#confirm-button,
+#cancel-button {
+    background-color: #0056b3; /* Bleu */
     color: white;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-weight: bold;
-    width: 100%;
+    font-size: 16px;
+    margin: 5px;
 }
 
-.form-container2 button:hover {
-    background-color: #2E8B57; /* Vert */
+#confirm-button:hover,
+#cancel-button:hover {
+    background-color: #004494; /* Bleu plus foncé au survol */
 }
 
-
-
-
-
-
-
-
-#confirmation-content {
-    background: white;
-    padding: 20px;
-    border-radius: 5px;
+/* Style pour le bouton de refus */
+#cancel-button {
+    background-color: #ff4d4d; /* Rouge */
 }
+
+#cancel-button:hover {
+    background-color: #cc0000; /* Rouge plus foncé au survol */
+}
+
