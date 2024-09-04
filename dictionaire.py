@@ -1,34 +1,51 @@
-from dotenv import load_dotenv
+from flask import Flask, render_template, request, redirect, url_for, flash
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 import os
-from sqlalchemy import create_engine
+import logging
+import mysql.connector
+import config as cf
+import db_queries as ag
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine,Table,MetaData,select,insert,delete
 
-load_dotenv()
 
-# Utiliser les variables d'environnement
-host = os.getenv('MYSQL_HOST')
-user = os.getenv('MYSQL_USER')
-password = os.getenv('MYSQL_PASSWORD')
-database = 'mabase'
-def create_connection2():
-    try:
-        # Connexion initiale sans spécifier la base de données
-        initial_connection_string = f"mysql+mysqlconnector://{user}:{password}@{host}/{database}"
-        engine = create_engine(initial_connection_string)
 
-        # Créer la base de données si elle n'existe pas
-        with engine.connect() as conn:
-            print(f"Base de données `{database}` créée ou déjà existante.")
 
-        # Connexion à la base de données spécifiée
-        connection_string_with_db = f"mysql+mysqlconnector://{user}:{password}@{host}/"
-        engine_with_db = create_engine(connection_string_with_db)
+app = Flask(__name__)
 
-        # Vérifier la connexion
-        with engine_with_db.connect() as connection:
-            print("Connexion à la base de données MySQL réussie avec la base spécifiée.")
-            return engine_with_db
+# Configuration de la clé secrète pour les sessions Flask
+app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY', '774d8fe18f818cdb0f03a7d2471d55797c709a6aede6289dcc24481a7a92f40a')
 
-    except Exception as e:
-        print(f"Erreur lors de la connexion à MySQL : {e}")
-        return None
-create_connection2()
+# Configuration de la base de données
+app.config['SQLALCHEMY_DATABASE_URI'] = f"mysql+pymysql://{os.getenv('MYSQL_USER')}:{os.getenv('MYSQL_PASSWORD')}@{os.getenv('MYSQL_HOST')}/{os.getenv('MYSQL_DATABASE')}"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+engine = create_engine(url=f"mysql+pymysql://{os.getenv('MYSQL_USER')}:{os.getenv('MYSQL_PASSWORD')}@{os.getenv('MYSQL_HOST')}/{os.getenv('MYSQL_DATABASE')}")
+
+try:
+    # Création de l'engine et de la session
+    engine = create_engine(url=f"mysql+pymysql://{os.getenv('MYSQL_USER')}:{os.getenv('MYSQL_PASSWORD')}@{os.getenv('MYSQL_HOST')}/{os.getenv('MYSQL_DATABASE')}")
+    Session = sessionmaker(bind=engine)
+    session = Session()
+
+    # Chargement de la table avec autoload
+    meta = MetaData()
+    valeur_indicateurs = Table('ValeursIndicateurs', meta, autoload_with=engine)
+
+    # Suppression des lignes avec des valeurs NULL
+    supprime_vide = delete(valeur_indicateurs).where(valeur_indicateurs.c.Valeur.is_(None))
+    session.execute(supprime_vide)
+    session.commit()
+
+    print('Connexion réussie Ok')
+
+except Exception as e:
+    print(f"Erreur lors de la connexion: {e}")
+
+finally:
+    # Nettoyage de la session
+   pass

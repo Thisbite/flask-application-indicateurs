@@ -21,6 +21,7 @@ migrate = Migrate(app, db)
 
 # Configuration du logging
 logging.basicConfig(level=logging.DEBUG)
+cf.fonction_suprression_vide()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
