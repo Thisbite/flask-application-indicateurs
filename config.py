@@ -52,7 +52,7 @@ def close_db(e=None):
 
 
 
-def insertion_value(indicator_id, region_id, department_id, sous_prefecture_id, valeur, annee, sexe_id=None,
+def insertion_value(id,indicator_id, region_id, department_id, sous_prefecture_id, valeur, annee, sexe_id=None,
                     groupe_age_id=None, age_id=None, cycle_id=None, niveau_prescolaire_id=None,
                     niveau_primaire_id=None, niveau_secondaire_1er_cycle_id=None,
                     niveau_secondaire_2nd_cycle_id=None, niveau_technique_id=None,
@@ -75,7 +75,7 @@ def insertion_value(indicator_id, region_id, department_id, sous_prefecture_id, 
             cursor = conn.cursor()
             cursor.execute("""
                 INSERT INTO ValeursIndicateurs (
-                    Valeur, Annee, f_sexe_id, f_grp_age_id, f_age_id, f_cycle_id, f_region_id, f_departement_id,
+                    id,Valeur, Annee, f_sexe_id, f_grp_age_id, f_age_id, f_cycle_id, f_region_id, f_departement_id,
                     f_sous_prefecture_id, f_indicateur_id, f_niveau_prescolaire_id, f_niveau_primaire_id,
                     f_niveau_secondaire_1er_cycle_id, f_niveau_secondaire_2nd_cycle_id, f_niveau_technique_id,
                     f_niveau_superieur_id, f_niveau_professionnel_id, f_type_examen_id, f_infrastructures_sanitaires_id,
@@ -89,8 +89,8 @@ def insertion_value(indicator_id, region_id, department_id, sous_prefecture_id, 
                     f_etat_des_ouvrages_id, f_type_abonnement_id, f_type_suivi_id, f_type_de_vulnerabilite_id,
                     f_type_de_prise_charge_id, f_niveau_id
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s,%s,%s)
-            """, (valeur, annee, sexe_id, groupe_age_id, age_id, cycle_id, region_id, department_id, sous_prefecture_id,
+                VALUES (%s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s,%s,%s)
+            """, (id,valeur, annee, sexe_id, groupe_age_id, age_id, cycle_id, region_id, department_id, sous_prefecture_id,
                   indicator_id, niveau_prescolaire_id, niveau_primaire_id, niveau_secondaire_1er_cycle_id,
                   niveau_secondaire_2nd_cycle_id, niveau_technique_id, niveau_superieur_id, niveau_professionnel_id,
                   type_examen_id, infrastructures_sanitaires_id, lieu_accouchement_id, etat_vaccinal_id,
@@ -110,6 +110,21 @@ def insertion_value(indicator_id, region_id, department_id, sous_prefecture_id, 
     except Exception as e:
         print(f"Erreur de fonction insertion de valeur indicateur: {e}")
         
+
+
+import random
+
+# Fonction pour générer une clé unique
+def generate_unique_key():
+    part1 = str(random.randint(0, 99)).zfill(2)
+    part2 = str(random.randint(0, 99)).zfill(2)
+    part3 = str(random.randint(0, 99)).zfill(2)
+    part4 = str(random.randint(0, 99)).zfill(2)
+    
+    unique_key = f"{part1}-{part2}-{part3}-{part4}"
+    return unique_key
+
+
 
 
 

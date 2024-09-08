@@ -23,6 +23,7 @@ migrate = Migrate(app, db)
 logging.basicConfig(level=logging.DEBUG)
 cf.fonction_suprression_vide()
 
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
 
@@ -219,6 +220,14 @@ def index():
 
 
 
+
+
+
+
+
+
+
+unique_key=None
 @app.route('/submit', methods=['POST'])
 def submit():
     # Récupère les données passées à la route submit
@@ -285,6 +294,7 @@ def submit():
     ]
 
     for key, value in data.items():
+        unique_key=cf.generate_unique_key()
         # Initialiser toutes les variables à None
         primaire = None
         id_grpe_age = None
@@ -411,7 +421,7 @@ def submit():
 
         # Insertion dans la base de données
         cf.insertion_value(
-            valeur=value,
+            id=unique_key,valeur=value,
             groupe_age_id=id_grpe_age,
             indicator_id=mon_id_indicateur,
             sous_prefecture_id=sous_prefecture_id,
