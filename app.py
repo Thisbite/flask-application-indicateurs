@@ -217,6 +217,95 @@ def index():
                 nom_type_de_vulnerabilite=nom_type_de_vulnerabilite,
                 nom_type_de_prise_charge=nom_type_de_prise_charge,
                 nom_niveau=nom_niveau)
+    
+    
+
+
+
+
+
+@app.route('/approbation', methods=['GET'])
+def approbation():
+    conn = cf.create_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        # Récupérer les données de la table 'valeur_indicateur_libelle' où le statut est 'Non approuvé'
+        cursor.execute("SELECT * FROM valeur_indicateur_libelle WHERE statut = 'Non approuvé'")
+        rows = cursor.fetchall()
+    except Exception as e:
+        flash(f"Erreur lors de la récupération des données : {str(e)}", "danger")
+        rows = []
+    finally:
+        cursor.close()
+        conn.close()
+
+    return render_template('approbation.html', rows=rows)
+
+@app.route('/approve_or_reject', methods=['POST'])
+def approve_or_reject():
+    conn = cf.create_connection()
+    cursor = conn.cursor()
+
+    id_valeur = request.form.get('id')
+    action = request.form.get('action')
+    commentaires = request.form.get('commentaires', '')
+
+    try:
+        if action == 'Approuver':
+            # Mise à jour du statut à 'Approuvé'
+            cursor.execute("UPDATE valeur_indicateur_libelle SET statut = 'Approuvé' WHERE id = %s", (id_valeur,))
+            flash(f"Valeur ID {id_valeur} approuvée avec succès", "success")
+        elif action == 'Rejeter':
+            # Mise à jour du statut à 'Rejeté' avec commentaires et date de rejet
+            cursor.execute("""
+                UPDATE valeur_indicateur_libelle 
+                SET statut = 'Rejeté', commentaires = %s, date_rejet = NOW() 
+                WHERE id = %s
+            """, (commentaires, id_valeur))
+            flash(f"Valeur ID {id_valeur} rejetée avec succès", "success")
+        else:
+            flash("Action non reconnue", "danger")
+
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        flash(f"Erreur lors de la mise à jour : {str(e)}", "danger")
+    finally:
+        cursor.close()
+        conn.close()
+
+    return redirect(url_for('approbation'))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

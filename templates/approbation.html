@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approbation Valeurs Indicateur</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/approbation.css') }}">
+</head>
+<body>
+    <div class="approval-forms-wrapper">
+        <h1>Approbation des valeurs des indicateurs</h1>
+
+        {% for row in rows %}
+        <div class="approval-form-container orange-frame" id="form-{{ row.id }}">
+            <div class="approval-form-header" onclick="toggleForm('{{ row.id }}')">
+                Questionnaire: {{ row.id }}  <br> Région: {{ row.nom_region }} <br>{{row.nom_indicateur}}
+            </div>
+            <div class="approval-form-content">
+                <form action="/approve_or_reject" method="POST">
+                    <input type="hidden" name="id" value="{{ row.id }}">
+
+                    <label for="nom_region_{{ row.id }}">Nom de la région:</label>
+                    <input type="text" id="nom_region_{{ row.id }}" name="nom_region" value="{{ row.nom_region }}" readonly>
+
+                    <label for="nom_departement_{{ row.id }}">Nom du département:</label>
+                    <input type="text" id="nom_departement_{{ row.id }}" name="nom_departement" value="{{ row.nom_departement }}" readonly>
+
+                    <label for="nom_sousprefecture_{{ row.id }}">Nom de la sous-préfecture:</label>
+                    <input type="text" id="nom_sousprefecture_{{ row.id }}" name="nom_sousprefecture" value="{{ row.nom_sousprefecture }}" readonly>
+
+                    <label for="nom_indicateur_{{ row.id }}">Nom de l'indicateur:</label>
+                    <input type="text" id="nom_indicateur_{{ row.id }}" name="nom_indicateur" value="{{ row.nom_indicateur }}" readonly>
+
+                    <!-- Ajoutez les autres champs ici -->
+
+                    <label for="commentaires_{{ row.id }}">Commentaires :</label>
+                    <textarea id="commentaires_{{ row.id }}" name="commentaires"></textarea>
+
+                    <div class="btn-group">
+                        <button type="submit" class="approval-btn-approve" name="action" value="Approuver">Approuver</button>
+                        <button type="submit" class="approval-btn-reject" name="action" value="Rejeter">Rejeter</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        function toggleForm(id) {
+            const formContainer = document.getElementById('form-' + id);
+            formContainer.classList.toggle('active');
+        }
+    </script>
+
+</body>
+</html>
