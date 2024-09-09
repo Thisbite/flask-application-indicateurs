@@ -24,8 +24,8 @@ logging.basicConfig(level=logging.DEBUG)
 cf.fonction_suprression_vide()
 
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
+@app.route('/questionnaire', methods=['GET', 'POST'])
+def questionnaire():
 
     nom_entite = ""
     nom_ind = None
@@ -172,7 +172,7 @@ def index():
             if entite_geog:
                 id_entite, nom_entite = entite_geog
 
-    return render_template('index.html',
+    return render_template('questionnaire.html',
                 nom_ind=nom_ind,
                 id_entite=id_entite,
                 nom_entite=nom_entite,
@@ -246,7 +246,6 @@ def approbation():
 def approve_or_reject():
     conn = cf.create_connection()
     cursor = conn.cursor()
-
     id_valeur = request.form.get('id')
     action = request.form.get('action')
     commentaires = request.form.get('commentaires', '')
@@ -561,7 +560,7 @@ def submit():
     flash("Données envoyées avec succès!")
 
     # Redirection vers la route d'affichage du formulaire
-    return redirect(url_for('index'))
+    return redirect(url_for('questionnaire'))
 
 
 
