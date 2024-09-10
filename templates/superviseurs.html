@@ -4,8 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Superviseurs</title>
+    <style>
+        a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        a:hover {
+            background-color: #218838;
+        }
+    </style>
 </head>
 <body>
     <h1>Hello Superviseur</h1>
+    <!-- Lien vers la page d'approbation -->
+    <a href="{{ url_for('approbation') }}">Accéder à l'approbation</a>
+     <!-- Lien vers la page d'upload de fichier -->
+     <a href="{{ url_for('upload_page') }}">Importer des données</a>
 </body>
 </html>

@@ -31,64 +31,114 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'login'
+login_manager.login_view = 'user_login'
+
+
+
+
+""" 
+Pour la connexion et parametre de gestion utilisateur
+"""
+
+from flask import Flask, render_template, request, redirect, url_for, flash
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_login import UserMixin
+
+
+""" 
++++++++++++++++++++++++Section de Connexion 
+"""
+
+
 
 @login_manager.user_loader
 def load_user(user_id):
     # Charger l'utilisateur en fonction de l'ID
     return Agent.query.get(int(user_id)) or Superviseur.query.get(int(user_id)) or Administrateur.query.get(int(user_id))
+# Modèles SQLAlchemy
+class Superviseur(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    id_direction_statistique = db.Column(db.Integer, db.ForeignKey('direction_statistique.direction_id'))
+    nom = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    role = db.Column(db.String(50), default='superviseur')  # Ajout du champ role
 
+class Agent(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    id_sup = db.Column(db.Integer, db.ForeignKey('superviseur.id'))
+    nom = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    role = db.Column(db.String(50), default='agent')  # Ajout du champ role
 
-
-
-
-
-
+class Administrateur(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nom = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    role = db.Column(db.String(50), default='administrateur')  # Ajout du champ role
 
 
 @app.route('/')
-def index():
-    return render_template('index.html')
-
-
-import bcrypt
-from flask import Flask, render_template, request, redirect, url_for, flash, session
-# Dummy function to simulate database retrieval
-def get_user_role_email(user_email, user_password):
-    # Ajoutez ici la logique pour récupérer l'utilisateur depuis la base de données
-    if user_email == 'admin@example.com' and bcrypt.checkpw(user_password.encode('utf-8'), bcrypt.hashpw(b'password', bcrypt.gensalt())):
-        return "Administrateur", "Admin User"
-    return None, None
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        
-        role, user_name = get_user_role_email(email, password)
-        if role:
-            # Stocker des informations dans la session après une connexion réussie
-            session['user_email'] = email
-            session['role'] = role
-            flash(f'Bienvenue {user_name} ({role})', 'success')
-            return redirect(url_for('dashboard'))  # Redirection vers une page protégée
-        else:
-            flash('Email ou mot de passe incorrect', 'danger')
-            return render_template('login.html', error="Email ou mot de passe incorrect")
-
+def home():
     return render_template('login.html')
 
+@app.route('/login', methods=['GET', 'POST'])
+def user_login():
+    email = request.form.get('email')
+
+    # Check if the email belongs to an Agent
+    agent = Agent.query.filter_by(email=email).first()
+    if agent:
+        login_user(agent)  # Authentifie l'agent
+        return redirect(url_for('agents'))
+
+    # Check if the email belongs to a Superviseur
+    superviseur = Superviseur.query.filter_by(email=email).first()
+    if superviseur:
+        login_user(superviseur)  # Authentifie le superviseur
+        return redirect(url_for('superviseurs'))
+
+    # Check if the email belongs to an Administrateur
+    administrateur = Administrateur.query.filter_by(email=email).first()
+    if administrateur:
+        login_user(administrateur)  # Authentifie l'administrateur
+        return redirect(url_for('administrateurs'))
+
+    flash('Email not recognized.')
+    return redirect(url_for('home'))
+
+
+@app.route('/agents')
+def agents():
+    return render_template('agents.html')
+
+@app.route('/superviseurs')
+def superviseurs():
+    return render_template('superviseurs.html')
+
+@app.route('/administrateurs')
+def administrateurs():
+    return render_template('administrateurs.html')
+
+
+""" 
+++++++++++++++++++++ Fin de section connexion
+"""
 
 
 
 
 
 
+""" 
+*****************Début de section questionnaire
+"""
 @app.route('/questionnaire', methods=['GET', 'POST'])
 @login_required
 def questionnaire():
-
+    if current_user.role !='agent':
+        flash('Vous n\'êtes pas autorisé à accéder à cette page.')
+        return redirect(url_for('home')) 
     nom_entite = ""
     nom_ind = None
     id_entite = None
@@ -278,77 +328,16 @@ def questionnaire():
                 nom_niveau=nom_niveau)
     
     
-    """
-    Cette section est construite pour l'approbation du questionnaire
-    """
-
-
-
-
-@app.route('/approbation', methods=['GET'])
-@login_required
-def approbation():
-    conn = cf.create_connection()
-    cursor = conn.cursor(dictionary=True)
-
-    try:
-        # Récupérer les données de la table 'valeur_indicateur_libelle' où le statut est 'Non approuvé'
-        cursor.execute("SELECT * FROM valeur_indicateur_libelle WHERE statut = 'Non approuvé'")
-        rows = cursor.fetchall()
-    except Exception as e:
-        flash(f"Erreur lors de la récupération des données : {str(e)}", "danger")
-        rows = []
-    finally:
-        cursor.close()
-        conn.close()
-
-    return render_template('approbation.html', rows=rows)
-
-@app.route('/approve_or_reject', methods=['POST'])
-def approve_or_reject():
-    conn = cf.create_connection()
-    cursor = conn.cursor()
-    id_valeur = request.form.get('id')
-    action = request.form.get('action')
-    commentaires = request.form.get('commentaires', '')
-
-    try:
-        if action == 'Approuver':
-            # Mise à jour du statut à 'Approuvé'
-            cursor.execute("UPDATE valeur_indicateur_libelle SET statut = 'Approuvé' WHERE id = %s", (id_valeur,))
-            flash(f"Valeur ID {id_valeur} approuvée avec succès", "success")
-        elif action == 'Rejeter':
-            # Mise à jour du statut à 'Rejeté' avec commentaires et date de rejet
-            cursor.execute("""
-                UPDATE valeur_indicateur_libelle 
-                SET statut = 'Rejeté', commentaires = %s, date_rejet = NOW() 
-                WHERE id = %s
-            """, (commentaires, id_valeur))
-            flash(f"Valeur ID {id_valeur} rejetée avec succès", "success")
-        else:
-            flash("Action non reconnue", "danger")
-
-        conn.commit()
-    except Exception as e:
-        conn.rollback()
-        flash(f"Erreur lors de la mise à jour : {str(e)}", "danger")
-    finally:
-        cursor.close()
-        conn.close()
-
-    return redirect(url_for('approbation'))
-
-
-
-
-
-
-
+    
 
 
 unique_key=None
 @app.route('/submit', methods=['POST'])
 def submit():
+    if current_user.role !='agent':
+        flash('Vous n\'êtes pas autorisé à accéder à cette page.')
+        return redirect(url_for('home')) 
+    email_agent=current_user.email
     # Récupère les données passées à la route submit
     mon_id_indicateur = request.form.get('id_indicateur2')
     id_code_entite = request.form.get('id_code_entite2')
@@ -588,10 +577,235 @@ def submit():
         )
 
     # Ajout d'un message flash pour informer l'utilisateur
-    flash("Données envoyées avec succès!")
+    flash(f"Données envoyées avec succès!{email_agent}")
 
     # Redirection vers la route d'affichage du formulaire
     return redirect(url_for('questionnaire'))
+
+    
+    
+"""
+############################Fin de section questionnaire
+"""
+
+
+
+""" 
+************************************************Début de section approbation
+
+"""
+@app.route('/approbation', methods=['GET'])
+@login_required
+def approbation():
+    conn = cf.create_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        # Récupérer les données de la table 'valeur_indicateur_libelle' où le statut est 'Non approuvé'
+        cursor.execute("SELECT * FROM valeur_indicateur_libelle WHERE statut = 'Non approuvé'")
+        rows = cursor.fetchall()
+    except Exception as e:
+        flash(f"Erreur lors de la récupération des données : {str(e)}", "danger")
+        rows = []
+    finally:
+        cursor.close()
+        conn.close()
+
+    return render_template('approbation.html', rows=rows)
+
+@app.route('/approve_or_reject', methods=['POST'])
+def approve_or_reject():
+    conn = cf.create_connection()
+    cursor = conn.cursor()
+    id_valeur = request.form.get('id')
+    action = request.form.get('action')
+    commentaires = request.form.get('commentaires', '')
+
+    try:
+        if action == 'Approuver':
+            # Mise à jour du statut à 'Approuvé'
+            cursor.execute("UPDATE valeur_indicateur_libelle SET statut = 'Approuvé' WHERE id = %s", (id_valeur,))
+            flash(f"Valeur ID {id_valeur} approuvée avec succès", "success")
+        elif action == 'Rejeter':
+            # Mise à jour du statut à 'Rejeté' avec commentaires et date de rejet
+            cursor.execute("""
+                UPDATE valeur_indicateur_libelle 
+                SET statut = 'Rejeté', commentaires = %s, date_rejet = NOW() 
+                WHERE id = %s
+            """, (commentaires, id_valeur))
+            flash(f"Valeur ID {id_valeur} rejetée avec succès", "success")
+        else:
+            flash("Action non reconnue", "danger")
+
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        flash(f"Erreur lors de la mise à jour : {str(e)}", "danger")
+    finally:
+        cursor.close()
+        conn.close()
+
+    return redirect(url_for('approbation'))
+
+
+
+import pandas as pd
+
+
+
+@app.route('/upload', methods=['GET'])
+def upload_page():
+    return render_template('upload.html')
+
+@app.route('/upload_file', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        flash('Aucun fichier sélectionné.', 'danger')
+        return redirect(url_for('upload_page'))
+
+    file = request.files['file']
+    
+    if file.filename == '':
+        flash('Aucun fichier sélectionné.', 'danger')
+        return redirect(url_for('upload_page'))
+    
+    if file and file.filename.endswith('.xlsx'):
+        try:
+            df = pd.read_excel(file)
+            
+            # Connexion à la base de données
+            conn = cf.create_connection()
+            cursor = conn.cursor()
+            
+            for index, row in df.iterrows():
+                id_valeur = row['ID']
+                commentaires = row['Commentaires']
+                
+                sql = """
+                    UPDATE valeur_indicateur_libelle
+                    SET statut = 'Rejeté', commentaires = %s, date_rejet = NOW()
+                    WHERE id = %s
+                """
+                
+                cursor.execute(sql, (commentaires, id_valeur))
+            
+            conn.commit()
+            cursor.close()
+            conn.close()
+            
+            flash('Fichier importé et données mises à jour avec succès.', 'success')
+        except Exception as e:
+            flash(f"Erreur lors de l'importation du fichier : {str(e)}", 'danger')
+        finally:
+            if conn.is_connected():
+                cursor.close()
+                conn.close()
+    else:
+        flash('Format de fichier non valide. Veuillez télécharger un fichier .xlsx.', 'danger')
+    
+    return redirect(url_for('upload_page'))
+""" 
+********************************Fin de section approbation
+"""
+
+
+
+"""
+*********************************************Debut de section correction
+Cette partie est centrée sur les correction
+"""
+@app.route('/correction', methods=['GET'])
+@login_required
+def correction():
+    conn = cf.create_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    if current_user.role != 'agent':
+        flash('Vous n\'êtes pas autorisé à accéder à cette page.')
+        return redirect(url_for('home'))
+    
+    email_agent = current_user.email
+
+    try:
+        # Récupérer les données avec statut 'Rejeté' pour cet agent
+        cursor.execute("""
+            SELECT * FROM valeur_indicateur_libelle 
+            WHERE statut = 'Rejeté' 
+          """)
+        
+        rows = cursor.fetchall()
+    except Exception as e:
+        flash(f"Erreur lors de la récupération des données : {str(e)}", "danger")
+        rows = []
+    finally:
+        cursor.close()
+        conn.close()
+
+    return render_template('correction.html', rows=rows)
+
+
+@app.route('/submit_correction', methods=['POST'])
+@login_required
+def submit_correction():
+    conn = cf.create_connection()
+    cursor = conn.cursor()
+    id_valeur = request.form.get('id')
+    nom_region = request.form.get('nom_region')
+    nom_departement = request.form.get('nom_departement')
+    nom_sousprefecture = request.form.get('nom_sousprefecture')
+    nom_indicateur = request.form.get('nom_indicateur')
+    valeur_indicateur = request.form.get('valeur_indicateur')
+    commentaires = request.form.get('commentaires')
+
+    try:
+        # Mise à jour des champs modifiés par l'agent
+        cursor.execute("""
+            UPDATE valeur_indicateur_libelle 
+            SET nom_region = %s, nom_departement = %s, nom_sousprefecture = %s, 
+                nom_indicateur = %s, Valeur = %s, commentaires = %s, statut = 'Corrigé'
+            WHERE id = %s
+        """, (nom_region, nom_departement, nom_sousprefecture, nom_indicateur, valeur_indicateur, commentaires, id_valeur))
+
+        conn.commit()
+        flash(f"Correction soumise avec succès pour l'ID {id_valeur}. Elle est en attente d'approbation.", "success")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Erreur lors de la soumission de la correction : {str(e)}", "danger")
+    finally:
+        cursor.close()
+        conn.close()
+
+    return redirect(url_for('correction'))
+
+
+
+
+
+
+""" 
+**********************************************Fin
+"""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

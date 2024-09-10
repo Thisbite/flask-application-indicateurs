@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/correction.css') }}">
+  
+</head>
+<body>
+    <h1>Corriger les données rejetées</h1>
+
+    <div class="correction-forms-wrapper">
+        {% for row in rows %}
+        <div class="correction-form-container" id="form-{{ row.id }}">
+            <div class="correction-form-header" onclick="toggleForm('{{ row.id }}')">
+                ID: {{ row.id }} - Région: {{ row.nom_region }} - Indicateur: {{ row.nom_indicateur }}
+            </div>
+            <div class="correction-form-content">
+                <form action="/submit_correction" method="POST">
+                    <input type="hidden" name="id" value="{{ row.id }}">
+
+                    <label for="nom_region_{{ row.id }}">Nom de la région:</label>
+                    <input type="text" id="nom_region_{{ row.id }}" name="nom_region" value="{{ row.nom_region }}">
+
+                    <label for="nom_departement_{{ row.id }}">Nom du département:</label>
+                    <input type="text" id="nom_departement_{{ row.id }}" name="nom_departement" value="{{ row.nom_departement }}">
+
+                    <label for="nom_sousprefecture_{{ row.id }}">Nom de la sous-préfecture:</label>
+                    <input type="text" id="nom_sousprefecture_{{ row.id }}" name="nom_sousprefecture" value="{{ row.nom_sousprefecture }}">
+
+                    <label for="nom_indicateur_{{ row.id }}">Nom de l'indicateur:</label>
+                    <input type="text" id="nom_indicateur_{{ row.id }}" name="nom_indicateur" value="{{ row.nom_indicateur }}">
+
+                    <label for="valeur_indicateur_{{ row.id }}">Valeur de l'indicateur:</label>
+                    <input type="text" id="valeur_indicateur_{{ row.id }}" name="valeur_indicateur" value="{{ row.Valeur }}">
+
+                    <label for="commentaires_{{ row.id }}">Commentaires:</label>
+                    <textarea id="commentaires_{{ row.id }}" name="commentaires">{{ row.commentaires }}</textarea>
+
+                    <button type="submit" class="submit-correction-btn">Soumettre la correction</button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        function toggleForm(id) {
+            const formContainer = document.getElementById('form-' + id);
+            formContainer.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

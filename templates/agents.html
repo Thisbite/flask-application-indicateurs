@@ -4,8 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agents</title>
+    <style>
+        a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        a:hover {
+            background-color: #0056b3;
+        }
+
+        /* Style spécifique pour la section agents */
+        .button-group {
+            margin-top: 20px;
+        }
+
+        .button-group a {
+            margin-right: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Hello Agent</h1>
+    <h1>Section agents</h1>
+
+    <div class="button-group">
+        <!-- Lien vers le questionnaire -->
+        <a href="{{ url_for('questionnaire') }}">Entamer un questionnaire</a>
+
+        <!-- Nouveau bouton pour la correction -->
+        <a href="{{ url_for('correction') }}" style="background-color: #28a745;">Corriger un questionnaire</a>
+    </div>
 </body>
 </html>
