@@ -26,23 +26,80 @@
     </form>
 
  {% if nom_ind %}
+
+
+
 <div id="duplicate-wrapper" data-nom-ind="{{ nom_ind }}" data-nom-entite="{{ nom_entite }}">
+
     <form action="/submit" method="post" class="form-container">
+        
         <div class="orange-frame">
             <h2>Indicateur: {{ nom_ind }}</h2>
             <h3>{{ id_entite }} : {{ nom_entite }}</h3>
-
             <label for="anne">Saisissez l'année :</label>
             <input type="text" id="anne" name="anne" required>
-
             <input type="text" id="id_indicateur2" name="id_indicateur2" value="{{ id_indicateur }}" hidden>
             <input type="text" id="id_code_entite2" name="id_code_entite2" value="{{ id_code_entite }}" hidden>
 
             <br>
+
+
+
+
+                <!-- Bloc de plusieurs niveaux de choix-->
+                            <!-- Checkbox pour sélectionner "Plusieurs niveaux" -->
+                <label for="multiple_levels">
+                    <input type="checkbox" id="multiple_levels" name="multiple_levels">
+                    Plusieurs niveaux
+                </label>
+
+                <br><br>
+
+                <!-- Bloc caché par défaut -->
+                <div id="multiple_levels_block" class="blue-frame" style="display:none;">
+                    <h2>Choix des options</h2>
+
+                    <!-- Liste déroulante pour Primaire -->
+                    <label for="nom_primaire">Primaire :</label>
+                    <select id="nom_primaire" name="nom_primaire">
+                        <option value="">Sélectionnez</option>
+                        {% for idpri, nom in nom_primaire_A %}
+                        <option value="{{ idpri }}">{{ nom }}</option>
+                        {% endfor %}
+                    </select>
+
+
+                    <!-- Liste déroulante pour Sexe -->
+                    <label for="nom_sexe">Sexe :</label>
+                    <select id="nom_sexe" name="nom_sexe">
+                        <option value="">Sélectionnez</option>
+                        {% for idsex, nom in nom_sexe_A %}
+                        <option value="{{ idsex }}">{{ nom }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <br><br>
+
+                    
+
+                </div>
+
         </div>
         <br>
 
+
+
+
+
+
+
+
+
+
+
+
      {% if nom_groupe_age %}
+     
 <ul class="align-list">
     {% for id, nom in nom_groupe_age %}
     <li>
@@ -477,6 +534,8 @@
     </form>
 </div>
 {% endif %}
+
+
 
     <!-- Affichage des messages flash -->
 {% with messages = get_flashed_messages() %}
@@ -1042,6 +1101,15 @@
 
         return false; // Empêche la soumission immédiate du formulaire
     };
+});
+// JavaScript pour afficher/masquer le bloc "Plusieurs niveaux"
+document.getElementById('multiple_levels').addEventListener('change', function() {
+    var block = document.getElementById('multiple_levels_block');
+    if (this.checked) {
+        block.style.display = 'block';
+    } else {
+        block.style.display = 'none';
+    }
 });
 </script>
 </body>

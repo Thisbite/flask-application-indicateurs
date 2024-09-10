@@ -5,13 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <style>
+        .login-frame {
+            border: 2px solid #4CAF50; /* Couleur de la bordure */
+            padding: 20px;
+            max-width: 400px;
+            margin: 50px auto; /* Centrer le cadre */
+            background-color: #f9f9f9; /* Couleur de fond */
+            border-radius: 10px; /* Coins arrondis */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre autour du cadre */
+        }
+
+        h1 {
+            text-align: center; /* Centrer le titre */
+            color: #333;
+        }
+
+        label, input {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-  
-    <form action="/login" method="post">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-        <button type="submit">Login</button>
-    </form>
+    
+    <!-- Frame pour l'encadré -->
+    <div class="login-frame">
+        <!-- Titre du formulaire -->
+        <h1>Connexion à votre compte</h1>
+
+        <form action="/login" method="post">
+            <label for="email">Email :</label>
+            <input type="email" id="email" name="email" placeholder="Entrez votre email" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
 </body>
 </html>

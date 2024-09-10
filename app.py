@@ -185,6 +185,8 @@ def questionnaire():
     nom_type_de_vulnerabilite = []
     nom_type_de_prise_charge = []
     nom_niveau = []
+    nom_primaire_A = ag.get_niveau_primaire()
+    nom_sexe_A=ag.get_sexes()
     if request.method == 'POST':
         id_indicateur = request.form.get('id_indicateur')
         id_code_entite = request.form.get('id_code_entite')
@@ -289,9 +291,11 @@ def questionnaire():
                 id_indicateur=id_indicateur,
                 nom_groupe_age=nom_groupe_age,
                 nom_sexe=nom_sexe,
+                nom_sexe_A=nom_sexe_A,
                 nom_cycle=nom_cycle,
                 nom_prescolaire=nom_prescolaire,
                 nom_primaire=nom_primaire,
+                nom_primaire_A=nom_primaire_A,
                 nom_secondaire_1er=nom_secondaire_1er,
                 nom_secondaire_2nd=nom_secondaire_2nd,
                 nom_technique=nom_technique,
@@ -657,20 +661,24 @@ import pandas as pd
 def upload_page():
     return render_template('upload.html')
 
+
+
 @app.route('/upload_file', methods=['POST'])
 def upload_file():
-    if 'file' not in request.files:
-        flash('Aucun fichier sélectionné.', 'danger')
-        return redirect(url_for('upload_page'))
+    conn = None
+    cursor = None
+    try:
+        if 'file' not in request.files:
+            flash('Aucun fichier sélectionné.', 'danger')
+            return redirect(url_for('upload_page'))
 
-    file = request.files['file']
-    
-    if file.filename == '':
-        flash('Aucun fichier sélectionné.', 'danger')
-        return redirect(url_for('upload_page'))
-    
-    if file and file.filename.endswith('.xlsx'):
-        try:
+        file = request.files['file']
+        
+        if file.filename == '':
+            flash('Aucun fichier sélectionné.', 'danger')
+            return redirect(url_for('upload_page'))
+        
+        if file and file.filename.endswith('.xlsx'):
             df = pd.read_excel(file)
             
             # Connexion à la base de données
@@ -690,20 +698,22 @@ def upload_file():
                 cursor.execute(sql, (commentaires, id_valeur))
             
             conn.commit()
-            cursor.close()
-            conn.close()
             
             flash('Fichier importé et données mises à jour avec succès.', 'success')
-        except Exception as e:
-            flash(f"Erreur lors de l'importation du fichier : {str(e)}", 'danger')
-        finally:
-            if conn.is_connected():
-                cursor.close()
-                conn.close()
-    else:
-        flash('Format de fichier non valide. Veuillez télécharger un fichier .xlsx.', 'danger')
+        else:
+            flash('Format de fichier non valide. Veuillez télécharger un fichier .xlsx.', 'danger')
+    
+    except Exception as e:
+        flash(f"Erreur lors de l'importation du fichier : {str(e)}", 'danger')
+    
+    finally:
+        if cursor:
+            cursor.close()
+        if conn and conn.is_connected():
+            conn.close()
     
     return redirect(url_for('upload_page'))
+
 """ 
 ********************************Fin de section approbation
 """
