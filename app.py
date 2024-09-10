@@ -3,9 +3,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import os
 import logging
-import mysql.connector
 import config as cf
 import db_queries as ag
+from models import Agent,Administrateur,Superviseur
 
 app = Flask(__name__)
 
@@ -22,9 +22,71 @@ migrate = Migrate(app, db)
 # Configuration du logging
 logging.basicConfig(level=logging.DEBUG)
 cf.fonction_suprression_vide()
+cf.fonction_suprression_vide()
+ag.insert_into_valeur_indicateur_libelle()
+
+
+
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+@login_manager.user_loader
+def load_user(user_id):
+    # Charger l'utilisateur en fonction de l'ID
+    return Agent.query.get(int(user_id)) or Superviseur.query.get(int(user_id)) or Administrateur.query.get(int(user_id))
+
+
+
+
+
+
+
+
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+
+import bcrypt
+from flask import Flask, render_template, request, redirect, url_for, flash, session
+# Dummy function to simulate database retrieval
+def get_user_role_email(user_email, user_password):
+    # Ajoutez ici la logique pour récupérer l'utilisateur depuis la base de données
+    if user_email == 'admin@example.com' and bcrypt.checkpw(user_password.encode('utf-8'), bcrypt.hashpw(b'password', bcrypt.gensalt())):
+        return "Administrateur", "Admin User"
+    return None, None
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        
+        role, user_name = get_user_role_email(email, password)
+        if role:
+            # Stocker des informations dans la session après une connexion réussie
+            session['user_email'] = email
+            session['role'] = role
+            flash(f'Bienvenue {user_name} ({role})', 'success')
+            return redirect(url_for('dashboard'))  # Redirection vers une page protégée
+        else:
+            flash('Email ou mot de passe incorrect', 'danger')
+            return render_template('login.html', error="Email ou mot de passe incorrect")
+
+    return render_template('login.html')
+
+
+
+
+
 
 
 @app.route('/questionnaire', methods=['GET', 'POST'])
+@login_required
 def questionnaire():
 
     nom_entite = ""
@@ -82,9 +144,6 @@ def questionnaire():
             indicator = ag.get_indicators(id_indicateur)
             entite_geog = ag.get_geographical_entity_name(id_code_entite)
             id_desagregation, nom_desagregation = ag.get_niveau_desagregation(id_niveau_desagregation)
-
-
-
             # Logique d'affectation en fonction du niveau de désagrégation
             if id_niveau_desagregation == "1":  # Groupe âge
                 nom_groupe_age = ag.get_groupe_age()
@@ -219,12 +278,15 @@ def questionnaire():
                 nom_niveau=nom_niveau)
     
     
-
+    """
+    Cette section est construite pour l'approbation du questionnaire
+    """
 
 
 
 
 @app.route('/approbation', methods=['GET'])
+@login_required
 def approbation():
     conn = cf.create_connection()
     cursor = conn.cursor(dictionary=True)
@@ -275,37 +337,6 @@ def approve_or_reject():
         conn.close()
 
     return redirect(url_for('approbation'))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -561,6 +592,41 @@ def submit():
 
     # Redirection vers la route d'affichage du formulaire
     return redirect(url_for('questionnaire'))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

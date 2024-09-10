@@ -199,6 +199,48 @@ def get_geographical_entity_name(code_entite):
 
 
 
+import bcrypt  # Utiliser bcrypt pour le hachage des mots de passe (ou une autre librairie sécurisée)
+
+def get_user_role_email(user_email, user_password):
+    try:
+        with cf.create_connection() as conn:
+            cursor = conn.cursor()
+
+            # Recherche dans la table Agent
+            cursor.execute("SELECT nom, password FROM Agent WHERE email = %s", (user_email,))
+            result = cursor.fetchone()
+            if result:
+                
+                if bcrypt.checkpw(user_password.encode('utf-8'), result[1].encode('utf-8')):  # Vérification du mot de passe
+                    return "Agent", result[0]  # Retourne le rôle et le nom
+
+            # Recherche dans la table Superviseur
+            cursor.execute("SELECT nom, password FROM Superviseur WHERE email = %s", (user_email,))
+            result = cursor.fetchone()
+            if result:
+                if bcrypt.checkpw(user_password.encode('utf-8'), result[1].encode('utf-8')):
+                    return "Superviseur", result[0]
+
+            # Recherche dans la table Administrateur
+            cursor.execute("SELECT nom, password FROM Administrateur WHERE email = %s", (user_email,))
+            result = cursor.fetchone()
+            if result:
+                if bcrypt.checkpw(user_password.encode('utf-8'), result[1].encode('utf-8')):
+                    return "Administrateur", result[0]
+
+            return None, None  # Si l'email et le mot de passe ne correspondent pas
+    except mysql.connector.Error as e:
+        print(f"Database error: {e}")
+        return None, None
+    except Exception as e:
+        print(f"Exception in get_user_role_email: {e}")
+        return None, None
+
+
+
+
+
+
 def get_cycle():
     try:
         with cf.create_connection() as conn:
@@ -1077,9 +1119,8 @@ def insert_rejet():
         conn.close()
 
 
-cf.fonction_suprression_vide()
-insert_into_valeur_indicateur_libelle()
-insert_rejet()
+
+#insert_rejet()
 
 
 

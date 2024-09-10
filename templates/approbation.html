@@ -3,17 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Approbation Valeurs Indicateur</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/approbation.css') }}">
+   
 </head>
 <body>
+    
+
     <div class="approval-forms-wrapper">
-        <h1>Approbation des valeurs des indicateurs</h1>
+        <div class="filter-container">
+            <label for="filter-id">Recherche par ID:</label>
+            <input type="text" id="filter-id" placeholder="Saisir l'ID pour filtrer" onkeyup="filterById()">
+        </div>
+
 
         {% for row in rows %}
         <div class="approval-form-container orange-frame" id="form-{{ row.id }}">
             <div class="approval-form-header" onclick="toggleForm('{{ row.id }}')">
-                Questionnaire: {{ row.id }}  <br> Région: {{ row.nom_region }} <br>{{row.nom_indicateur}}
+                ID: {{ row.id }}  <br> Région: {{ row.nom_region }} <br>{{ row.nom_indicateur }}
+                <br>Année: {{ row.Annee }}
             </div>
             <div class="approval-form-content">
                 <form action="/approve_or_reject" method="POST">
@@ -30,6 +37,9 @@
 
                     <label for="nom_indicateur_{{ row.id }}">Nom de l'indicateur:</label>
                     <input type="text" id="nom_indicateur_{{ row.id }}" name="nom_indicateur" value="{{ row.nom_indicateur }}" readonly>
+
+                    <label for="nom_valeur_{{ row.id }}">Valeur indicateur:</label>
+                    <input type="text" id="nom_valeur_{{ row.id }}" name="nom_indicateur" value="{{ row.Valeur }}" readonly>
 
                     <!-- Ajoutez les autres champs ici -->
 
@@ -50,6 +60,20 @@
         function toggleForm(id) {
             const formContainer = document.getElementById('form-' + id);
             formContainer.classList.toggle('active');
+        }
+
+        function filterById() {
+            const filterValue = document.getElementById('filter-id').value.toLowerCase();
+            const forms = document.querySelectorAll('.approval-form-container');
+
+            forms.forEach(form => {
+                const id = form.id.split('-')[1]; // Extrait l'ID du div
+                if (id.includes(filterValue) || filterValue === '') {
+                    form.style.display = 'block'; // Affiche le formulaire
+                } else {
+                    form.style.display = 'none'; // Masque le formulaire
+                }
+            });
         }
     </script>
 

@@ -133,3 +133,11 @@ button[type="submit"].approval-btn-approve:hover {
 button[type="submit"].approval-btn-reject:hover {
     background-color: #c82333; /* Rouge plus foncé au survol */
 }
+
+.filter-container {
+    margin-bottom: 20px;
+}
+.filter-container input {
+    padding: 8px;
+    font-size: 16px;
+}

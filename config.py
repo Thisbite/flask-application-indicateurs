@@ -161,7 +161,7 @@ def fonction_suprression_vide():
         session.execute(supprime_vide)
         session.commit()
 
-        print('Connexion réussie Ok')
+        print('Connexion réussie avec suppression')
 
     except Exception as e:
         print(f"Erreur lors de la connexion: {e}")

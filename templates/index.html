@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page d'accueil</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+</head>
+<body>
+    <!-- Le menu est placé en dehors de la div #content -->
+    <div class="menu">
+        <a href="/questionnaire" onclick="loadContent('questionnaire', '/questionnaire'); return false;">Questionnaire</a>
+        <a href="/approbation" onclick="loadContent('approbation', '/approbation'); return false;">Approbation</a>
+    </div>
+
+    <!-- Seul le contenu central est chargé dynamiquement -->
+    <div class="content" id="content">
+        <h2>Page en developpement...</h2>
+        <p></p>
+    </div>
+
+    <script>
+        function loadContent(page, url) {
+            console.log("Chargement de la page : " + page);
+            const contentDiv = document.getElementById('content');
+            
+            fetch('/' + page)
+                .then(response => {
+                    console.log("Réponse reçue pour la page : " + page);
+                    return response.text();
+                })
+                .then(data => {
+                    console.log("Données chargées pour la page : " + page);
+                    contentDiv.innerHTML = data;
+                    history.pushState(null, '', url); // Met à jour l'URL sans recharger la page
+                    console.log("URL mise à jour : " + url);
+                    
+                    // Exécuter des scripts spécifiques si nécessaire
+                    executePageSpecificScripts(page);
+                })
+                .catch(error => {
+                    console.error("Erreur lors du chargement de la page : " + page);
+                    contentDiv.innerHTML = '<p>Erreur lors du chargement de la page.</p>';
+                });
+        }
+
+        function executePageSpecificScripts(page) {
+            console.log("Exécution des scripts pour la page : " + page);
+            if (page === 'questionnaire') {
+                console.log("Scripts spécifiques à la page questionnaire exécutés.");
+                // Ajoute ici des scripts spécifiques pour la page "questionnaire"
+            } else if (page === 'approbation') {
+                console.log("Scripts spécifiques à la page approbation exécutés.");
+                // Ajoute ici des scripts spécifiques pour la page "approbation"
+            }
+        }
+
+        window.onpopstate = function(event) {
+            const path = window.location.pathname.substring(1); // enlève le '/'
+            console.log("Navigation retour détectée, path : " + path);
+            if (path) {
+                loadContent(path, window.location.pathname);
+            } else {
+                document.getElementById('content').innerHTML = `
+                    <h2>Bienvenue sur la page d'accueil</h2>
+                    <p>Sélectionnez une option dans le menu pour commencer.</p>`;
+            }
+        };
+
+        window.onload = function() {
+            const path = window.location.pathname.substring(1);
+            console.log("Page chargée, path initial : " + path);
+            if (path) {
+                loadContent(path, window.location.pathname);
+            }
+        };
+    </script>
+</body>
+</html>

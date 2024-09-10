@@ -1,0 +1,27 @@
+body {
+    display: flex;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+.menu {
+    width: 200px;
+    background-color: #6a84b1;
+    padding: 15px;
+    height: 100vh;
+}
+.menu a {
+    display: block;
+    padding: 10px;
+    margin-bottom: 10px;
+    text-decoration: none;
+    color: black;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.menu a:hover {
+    background-color: #ccc;
+}
+.content {
+    flex-grow: 1;
+    padding: 20px;
+}
