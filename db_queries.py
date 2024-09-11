@@ -864,7 +864,7 @@ def afficher_valeurs_indicateurs():
 
             TRIM.nom_trimestre,
             TDO.nom_etat_des_ouvrages,
-            TABO.nom_type_abonnnement,
+            TABO.nom_type_abonnement,
             TPSU.nom_type_suivi,
             TVUL.nom_type_de_vulnerabilite,
             TPCH.nom_type_de_prise_charge,
@@ -912,7 +912,7 @@ def afficher_valeurs_indicateurs():
 
         LEFT JOIN Trimestre TRIM ON VI.f_trimestre_id=TRIM.id_trimestre
         LEFT JOIN Etat_des_ouvrages TDO ON VI.f_etat_des_ouvrages_id=TDO.id_etat_des_ouvrages
-        LEFT JOIN Type_abonnement TABO ON VI.f_type_abonnement_id=TABO.id_type_abonnnement
+        LEFT JOIN Type_abonnement TABO ON VI.f_type_abonement_id=TABO.id_type_abonnement
         LEFT JOIN Type_suivi TPSU ON VI.f_type_suivi_id=TPSU.id_type_suivi
         LEFT JOIN Type_de_vulnerabilite  TVUL ON VI.f_type_de_vulnerabilite_id=TVUL.id_type_de_vulnerabilite
         LEFT JOIN Type_de_prise_charge TPCH ON VI.f_type_de_prise_charge_id=TPCH.id_type_de_prise_charge
@@ -991,7 +991,7 @@ def insert_into_valeur_indicateur_libelle():
 
             TRIM.nom_trimestre,
             TDO.nom_etat_des_ouvrages,
-            TABO.nom_type_abonnnement,
+            TABO.nom_type_abonnement,
             TPSU.nom_type_suivi,
             TVUL.nom_type_de_vulnerabilite,
             TPCH.nom_type_de_prise_charge,
@@ -1039,7 +1039,7 @@ def insert_into_valeur_indicateur_libelle():
 
         LEFT JOIN Trimestre TRIM ON VI.f_trimestre_id=TRIM.id_trimestre
         LEFT JOIN Etat_des_ouvrages TDO ON VI.f_etat_des_ouvrages_id=TDO.id_etat_des_ouvrages
-        LEFT JOIN Type_abonnement TABO ON VI.f_type_abonnement_id=TABO.id_type_abonnnement
+        LEFT JOIN Type_abonnement TABO ON VI.f_type_abonnement_id=TABO.id_type_abonnement
         LEFT JOIN Type_suivi TPSU ON VI.f_type_suivi_id=TPSU.id_type_suivi
         LEFT JOIN Type_de_vulnerabilite  TVUL ON VI.f_type_de_vulnerabilite_id=TVUL.id_type_de_vulnerabilite
         LEFT JOIN Type_de_prise_charge TPCH ON VI.f_type_de_prise_charge_id=TPCH.id_type_de_prise_charge
@@ -1063,7 +1063,7 @@ def insert_into_valeur_indicateur_libelle():
         nom_type_infrastructures_sportives, nom_disciplines_sportives, nom_type_infrastructures_culturelles,
         nom_type_patrimoines_culturels_immatériels, nom_type_actions_culturelles_artistiques, nom_type_operateurs_oeuvres_esprit,
         nom_type_groupes_culturels, nom_type_manifestations_culturelles, nom_trimestre, nom_etat_des_ouvrages,
-        nom_type_abonnnement, nom_type_suivi, nom_type_de_vulnerabilite, nom_type_de_prise_charge, nom_niveau
+        nom_type_abonnement, nom_type_suivi, nom_type_de_vulnerabilite, nom_type_de_prise_charge, nom_niveau
     ) VALUES (%s,%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,%s,%s,%s,%s)
     ON DUPLICATE KEY UPDATE
         id = VALUES(id)
