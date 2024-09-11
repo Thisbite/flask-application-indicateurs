@@ -1,56 +1,70 @@
+/* Corps de la page */
 body {
     font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f4f4f4;
 }
 
-h1 {
-    color: #333;
-}
-
-form {
-    background-color: #fff;
+/* Conteneur principal */
+.container {
+    max-width: 600px;
+    margin: 50px auto;
     padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Titre de la page */
+h1 {
+    font-size: 2rem;
+    color: #343a40;
+    margin-bottom: 20px;
+}
+
+/* Style pour les groupes de formulaire */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+/* Style pour le champ de fichier */
 input[type="file"] {
-    margin-bottom: 10px;
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
 }
 
-button {
-    background-color: #007BFF;
+/* Boutons */
+.btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+    background-color: #17a2b8;
     color: white;
     border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    text-align: center;
 }
 
-button:hover {
-    background-color: #0056b3;
+.btn:hover {
+    background-color: #138496;
 }
 
-.flashes {
-    list-style-type: none;
-    padding: 0;
+/* Alertes */
+.alert {
+    margin-top: 20px;
 }
 
-.flashes li {
-    margin: 10px 0;
+/* Ombre pour les éléments */
+.shadow {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.success {
-    color: #28a745;
-}
-
-.danger {
-    color: #dc3545;
+/* Responsive design */
+@media (max-width: 600px) {
+    .container {
+        padding: 15px;
+    }
 }

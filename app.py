@@ -7,6 +7,7 @@ import config as cf
 import db_queries as ag
 from models import Agent,Administrateur,Superviseur
 
+import pandas as pd
 app = Flask(__name__)
 
 # Configuration de la clé secrète pour les sessions Flask
@@ -21,9 +22,6 @@ migrate = Migrate(app, db)
 
 # Configuration du logging
 logging.basicConfig(level=logging.DEBUG)
-cf.fonction_suprression_vide()
-cf.fonction_suprression_vide()
-ag.insert_into_valeur_indicateur_libelle()
 
 
 
@@ -418,8 +416,352 @@ def questionnaire():
                 nom_niveau_A = nom_niveau_A
             )
     
+   
+   
+   
+   
+
+
+
+
+@app.route('/questionnaire_importer', methods=['GET'])
+@login_required
+def upload_questionnaire():
+    return render_template('questionnaire_importer.html')
+
+# Route pour gérer l'importation et l'insertion dans la base de données
+@app.route('/upload_questionnaire', methods=['POST'])
+@login_required
+def handle_upload_questionnaire():
+    conn = None
+    cursor = None
+    try:
+        # Vérification de la présence du fichier
+        if 'file' not in request.files:
+            flash('Aucun fichier sélectionné.', 'danger')
+            return redirect(url_for('upload_questionnaire'))
+
+        file = request.files['file']
+        
+        # Vérification du nom du fichier
+        if file.filename == '':
+            flash('Aucun fichier sélectionné.', 'danger')
+            return redirect(url_for('upload_questionnaire'))
+        
+        # Vérification de l'extension du fichier
+        if file and file.filename.endswith('.xlsx'):
+            try:
+                df = pd.read_excel(file)
+            except Exception as e:
+                flash(f"Erreur lors de la lecture du fichier Excel : {str(e)}", 'danger')
+                print(f'Erreur lors de l\'importation du questionnaire : {str(e)}')
+                return redirect(url_for('upload_questionnaire'))
+            
+            try:
+                # Connexion à la base de données
+                conn = mysql.connect(
+                    host="localhost",
+                    user="root",
+                    password="your_password",
+                    database="your_database"
+                )
+                cursor = conn.cursor()
+
+                # Insertion des données du fichier Excel dans la table
+                for index, row in df.iterrows():
+                    sql = """
+                    INSERT INTO valeur_indicateur_libelle (
+                        id, nom_region, nom_departement, nom_sousprefecture, nom_indicateur, Valeur, Annee, sexe, groupe_age, age,
+                        nom_cycle, nom_prescolaire, nom_primaire, nom_secondaire_1er_cycle, nom_secondaire_2nd_cycle, nom_technique,
+                        nom_superieur, nom_professionnel, nom_type_examen, nom_infrastructures_sanitaires, nom_lieu_accouchement,
+                        nom_etat_vaccinal, nom_types_de_vaccination, nom_pathologie, nom_tranche_age, nom_maladies_du_pev,
+                        nom_maladies_infectieuses, nom_infectieuses_respiratoire, nom_maladies_ist, nom_type_de_maladie, nom_activites_iec, 
+                        nom_service_medicaux, nom_type_infrastructures_sportives, nom_disciplines_sportives, nom_type_infrastructures_culturelles,
+                        nom_type_patrimoines_culturels_immatériels, nom_type_actions_culturelles_artistiques, nom_type_operateurs_oeuvres_esprit,
+                        nom_type_groupes_culturels, nom_type_manifestations_culturelles, nom_trimestre, nom_etat_des_ouvrages,
+                        nom_type_abonnement, nom_type_suivi, nom_type_de_vulnerabilite, nom_type_de_prise_charge, nom_niveau
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    """
+                    data = (
+                        row['ID'], row['Nom région'], row['Nom département'], row['Nom sous-préfecture'], row['Nom indicateur'], row['Valeur'], 
+                        row['Année'], row['Sexe'], row['Groupe age'], row['Âge'], row['Nom cycle'], row['Nom préscolaire'], row['Nom primaire'],
+                        row['Nom secondaire 1er cycle'], row['Nom secondaire 2nd cycle'], row['Nom technique'], row['Nom supérieur'], 
+                        row['Nom professionnel'], row['Nom type examen'], row['Nom infrastructures sanitaires'], row['Nom lieu accouchement'], 
+                        row['Nom état vaccinal'], row['Nom types de vaccination'], row['Nom pathologie'], row['Nom tranche âge'], 
+                        row['Nom maladies du PEV'], row['Nom maladies infectieuses'], row['Nom infectieuses respiratoire'], 
+                        row['Nom maladies IST'], row['Nom type de maladie'], row['Nom activités IEC'], row['Nom services médicaux'], 
+                        row['Nom type infrastructures sportives'], row['Nom disciplines sportives'], row['Nom type infrastructures culturelles'], 
+                        row['Nom patrimoines culturels immatériels'], row['Nom actions culturelles artistiques'], 
+                        row['Nom opérateurs œuvres esprit'], row['Nom groupes culturels'], row['Nom manifestations culturelles'], 
+                        row['Nom trimestre'], row['Nom état des ouvrages'], row['Nom type abonnement'], row['Nom suivi'], 
+                        row['Nom vulnérabilité'], row['Nom prise en charge'], row['Nom niveau']
+                    )
+                    cursor.execute(sql, data)
+
+                conn.commit()
+                flash('Données importées et insérées avec succès.', 'success')
+            except Exception as e:
+                flash(f"Erreur lors de l'insertion des données : {str(e)}", 'danger')
+            finally:
+                if conn:
+                    conn.close()
+        else:
+            flash('Format de fichier non valide. Veuillez télécharger un fichier .xlsx.', 'danger')
+
+    except Exception as e:
+        flash(f"Erreur générale lors de l'importation du fichier : {str(e)}", 'danger')
+    
+    return redirect(url_for('upload_questionnaire'))
+ 
+""" 
+Fin section questionnaire
+"""
+
+
+
     
     
+"""
+############################Fin de section questionnaire
+"""
+
+
+
+""" 
+************************************************Début de section approbation
+
+"""
+@app.route('/approbation', methods=['GET'])
+@login_required
+def approbation():
+    conn = cf.create_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        # Récupérer les données de la table 'valeur_indicateur_libelle' où le statut est 'Non approuvé'
+        cursor.execute("SELECT * FROM valeur_indicateur_libelle WHERE statut = 'Non approuvé'")
+        rows = cursor.fetchall()
+    except Exception as e:
+        flash(f"Erreur lors de la récupération des données : {str(e)}", "danger")
+        rows = []
+    finally:
+        cursor.close()
+        conn.close()
+
+    return render_template('approbation.html', rows=rows)
+
+@app.route('/approve_or_reject', methods=['POST'])
+def approve_or_reject():
+    conn = cf.create_connection()
+    cursor = conn.cursor()
+    id_valeur = request.form.get('id')
+    action = request.form.get('action')
+    commentaires = request.form.get('commentaires', '')
+
+    try:
+        if action == 'Approuver':
+            # Mise à jour du statut à 'Approuvé'
+            cursor.execute("UPDATE valeur_indicateur_libelle SET statut = 'Approuvé' WHERE id = %s", (id_valeur,))
+            flash(f"Valeur ID {id_valeur} approuvée avec succès", "success")
+        elif action == 'Rejeter':
+            # Mise à jour du statut à 'Rejeté' avec commentaires et date de rejet
+            cursor.execute("""
+                UPDATE valeur_indicateur_libelle 
+                SET statut = 'Rejeté', commentaires = %s, date_rejet = NOW() 
+                WHERE id = %s
+            """, (commentaires, id_valeur))
+            flash(f"Valeur ID {id_valeur} rejetée avec succès", "success")
+        else:
+            flash("Action non reconnue", "danger")
+
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        flash(f"Erreur lors de la mise à jour : {str(e)}", "danger")
+    finally:
+        cursor.close()
+        conn.close()
+
+    return redirect(url_for('approbation'))
+
+
+
+
+
+
+@app.route('/upload', methods=['GET'])
+@login_required
+def upload_page():
+    return render_template('upload.html')
+
+
+
+@app.route('/upload_file', methods=['POST'])
+@login_required
+def upload_file():
+    conn = None
+    cursor = None
+    try:
+        # Vérification de la présence du fichier
+        if 'file' not in request.files:
+            flash('Aucun fichier sélectionné.', 'danger')
+            return redirect(url_for('upload_page'))
+
+        file = request.files['file']
+        
+        # Vérification du nom du fichier
+        if file.filename == '':
+            flash('Aucun fichier sélectionné.', 'danger')
+            return redirect(url_for('upload_page'))
+        
+        # Vérification de l'extension du fichier
+        if file and file.filename.endswith('.xlsx'):
+            try:
+                df = pd.read_excel(file)
+            except Exception as e:
+                flash(f"Erreur lors de la lecture du fichier Excel : {str(e)}", 'danger')
+                print(f"Erreur lors de la lecture du fichier : {str(e)}")  # Affiche l'erreur dans la console
+                return redirect(url_for('upload_page'))
+            
+            try:
+                # Connexion à la base de données
+                conn = cf.create_connection()
+                cursor = conn.cursor()
+
+                # Parcours des lignes du fichier et mise à jour des données
+                for index, row in df.iterrows():
+                    id_valeur = row['ID']
+                    commentaires = row['Commentaires']
+                    
+                    sql = """
+                        UPDATE valeur_indicateur_libelle
+                        SET statut = 'Rejeté', commentaires = %s, date_rejet = NOW()
+                        WHERE id = %s
+                    """
+                    cursor.execute(sql, (commentaires, id_valeur))
+
+                conn.commit()
+                flash('Fichier importé et données mises à jour avec succès.', 'success')
+                print('Insertion des importations de rejetées ok')
+            except Exception as e:
+                flash(f"Erreur lors de la mise à jour des données : {str(e)}", 'danger')
+                print(f"Erreur lors de la mise à jour des données : {str(e)}")  # Affiche l'erreur dans la console
+            finally:
+                if conn:
+                    conn.close()
+        else:
+            flash('Format de fichier non valide. Veuillez télécharger un fichier .xlsx.', 'danger')
+
+    except Exception as e:
+        flash(f"Erreur générale lors de l'importation du fichier : {str(e)}", 'danger')
+        print(f"Erreur générale lors de l'importation : {str(e)}")  # Affiche l'erreur générale dans la console
+    
+    finally:
+        pass
+    
+
+    
+    return redirect(url_for('upload_page'))
+
+""" 
+********************************Fin de section approbation
+"""
+
+
+
+"""
+*********************************************Debut de section correction
+Cette partie est centrée sur les correction
+"""
+@app.route('/correction', methods=['GET'])
+@login_required
+def correction():
+    conn = cf.create_connection()
+    cursor = conn.cursor(dictionary=True)
+    
+    if current_user.role != 'agent':
+        flash('Vous n\'êtes pas autorisé à accéder à cette page.')
+        return redirect(url_for('home'))
+    
+    email_agent = current_user.email
+
+    try:
+        # Récupérer les données avec statut 'Rejeté' pour cet agent
+        cursor.execute("""
+            SELECT * FROM valeur_indicateur_libelle 
+            WHERE statut = 'Rejeté' 
+          """)
+        
+        rows = cursor.fetchall()
+    except Exception as e:
+        flash(f"Erreur lors de la récupération des données : {str(e)}", "danger")
+        rows = []
+    finally:
+        cursor.close()
+        conn.close()
+
+    return render_template('correction.html', rows=rows)
+
+
+@app.route('/submit_correction', methods=['POST'])
+@login_required
+def submit_correction():
+    conn = cf.create_connection()
+    cursor = conn.cursor()
+    id_valeur = request.form.get('id')
+    nom_region = request.form.get('nom_region')
+    nom_departement = request.form.get('nom_departement')
+    nom_sousprefecture = request.form.get('nom_sousprefecture')
+    nom_indicateur = request.form.get('nom_indicateur')
+    valeur_indicateur = request.form.get('valeur_indicateur')
+    commentaires = request.form.get('commentaires')
+
+    try:
+        # Mise à jour des champs modifiés par l'agent
+        cursor.execute("""
+            UPDATE valeur_indicateur_libelle 
+            SET nom_region = %s, nom_departement = %s, nom_sousprefecture = %s, 
+                nom_indicateur = %s, Valeur = %s, commentaires = %s, statut = 'Corrigé'
+            WHERE id = %s
+        """, (nom_region, nom_departement, nom_sousprefecture, nom_indicateur, valeur_indicateur, commentaires, id_valeur))
+
+        conn.commit()
+        flash(f"Correction soumise avec succès pour l'ID {id_valeur}. Elle est en attente d'approbation.", "success")
+    except Exception as e:
+        conn.rollback()
+        flash(f"Erreur lors de la soumission de la correction : {str(e)}", "danger")
+    finally:
+        cursor.close()
+        conn.close()
+
+    return redirect(url_for('correction'))
+
+
+
+
+
+
+""" 
+**********************************************Fin
+"""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 unique_key=None
@@ -716,234 +1058,6 @@ def submit():
 
     # Redirection vers la route d'affichage du formulaire
     return redirect(url_for('questionnaire'))
-
-    
-    
-"""
-############################Fin de section questionnaire
-"""
-
-
-
-""" 
-************************************************Début de section approbation
-
-"""
-@app.route('/approbation', methods=['GET'])
-@login_required
-def approbation():
-    conn = cf.create_connection()
-    cursor = conn.cursor(dictionary=True)
-
-    try:
-        # Récupérer les données de la table 'valeur_indicateur_libelle' où le statut est 'Non approuvé'
-        cursor.execute("SELECT * FROM valeur_indicateur_libelle WHERE statut = 'Non approuvé'")
-        rows = cursor.fetchall()
-    except Exception as e:
-        flash(f"Erreur lors de la récupération des données : {str(e)}", "danger")
-        rows = []
-    finally:
-        cursor.close()
-        conn.close()
-
-    return render_template('approbation.html', rows=rows)
-
-@app.route('/approve_or_reject', methods=['POST'])
-def approve_or_reject():
-    conn = cf.create_connection()
-    cursor = conn.cursor()
-    id_valeur = request.form.get('id')
-    action = request.form.get('action')
-    commentaires = request.form.get('commentaires', '')
-
-    try:
-        if action == 'Approuver':
-            # Mise à jour du statut à 'Approuvé'
-            cursor.execute("UPDATE valeur_indicateur_libelle SET statut = 'Approuvé' WHERE id = %s", (id_valeur,))
-            flash(f"Valeur ID {id_valeur} approuvée avec succès", "success")
-        elif action == 'Rejeter':
-            # Mise à jour du statut à 'Rejeté' avec commentaires et date de rejet
-            cursor.execute("""
-                UPDATE valeur_indicateur_libelle 
-                SET statut = 'Rejeté', commentaires = %s, date_rejet = NOW() 
-                WHERE id = %s
-            """, (commentaires, id_valeur))
-            flash(f"Valeur ID {id_valeur} rejetée avec succès", "success")
-        else:
-            flash("Action non reconnue", "danger")
-
-        conn.commit()
-    except Exception as e:
-        conn.rollback()
-        flash(f"Erreur lors de la mise à jour : {str(e)}", "danger")
-    finally:
-        cursor.close()
-        conn.close()
-
-    return redirect(url_for('approbation'))
-
-
-
-import pandas as pd
-
-
-
-@app.route('/upload', methods=['GET'])
-def upload_page():
-    return render_template('upload.html')
-
-
-
-@app.route('/upload_file', methods=['POST'])
-def upload_file():
-    conn = None
-    cursor = None
-    try:
-        if 'file' not in request.files:
-            flash('Aucun fichier sélectionné.', 'danger')
-            return redirect(url_for('upload_page'))
-
-        file = request.files['file']
-        
-        if file.filename == '':
-            flash('Aucun fichier sélectionné.', 'danger')
-            return redirect(url_for('upload_page'))
-        
-        if file and file.filename.endswith('.xlsx'):
-            df = pd.read_excel(file)
-            
-            # Connexion à la base de données
-            conn = cf.create_connection()
-            cursor = conn.cursor()
-            
-            for index, row in df.iterrows():
-                id_valeur = row['ID']
-                commentaires = row['Commentaires']
-                
-                sql = """
-                    UPDATE valeur_indicateur_libelle
-                    SET statut = 'Rejeté', commentaires = %s, date_rejet = NOW()
-                    WHERE id = %s
-                """
-                
-                cursor.execute(sql, (commentaires, id_valeur))
-            
-            conn.commit()
-            
-            flash('Fichier importé et données mises à jour avec succès.', 'success')
-        else:
-            flash('Format de fichier non valide. Veuillez télécharger un fichier .xlsx.', 'danger')
-    
-    except Exception as e:
-        flash(f"Erreur lors de l'importation du fichier : {str(e)}", 'danger')
-    
-    finally:
-        if cursor:
-            cursor.close()
-        if conn and conn.is_connected():
-            conn.close()
-    
-    return redirect(url_for('upload_page'))
-
-""" 
-********************************Fin de section approbation
-"""
-
-
-
-"""
-*********************************************Debut de section correction
-Cette partie est centrée sur les correction
-"""
-@app.route('/correction', methods=['GET'])
-@login_required
-def correction():
-    conn = cf.create_connection()
-    cursor = conn.cursor(dictionary=True)
-    
-    if current_user.role != 'agent':
-        flash('Vous n\'êtes pas autorisé à accéder à cette page.')
-        return redirect(url_for('home'))
-    
-    email_agent = current_user.email
-
-    try:
-        # Récupérer les données avec statut 'Rejeté' pour cet agent
-        cursor.execute("""
-            SELECT * FROM valeur_indicateur_libelle 
-            WHERE statut = 'Rejeté' 
-          """)
-        
-        rows = cursor.fetchall()
-    except Exception as e:
-        flash(f"Erreur lors de la récupération des données : {str(e)}", "danger")
-        rows = []
-    finally:
-        cursor.close()
-        conn.close()
-
-    return render_template('correction.html', rows=rows)
-
-
-@app.route('/submit_correction', methods=['POST'])
-@login_required
-def submit_correction():
-    conn = cf.create_connection()
-    cursor = conn.cursor()
-    id_valeur = request.form.get('id')
-    nom_region = request.form.get('nom_region')
-    nom_departement = request.form.get('nom_departement')
-    nom_sousprefecture = request.form.get('nom_sousprefecture')
-    nom_indicateur = request.form.get('nom_indicateur')
-    valeur_indicateur = request.form.get('valeur_indicateur')
-    commentaires = request.form.get('commentaires')
-
-    try:
-        # Mise à jour des champs modifiés par l'agent
-        cursor.execute("""
-            UPDATE valeur_indicateur_libelle 
-            SET nom_region = %s, nom_departement = %s, nom_sousprefecture = %s, 
-                nom_indicateur = %s, Valeur = %s, commentaires = %s, statut = 'Corrigé'
-            WHERE id = %s
-        """, (nom_region, nom_departement, nom_sousprefecture, nom_indicateur, valeur_indicateur, commentaires, id_valeur))
-
-        conn.commit()
-        flash(f"Correction soumise avec succès pour l'ID {id_valeur}. Elle est en attente d'approbation.", "success")
-    except Exception as e:
-        conn.rollback()
-        flash(f"Erreur lors de la soumission de la correction : {str(e)}", "danger")
-    finally:
-        cursor.close()
-        conn.close()
-
-    return redirect(url_for('correction'))
-
-
-
-
-
-
-""" 
-**********************************************Fin
-"""
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

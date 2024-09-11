@@ -32,14 +32,14 @@
     </style>
 </head>
 <body>
-    <h1>Section agents</h1>
-
     <div class="button-group">
         <!-- Lien vers le questionnaire -->
         <a href="{{ url_for('questionnaire') }}">Entamer un questionnaire</a>
 
         <!-- Nouveau bouton pour la correction -->
         <a href="{{ url_for('correction') }}" style="background-color: #28a745;">Corriger un questionnaire</a>
+         <!-- Nouveau bouton pour -->
+         <a href="{{ url_for('upload_questionnaire') }}" style="background-color:blue;">Importer le questionnaire</a>
     </div>
 </body>
 </html>

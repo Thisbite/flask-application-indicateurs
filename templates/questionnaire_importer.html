@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Importer des données</title>
+    
+    <!-- Lien vers votre propre fichier CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='questionnaire_importer.css') }}">
+
+    <!-- Ajout d'un CDN Bootstrap si vous souhaitez utiliser Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Importer des données pour les indicateurs</h1>
+        
+        <!-- Formulaire d'importation -->
+        <form action="{{ url_for('upload_questionnaire') }}" method="POST" enctype="multipart/form-data" class="shadow p-4 rounded bg-light">
+            <div class="form-group">
+                <label for="file">Sélectionnez un fichier Excel (.xlsx) :</label>
+                <input type="file" id="file" name="file" class="form-control" accept=".xlsx" required>
+            </div>
+
+            <!-- Bouton d'importation -->
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Importer</button>
+            </div>
+        </form>
+        
+        <!-- Affichage des messages flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="mt-4">
+              {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Script Bootstrap si nécessaire -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

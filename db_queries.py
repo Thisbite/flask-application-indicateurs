@@ -48,7 +48,7 @@ def get_sexes():
     try:
         with cf.create_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT sexe_id, sexe FROM Sexe ORDER BY sexe_id DESC")
+            cursor.execute("SELECT sexe_id, sexe FROM Sexe ")
             sexes = cursor.fetchall()
     except mysql.connector.Error as e:
         print(f"Database error: {e}")
@@ -1082,6 +1082,7 @@ def insert_into_valeur_indicateur_libelle():
 
     conn.commit()
     cursor.close()
+    print('Insertion pour libellé indicateur ok')
     conn.close()
 
 
@@ -1119,6 +1120,10 @@ def insert_rejet():
         conn.close()
 
 
+
+cf.fonction_suprression_vide()
+cf.fonction_suprression_vide()
+insert_into_valeur_indicateur_libelle()
 
 #insert_rejet()
 

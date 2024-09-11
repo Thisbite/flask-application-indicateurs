@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Superviseurs</title>
     <style>
-        a {
+        .btn {
             display: inline-block;
             padding: 10px 20px;
-            background-color: #28a745;
             color: white;
             text-decoration: none;
             border-radius: 5px;
@@ -17,16 +16,30 @@
             transition: background-color 0.3s ease;
         }
 
-        a:hover {
-            background-color: #218838;
+        .btn-blue {
+            background-color: #007bff; /* Bleu pour le premier bouton */
+        }
+
+        .btn-blue:hover {
+            background-color: #0056b3; /* Bleu plus foncé au survol */
+        }
+
+        .btn-green {
+            background-color: #28a745; /* Vert pour le deuxième bouton */
+        }
+
+        .btn-green:hover {
+            background-color: #218838; /* Vert plus foncé au survol */
         }
     </style>
 </head>
 <body>
  
     <!-- Lien vers la page d'approbation -->
-    <a href="{{ url_for('approbation') }}">Accéder à l'approbation</a>
-     <!-- Lien vers la page d'upload de fichier -->
-     <a href="{{ url_for('upload_page') }}">Importer fichier de rejets</a>
+    <a href="{{ url_for('approbation') }}" class="btn btn-blue">Accéder à l'approbation</a>
+    
+    <!-- Lien vers la page d'upload de fichier -->
+    <a href="{{ url_for('upload_page') }}" class="btn btn-green">Importer fichier de rejets</a>
+
 </body>
 </html>
