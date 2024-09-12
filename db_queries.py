@@ -580,7 +580,7 @@ def get_type_infrastructures_ou_organisations_sportives():
         with cf.create_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT id_type_infrastructures_ou_organisations_sportives, nom_type_infrastructures_ou_organisations_sportives FROM Type_infrastructures_ou_organisations_sportives")
+                "SELECT id_type_infrastructures_sportives, nom_type_infrastructures_sportives FROM Type_infrastructures_ou_organisations_sportives")
             types_infrastructures_ou_organisations_sportives = cursor.fetchall()
     except Error as e:
         print(f"Database error: {e}")
@@ -627,7 +627,7 @@ def get_type_de_patrimoines_culturels_immateriels():
         with cf.create_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT id_type_de_patrimoines_culturels_immatériels, nom_type_de_patrimoines_culturels_immatériels FROM Type_de_Patrimoines_culturels_immatériels")
+                "SELECT id_type_patrimoines_culturels_immatériels, nom_type_patrimoines_culturels_immatériels FROM Type_de_Patrimoines_culturels_immatériels")
             types_patrimoines_culturels_immatériels = cursor.fetchall()
     except Error as e:
         print(f"Database error: {e}")
@@ -643,7 +643,7 @@ def get_type_actions_culturelles_et_artistiques():
         with cf.create_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(
-                "SELECT id_type_actions_culturelles_et_artistiques, nom_type_actions_culturelles_et_artistiques FROM Type_actions_culturelles_et_artistiques")
+                "SELECT id_type_actions_culturelles_artistiques, nom_type_actions_culturelles_artistiques FROM Type_actions_culturelles_et_artistiques")
             types_actions_culturelles_et_artistiques = cursor.fetchall()
     except Error as e:
         print(f"Database error: {e}")

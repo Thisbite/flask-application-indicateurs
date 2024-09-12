@@ -11,7 +11,7 @@
 
 var selectGroupeAge = document.querySelector('select[name="nom_groupe_age"]');
 var selectedOptionGroupeAge = selectGroupeAge.options[selectGroupeAge.selectedIndex];
-var nomGroupeAge = selectedOptionGroupeAge.textContent;  // Récupère le nom pour l'afficher
+var nomGroupeAge = selectedOptionGroupeAge.getAttribute('data-nom');  // Récupère le nom pour l'afficher
 if (nomGroupeAge) {
     desagregations.push("Groupe d'âge: " + nomGroupeAge);
 }
@@ -25,21 +25,21 @@ if (nomCycle) {
 
 var selectPrescolaire = document.querySelector('select[name="nom_prescolaire"]');
 var selectedOptionPrescolaire = selectPrescolaire.options[selectPrescolaire.selectedIndex];
-var nomPrescolaire = selectedOptionPrescolaire.textContent; // Récupère le nom pour l'afficher
+var nomPrescolaire = selectedOptionPrescolaire.getAttribute('data-nom'); // Récupère le nom pour l'afficher
 if (nomPrescolaire) {
     desagregations.push("Prescolaire: " + nomPrescolaire);
 }
 
 var selectPrimaire = document.querySelector('select[name="nom_primaire"]');
 var selectedOptionPrimaire = selectPrimaire.options[selectPrimaire.selectedIndex];
-var nomPrimaire = selectedOptionPrimaire.textContent; // Récupère le nom pour l'afficher
+var nomPrimaire = selectedOptionPrimaire.getAttribute('data-nom'); // Récupère le nom pour l'afficher
 if (nomPrimaire) {
     desagregations.push("Primaire: " + nomPrimaire);
 }
 
 var selectSecondaire1er = document.querySelector('select[name="nom_secondaire_1er"]');
 var selectedOptionSecondaire1er = selectSecondaire1er.options[selectSecondaire1er.selectedIndex];
-var nomSecondaire1er = selectedOptionSecondaire1er.textContent; // Récupère le nom pour l'afficher
+var nomSecondaire1er = selectedOptionSecondaire1er.getAttribute('data-nom'); // Récupère le nom pour l'afficher
 if (nomSecondaire1er) {
     desagregations.push("Secondaire 1er Cycle: " + nomSecondaire1er);
 }
