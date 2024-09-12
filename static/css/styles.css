@@ -320,7 +320,7 @@ button[type="submit"]:hover,
     margin: 20px 0;
     border-radius: 10px;
     background-color: #f0f8ff;
-    width: 300px;
+    width: flex;
 }
 
 h2 {
@@ -339,6 +339,32 @@ select {
     padding: 5px;
     margin-top: 10px;
     margin-bottom: 10px;
+}
+
+
+/* Styles de la liste alignée */
+.align-list2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.align-list2 li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9; /* Fond léger pour les items */
+    transition: background-color 0.3s ease; /* Animation sur le changement de fond */
+}
+
+.align-list2 li:hover {
+    background-color: #e6f2ff; /* Fond bleu clair au survol */
 }
 
 
