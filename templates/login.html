@@ -56,5 +56,17 @@
         </form>
     </div>
 
+    <script>
+        // Récupération des messages flash injectés par Flask
+        var flashMessages = {{ get_flashed_messages()|tojson }};
+        
+        // Si des messages existent, on les affiche en alert
+        if (flashMessages.length > 0) {
+            flashMessages.forEach(function(message) {
+                alert(message);  // Affichage via un alert simple
+            });
+        }
+    </script>
+
 </body>
 </html>

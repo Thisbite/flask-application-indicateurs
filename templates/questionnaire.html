@@ -9,8 +9,6 @@
 <body>
 <div id="form-wrapper">
 
-
-    
     <!-- Formulaire de recherche -->
     <form action="/questionnaire" method="post" class="form-container2" onsubmit="saveFormData()">
         <label for="id_indicateur">Entrez le code indicateur :</label>
@@ -19,519 +17,69 @@
         <label for="id_code_entite">Code entité géographique :</label>
         <input type="text" id="id_code_entite" name="id_code_entite" required>
 
-        <label for="id_niveau_desagregation">Code du niveau de désagrégation :</label>
-        <input type="text" id="id_niveau_desagregation" name="id_niveau_desagregation" required>
 
         <button type="submit">Recherche</button>
     </form>
 
  {% if nom_ind %}
 
-
-
 <div id="duplicate-wrapper" data-nom-ind="{{ nom_ind }}" data-nom-entite="{{ nom_entite }}">
 
-    <form action="/submit" method="post" class="form-container">
+    <form action="/submit" method="post" class="form-container-test">
         
         <div class="orange-frame">
             <h2>Indicateur: {{ nom_ind }}</h2>
             <h3>{{ id_entite }} : {{ nom_entite }}</h3>
+            
             <label for="anne">Saisissez l'année :</label>
             <input type="text" id="anne" name="anne" required>
-            <input type="text" id="id_indicateur2" name="id_indicateur2" value="{{ id_indicateur }}" hidden>
-            <input type="text" id="id_code_entite2" name="id_code_entite2" value="{{ id_code_entite }}" hidden>
-
+            
             <br>
-
-
-
-
-<!-- Bloc de plusieurs niveaux de choix-->
-                 <!-- Checkbox pour sélectionner "Plusieurs niveaux" -->
-                <label for="multiple_levels">
-                    <input type="checkbox" id="multiple_levels" name="multiple_levels">
-                    Plusieurs niveaux
-                </label>
-
-                <br><br>
-
-                <!-- Bloc caché par défaut -->
-                <div id="multiple_levels_block" class="blue-frame" style="display:none;">
-                    <h2>Autres niveaux de desagrégations</h2>
-
-                    <ul class="align-list2">
-
-
-
-                    <!-- Liste déroulante pour Sexe -->
-                    <li>
-                    <label for="nom_sexe">Sexe :</label>
-                    <select id="nom_sexe" name="nom_sexe">
-                        <option value="">Sélectionnez</option>
-                        {% for idsex, nom in nom_sexe_A %}
-                        <option value="{{ idsex }}" data-nom="{{nom}}">{{ nom }}</option>
-                        {% endfor %}
-                    </select>
-                </li>
-                    <!-- Liste déroulante pour Groupe d'âge -->
-                    <li>
-                        <label for="nom_groupe_age">Groupe d'âge :</label>
-                        <select id="nom_groupe_age" name="nom_groupe_age">
-                            <option value="">Sélectionnez</option>
-                            {% for idage, nom in nom_groupe_age_A %}
-                            <option value="{{ idage }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Cycle -->
-                        <li>
-                        <label for="nom_cycle">Cycle :</label>
-                        <select id="nom_cycle" name="nom_cycle">
-                            <option value="">Sélectionnez</option>
-                            {% for idcycle, nom in nom_cycle_A %}
-                            <option value="{{ idcycle }}" data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Prescolaire -->
-                        <li>
-                        <label for="nom_prescolaire">Prescolaire :</label>
-                        <select id="nom_prescolaire" name="nom_prescolaire">
-                            <option value="">Sélectionnez</option>
-                            {% for idpres, nom in nom_prescolaire_A %}
-                            <option value="{{ idpres }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Primaire -->
-                        <li>
-                        <label for="nom_primaire">Primaire :</label>
-                        <select id="nom_primaire" name="nom_primaire">
-                            <option value="">Sélectionnez</option>
-                            {% for idpri, nom in nom_primaire_A %}
-                            <option value="{{ idpri }}" data-nom="{{nom}}"> {{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Secondaire 1er Cycle -->
-                        <li>
-                        <label for="nom_secondaire_1er">Secondaire 1er Cycle :</label>
-                        <select id="nom_secondaire_1er" name="nom_secondaire_1er">
-                            <option value="">Sélectionnez</option>
-                            {% for idsec1, nom in nom_secondaire_1er_A %}
-                            <option value="{{ idsec1 }}" data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Secondaire 2nd Cycle -->
-                        <li>
-                        <label for="nom_secondaire_2nd">Secondaire 2nd Cycle :</label>
-                        <select id="nom_secondaire_2nd" name="nom_secondaire_2nd">
-                            <option value="">Sélectionnez</option>
-                            {% for idsec2, nom in nom_secondaire_2nd_A %}
-                            <option value="{{ idsec2 }}" data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Technique -->
-                        <li>
-                        <label for="nom_technique">Technique :</label>
-                        <select id="nom_technique" name="nom_technique">
-                            <option value="">Sélectionnez</option>
-                            {% for idtech, nom in nom_technique_A %}
-                            <option value="{{ idtech }}" data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Supérieur -->
-                        <li>
-                        <label for="nom_superieur">Supérieur :</label>
-                        <select id="nom_superieur" name="nom_superieur">
-                            <option value="">Sélectionnez</option>
-                            {% for idsup, nom in nom_superieur_A %}
-                            <option value="{{ idsup }}" data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Professionnel -->
-                        <li>
-                        <label for="nom_professionnel">Professionnel :</label>
-                        <select id="nom_professionnel" name="nom_professionnel">
-                            <option value="">Sélectionnez</option>
-                            {% for idprof, nom in nom_professionnel_A %}
-                            <option value="{{ idprof }}" data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Type d'examen scolaire -->
-                        <li>
-                        <label for="nom_type_examen_scolaire">Type d'examen scolaire :</label>
-                        <select id="nom_type_examen_scolaire" name="nom_type_examen_scolaire">
-                            <option value="">Sélectionnez</option>
-                            {% for idexam, nom in nom_type_examen_scolaire_A %}
-                            <option value="{{ idexam }}" data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Infrastructure sanitaire -->
-                        <li>
-                        <label for="nom_infrastructure_sanitaire">Infrastructure sanitaire :</label>
-                        <select id="nom_infrastructure_sanitaire" name="nom_infrastructure_sanitaire">
-                            <option value="">Sélectionnez</option>
-                            {% for idinfra, nom in nom_infrastructure_sanitaire_A %}
-                            <option value="{{ idinfra }}" data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Lieu d'accouchement -->
-                        <li>
-                        <label for="nom_lieu_accouchement">Lieu d'accouchement :</label>
-                        <select id="nom_lieu_accouchement" name="nom_lieu_accouchement">
-                            <option value="">Sélectionnez</option>
-                            {% for idlieu, nom in nom_lieu_accouchement_A %}
-                            <option value="{{ idlieu }}" data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour État vaccinal -->
-                        <li>
-                        <label for="nom_etat_vaccinal">État vaccinal :</label>
-                        <select id="nom_etat_vaccinal" name="nom_etat_vaccinal">
-                            <option value="">Sélectionnez</option>
-                            {% for idetat, nom in nom_etat_vaccinal_A %}
-                            <option value="{{ idetat }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Type de vaccination -->
-                        <li>
-                        <label for="nom_type_vaccination">Type de vaccination :</label>
-                        <select id="nom_type_vaccination" name="nom_type_vaccination">
-                            <option value="">Sélectionnez</option>
-                            {% for idvacc, nom in nom_type_vaccination_A %}
-                            <option value="{{ idvacc }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Pathologie -->
-                        <li>
-                        <label for="nom_pathologie">Pathologie :</label>
-                        <select id="nom_pathologie" name="nom_pathologie">
-                            <option value="">Sélectionnez</option>
-                            {% for idpath, nom in nom_pathologie_A %}
-                            <option value="{{ idpath }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Tranche d'âge -->
-                        <li>
-                        <label for="nom_tranche_age">Tranche d'âge :</label>
-                        <select id="nom_tranche_age" name="nom_tranche_age">
-                            <option value="">Sélectionnez</option>
-                            {% for idtranche, nom in nom_tranche_age_A %}
-                            <option value="{{ idtranche }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Maladies du PEV -->
-                        <li>
-                        <label for="nom_maladie_pev">Maladies du PEV :</label>
-                        <select id="nom_maladie_pev" name="nom_maladie_pev">
-                            <option value="">Sélectionnez</option>
-                            {% for idpev, nom in nom_maladie_pev_A %}
-                            <option value="{{ idpev }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Maladies infectieuses -->
-                        <li>
-                        <label for="nom_maladie_infectieuse">Maladies infectieuses :</label>
-                        <select id="nom_maladie_infectieuse" name="nom_maladie_infectieuse">
-                            <option value="">Sélectionnez</option>
-                            {% for idinfect, nom in nom_maladie_infectieuse_A %}
-                            <option value="{{ idinfect }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Infection respiratoire -->
-                        <li>
-                        <label for="nom_infection_respiratoire">Infection respiratoire :</label>
-                        <select id="nom_infection_respiratoire" name="nom_infection_respiratoire">
-                            <option value="">Sélectionnez</option>
-                            {% for idinfresp, nom in nom_infection_respiratoire_A %}
-                            <option value="{{ idinfresp }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Maladies IST -->
-                        <li>
-                        <label for="nom_maladies_ist">Maladies IST :</label>
-                        <select id="nom_maladies_ist" name="nom_maladies_ist">
-                            <option value="">Sélectionnez</option>
-                            {% for idist, nom in nom_maladies_ist_A %}
-                            <option value="{{ idist }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Type de maladies -->
-                        <li>
-                        <label for="nom_type_maladies">Type de maladies :</label>
-                        <select id="nom_type_maladies" name="nom_type_maladies">
-                            <option value="">Sélectionnez</option>
-                            {% for idmaladie, nom in nom_type_maladies_A %}
-                            <option value="{{ idmaladie }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Activités IEC -->
-                        <li>
-                        <label for="nom_activites_iec">Activités IEC :</label>
-                        <select id="nom_activites_iec" name="nom_activites_iec">
-                            <option value="">Sélectionnez</option>
-                            {% for idiec, nom in nom_activites_iec_A %}
-                            <option value="{{ idiec }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Services médicaux -->
-                        <li>
-                        <label for="nom_services_medicaux">Services médicaux :</label>
-                        <select id="nom_services_medicaux" name="nom_services_medicaux">
-                            <option value="">Sélectionnez</option>
-                            {% for idservice, nom in nom_services_medicaux_A %}
-                            <option value="{{ idservice }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Infrastructure/Organisation sportive -->
-                        <li>
-                        <label for="nom_infrastructure_organisation">Infrastructure/Organisation sportive :</label>
-                        <select id="nom_infrastructure_organisation" name="nom_infrastructure_organisation">
-                            <option value="">Sélectionnez</option>
-                            {% for idinfraorg, nom in nom_infrastructure_organisation_A %}
-                            <option value="{{ idinfraorg }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Discipline sportive -->
-                        <li>
-                        <label for="nom_discipline_sportive">Discipline sportive :</label>
-                        <select id="nom_discipline_sportive" name="nom_discipline_sportive">
-                            <option value="">Sélectionnez</option>
-                            {% for iddisc, nom in nom_discipline_sportive_A %}
-                            <option value="{{ iddisc }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Type d'infrastructure culturelle -->
-                        <li>
-                        <label for="nom_type_infrastructure_culturel">Type d'infrastructure culturelle :</label>
-                        <select id="nom_type_infrastructure_culturel" name="nom_type_infrastructure_culturel">
-                            <option value="">Sélectionnez</option>
-                            {% for idinfra, nom in nom_type_infrastructure_culturel_A %}
-                            <option value="{{ idinfra }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Type de patrimoine culturel -->
-                        <li>
-                        <label for="nom_type_patrimoine_culturel">Type de patrimoine culturel :</label>
-                        <select id="nom_type_patrimoine_culturel" name="nom_type_patrimoine_culturel">
-                            <option value="">Sélectionnez</option>
-                            {% for idpatrimoine, nom in nom_type_patrimoine_culturel_A %}
-                            <option value="{{ idpatrimoine }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Type d'actions culturelles -->
-                        <li>
-                        <label for="nom_type_actions_culturelles">Type d'actions culturelles :</label>
-                        <select id="nom_type_actions_culturelles" name="nom_type_actions_culturelles">
-                            <option value="">Sélectionnez</option>
-                            {% for idactions, nom in nom_type_actions_culturelles_A %}
-                            <option value="{{ idactions }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Type d'opérateur d'œuvres de l'esprit -->
-                        <li>
-                        <label for="nom_type_operateur_oeuvre_esprit">Type d'opérateur d'œuvres de l'esprit :</label>
-                        <select id="nom_type_operateur_oeuvre_esprit" name="nom_type_operateur_oeuvre_esprit">
-                            <option value="">Sélectionnez</option>
-                            {% for idoperateur, nom in nom_type_operateur_oeuvre_esprit_A %}
-                            <option value="{{ idoperateur }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Type de groupe culturel -->
-                        <li>
-                        <label for="nom_type_de_groupe_culturel">Type de groupe culturel :</label>
-                        <select id="nom_type_de_groupe_culturel" name="nom_type_de_groupe_culturel">
-                            <option value="">Sélectionnez</option>
-                            {% for idgroupe, nom in nom_type_de_groupe_culturel_A %}
-                            <option value="{{ idgroupe }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Type de manifestation culturelle -->
-                        <li>
-                        <label for="nom_type_de_manifestation_culturelle">Type de manifestation culturelle :</label>
-                        <select id="nom_type_de_manifestation_culturelle" name="nom_type_de_manifestation_culturelle">
-                            <option value="">Sélectionnez</option>
-                            {% for idmanifestation, nom in nom_type_de_manifestation_culturelle_A %}
-                            <option value="{{ idmanifestation }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Trimestre -->
-                        <li>
-                        <label for="nom_trimestre">Trimestre :</label>
-                        <select id="nom_trimestre" name="nom_trimestre">
-                            <option value="">Sélectionnez</option>
-                            {% for idtrimestre, nom in nom_trimestre_A %}
-                            <option value="{{ idtrimestre }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour État des œuvres -->
-                        <li>
-                        <label for="nom_etat_des_oeuvres">État des œuvres :</label>
-                        <select id="nom_etat_des_oeuvres" name="nom_etat_des_oeuvres">
-                            <option value="">Sélectionnez</option>
-                            {% for idetat, nom in nom_etat_des_oeuvres_A %}
-                            <option value="{{ idetat }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Type d'abonnement -->
-                        <li>
-                        <label for="nom_type_abonnement">Type d'abonnement :</label>
-                        <select id="nom_type_abonnement" name="nom_type_abonnement">
-                            <option value="">Sélectionnez</option>
-                            {% for idabonnement, nom in nom_type_abonnement_A %}
-                            <option value="{{ idabonnement }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Type de suivi -->
-                        <li>
-                        <label for="nom_type_de_suivi">Type de suivi :</label>
-                        <select id="nom_type_de_suivi" name="nom_type_de_suivi">
-                            <option value="">Sélectionnez</option>
-                            {% for idsuivi, nom in nom_type_de_suivi_A %}
-                            <option value="{{ idsuivi }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Type de vulnérabilité -->
-                        <li>
-                        <label for="nom_type_de_vulnerabilite">Type de vulnérabilité :</label>
-                        <select id="nom_type_de_vulnerabilite" name="nom_type_de_vulnerabilite">
-                            <option value="">Sélectionnez</option>
-                            {% for idvulnerabilite, nom in nom_type_de_vulnerabilite_A %}
-                            <option value="{{ idvulnerabilite }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Type de prise en charge -->
-                        <li>
-                        <label for="nom_type_de_prise_charge">Type de prise en charge :</label>
-                        <select id="nom_type_de_prise_charge" name="nom_type_de_prise_charge">
-                            <option value="">Sélectionnez</option>
-                            {% for idprise_charge, nom in nom_type_de_prise_charge_A %}
-                            <option value="{{ idprise_charge }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-
-                        <!-- Liste déroulante pour Niveau -->
-                        <li>
-                        <label for="nom_niveau">Niveau :</label>
-                        <select id="nom_niveau" name="nom_niveau">
-                            <option value="">Sélectionnez</option>
-                            {% for idniveau, nom in nom_niveau_A %}
-                            <option value="{{ idniveau }}"  data-nom="{{nom}}">{{ nom }}</option>
-                            {% endfor %}
-                        </select>
-                    </li>
-                </ul>
-   
-
-                </div>
+            
+            <label for="nom_sexe">Niveau de désagrégation :</label>
+            <select id="niveau_desagregation" name="niveau_desagregation" required>
+                <option value="">Sélectionnez</option>
+                {% for id_niv, nom in niveau_choix.items() %}
+                    <option value="{{ id_niv }}" data-nom="{{ nom }}">{{ nom }}</option>
+                {% endfor %}
+            </select>
+            
+            <br>
+            
+            <label for="multiple_levels">Plusieurs niveaux :</label>
+            <input type="checkbox" id="multiple_levels" name="multiple_levels">
+            
+            <br><br>
+            
+            <div id="multiple_levels_block" class="blue-frame" style="display:none;">
+                <h2>Autres niveaux de désagrégations</h2>
+                {% include 'niv_desag_plusieur.html'%}
+            </div>
+        </div>
+        
 
         </div>
 
 
 
-
-
-
-
-
-
-
 <!-- Ici pour le formulaire dynamique des champs de collecte de l'age jusqu'au dernier niveau de desagregations-->
+<!-- Bloc pour formulaire dynamique-->
 
+<!-- Obliger la selection -->
+<div id="Groupe-list2" style="display: none;">
+    <ul class="align-list">
+        {% if nom_groupe_age %}
+            {% for id, nom in nom_groupe_age %}
+            <li>
+                <em>{{ nom }} ans</em>
+                <input type="text" name="id_{{ id }}" placeholder="Entrez une valeur">
+            </li>
+            {% endfor %}
+        {% endif %}
+    </ul>
+</div>
 
-     {% if nom_groupe_age %}
-     
-<ul class="align-list">
-    {% for id, nom in nom_groupe_age %}
-    <li>
-        <em>{{ nom }} ans</em>
-        <input type="text" name="id_{{ id }}" placeholder="Entrez une valeur">
-    </li>
-    {% endfor %}
-</ul>
-{% endif %}
-
-{% if nom_primaire %}
-<ul class="align-list">
-    {% for id, nom in nom_primaire %}
-    <li>
-        <em>{{ nom }}</em>
-        <input type="text" name="idprimaire_{{ id }}" placeholder="Entrez une valeur">
-    </li>
-    {% endfor %}
-</ul>
-{% endif %}
-
+<div id="Sexe-list1" style="display: none;">
 {% if nom_sexe %}
 <ul class="align-list">
     {% for id, nom in nom_sexe %}
@@ -542,7 +90,12 @@
     {% endfor %}
 </ul>
 {% endif %}
+</div>
 
+
+
+
+<div id='Cycle-list11' style='display: none;'>
 {% if nom_cycle %}
 <ul class="align-list">
     {% for id, nom in nom_cycle %}
@@ -553,6 +106,7 @@
     {% endfor %}
 </ul>
 {% endif %}
+</div>
 
 {% if nom_prescolaire %}
 <ul class="align-list">
@@ -564,6 +118,17 @@
     {% endfor %}
 </ul>
 {% endif %}
+{% if nom_primaire %}
+<ul class="align-list">
+    {% for id, nom in nom_primaire %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idprimaire_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
 
 {% if nom_secondaire_1er %}
 <ul class="align-list">
@@ -961,42 +526,11 @@
 
 
 </div>
-<!-- Modale de confirmation -->
-<div id="confirmation-modal" style="display: none;">
-    <div id="confirmation-content">
-        <h2>Confirmez-vous ses données saisies ?</h2>
-        <table>
-            <tr>
-                <th>Indicateur</th>
-                <td id="confirm-id-indicateur"></td>
-            </tr>
-            <tr>
-                <th>Code Entité Géographique</th>
-                <td id="confirm-id-code-entite"></td>
-            </tr>
-            <tr>
-                <th>Année</th>
-                <td id="confirm-anne"></td>
-            </tr>
-            <tr>
-                <th>Désagrégations</th>
-                <td id="confirm-desagregations"></td>
-            </tr>
-            <tr>
-    <td>Total :</td>
-    <td id="confirm-somme-desagregations"></td>
-</tr>
-
-        </table>
-        <button id="confirm-button">Oui</button>
-        <button id="cancel-button">Non</button>
-    </div>
-</div>
 
 
 
-<!-- JavaScript pour ajouter un formulaire -->
 <script>
+// Pour  la mise à jour des champs 
     document.addEventListener("DOMContentLoaded", function() {
         // Vérifie la validité des données
         var duplicateWrapper = document.getElementById('duplicate-wrapper');
@@ -1029,7 +563,7 @@
     function updateFormFields(data) {
         // Exemple de mise à jour des champs du formulaire
         document.getElementById('id_code_entite').value = data.code_entite;
-        document.getElementById('id_niveau_desagregation').value = data.niveau_desagregation;
+     
         // Autres mises à jour...
     }
     
@@ -1038,7 +572,7 @@
     function saveFormData() {
         localStorage.setItem('id_indicateur', document.getElementById('id_indicateur').value);
         localStorage.setItem('id_code_entite', document.getElementById('id_code_entite').value);
-        localStorage.setItem('id_niveau_desagregation', document.getElementById('id_niveau_desagregation').value);
+       
     }
 
     function fillFormData() {
@@ -1048,796 +582,9 @@
         if (localStorage.getItem('id_code_entite')) {
             document.getElementById('id_code_entite').value = localStorage.getItem('id_code_entite');
         }
-        if (localStorage.getItem('id_niveau_desagregation')) {
-            document.getElementById('id_niveau_desagregation').value = localStorage.getItem('id_niveau_desagregation');
-        }
+       
     }
 
-
-    document.addEventListener('DOMContentLoaded', function() {
-    document.querySelector('.form-container').onsubmit = function(event) {
-        event.preventDefault(); // Empêche la soumission immédiate du formulaire
-
-        // Récupère les valeurs saisies
-        var idIndicateur = document.getElementById('id_indicateur2').value;
-        var idCodeEntite = document.getElementById('id_code_entite2').value;
-        var anne = document.getElementById('anne').value;
-
-        // Récupère les valeurs 
-        var desagregations = [];
-        var autreNiveauDesagration=[];// Le recape doit etre stocker ici
-        var sommeDesagregations = 0;
-        // Ajoute les valeurs des nouveaux champs au tableau des désagrégations sans somme
-
-   
-
-
-
-
-
-// Bloc de deuxieme ou plus de niveau désagregation
-
-
- var selectSexe = document.querySelector('select[name="nom_sexe"]');
- var selectedOptionSexe = selectSexe.options[selectSexe.selectedIndex];
- var nomSexe = selectedOptionSexe.getAttribute('data-nom'); // Récupère le nom pour l'afficher
- if (nomSexe) {
-     desagregations.push("Sexe: " +nomSexe);
- }
-
- var selectGroupeAge = document.querySelector('select[name="nom_groupe_age"]');
-var selectedOptionGroupeAge = selectGroupeAge.options[selectGroupeAge.selectedIndex];
-var nomGroupeAge = selectedOptionGroupeAge.getAttribute('data-nom');  // Récupère le nom pour l'afficher
-if (nomGroupeAge) {
-    desagregations.push("Groupe d'âge: " + nomGroupeAge);
-}
-
-var selectCycle = document.querySelector('select[name="nom_cycle"]');
-var selectedOptionCycle = selectCycle.options[selectCycle.selectedIndex];
-var nomCycle = selectedOptionCycle.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomCycle) {
-    desagregations.push("Cycle: " + nomCycle);
-}
-
-var selectPrescolaire = document.querySelector('select[name="nom_prescolaire"]');
-var selectedOptionPrescolaire = selectPrescolaire.options[selectPrescolaire.selectedIndex];
-var nomPrescolaire = selectedOptionPrescolaire.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomPrescolaire) {
-    desagregations.push("Prescolaire: " + nomPrescolaire);
-}
-
-var selectPrimaire = document.querySelector('select[name="nom_primaire"]');
-var selectedOptionPrimaire = selectPrimaire.options[selectPrimaire.selectedIndex];
-var nomPrimaire = selectedOptionPrimaire.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomPrimaire) {
-    desagregations.push("Primaire: " + nomPrimaire);
-}
-
-var selectSecondaire1er = document.querySelector('select[name="nom_secondaire_1er"]');
-var selectedOptionSecondaire1er = selectSecondaire1er.options[selectSecondaire1er.selectedIndex];
-var nomSecondaire1er = selectedOptionSecondaire1er.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomSecondaire1er) {
-    desagregations.push("Secondaire 1er Cycle: " + nomSecondaire1er);
-}
-
-
-var selectSecondaire2nd = document.querySelector('select[name="nom_secondaire_2nd"]');
-var selectedOptionSecondaire2nd = selectSecondaire2nd.options[selectSecondaire2nd.selectedIndex];
-var nomSecondaire2nd = selectedOptionSecondaire2nd.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomSecondaire2nd) {
-    desagregations.push("Secondaire 2nd Cycle: " + nomSecondaire2nd);
-}
-
-var selectTechnique = document.querySelector('select[name="nom_technique"]');
-var selectedOptionTechnique = selectTechnique.options[selectTechnique.selectedIndex];
-var nomTechnique = selectedOptionTechnique.getAttribute('data-nom');  // Récupère le nom pour l'afficher
-if (nomTechnique) {
-    desagregations.push("Technique: " + nomTechnique);
-}
-
-var selectSuperieur = document.querySelector('select[name="nom_superieur"]');
-var selectedOptionSuperieur = selectSuperieur.options[selectSuperieur.selectedIndex];
-var nomSuperieur = selectedOptionSuperieur.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomSuperieur) {
-    desagregations.push("Supérieur: " + nomSuperieur);
-}
-
-var selectProfessionnel = document.querySelector('select[name="nom_professionnel"]');
-var selectedOptionProfessionnel = selectProfessionnel.options[selectProfessionnel.selectedIndex];
-var nomProfessionnel = selectedOptionProfessionnel.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomProfessionnel) {
-    desagregations.push("Professionnel: " + nomProfessionnel);
-}
-
-var selectExamenScolaire = document.querySelector('select[name="nom_type_examen_scolaire"]');
-var selectedOptionExamenScolaire = selectExamenScolaire.options[selectExamenScolaire.selectedIndex];
-var nomExamenScolaire = selectedOptionExamenScolaire.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomExamenScolaire) {
-    desagregations.push("Type d'examen scolaire: " + nomExamenScolaire);
-}
-
-
-var selectInfrastructureSanitaire = document.querySelector('select[name="nom_infrastructure_sanitaire"]');
-var selectedOptionInfrastructureSanitaire = selectInfrastructureSanitaire.options[selectInfrastructureSanitaire.selectedIndex];
-var nomInfrastructureSanitaire = selectedOptionInfrastructureSanitaire.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomInfrastructureSanitaire) {
-    desagregations.push("Infrastructure sanitaire: " + nomInfrastructureSanitaire);
-}
-
-
-
-var selectLieuAccouchement = document.querySelector('select[name="nom_lieu_accouchement"]');
-var selectedOptionLieuAccouchement = selectLieuAccouchement.options[selectLieuAccouchement.selectedIndex];
-var nomLieuAccouchement = selectedOptionLieuAccouchement.getAttribute('data-nom');  // Récupère le nom pour l'afficher
-if (nomLieuAccouchement) {
-    desagregations.push("Lieu d'accouchement: " + nomLieuAccouchement);
-}
-
-var selectEtatVaccinal = document.querySelector('select[name="nom_etat_vaccinal"]');
-var selectedOptionEtatVaccinal = selectEtatVaccinal.options[selectEtatVaccinal.selectedIndex];
-var nomEtatVaccinal = selectedOptionEtatVaccinal.getAttribute('data-nom');  // Récupère le nom pour l'afficher
-if (nomEtatVaccinal) {
-    desagregations.push("État vaccinal: " + nomEtatVaccinal);
-}
-
-
-var selectTypeVaccination = document.querySelector('select[name="nom_type_vaccination"]');
-var selectedOptionTypeVaccination = selectTypeVaccination.options[selectTypeVaccination.selectedIndex];
-var nomTypeVaccination = selectedOptionTypeVaccination.getAttribute('data-nom');  // Récupère le nom pour l'afficher
-if (nomTypeVaccination) {
-    desagregations.push("Type de vaccination: " + nomTypeVaccination);
-}
-
-
-var selectPathologie = document.querySelector('select[name="nom_pathologie"]');
-var selectedOptionPathologie = selectPathologie.options[selectPathologie.selectedIndex];
-var nomPathologie = selectedOptionPathologie.getAttribute('data-nom');  // Récupère le nom pour l'afficher
-if (nomPathologie) {
-    desagregations.push("Pathologie: " + nomPathologie);
-}
-
-
-var selectTrancheAge = document.querySelector('select[name="nom_tranche_age"]');
-var selectedOptionTrancheAge = selectTrancheAge.options[selectTrancheAge.selectedIndex];
-var nomTrancheAge = selectedOptionTrancheAge.getAttribute('data-nom');  // Récupère le nom pour l'afficher
-if (nomTrancheAge) {
-    desagregations.push("Tranche d'âge: " + nomTrancheAge);
-}
-
-
-
-var selectMaladiePEV = document.querySelector('select[name="nom_maladie_pev"]');
-var selectedOptionMaladiePEV = selectMaladiePEV.options[selectMaladiePEV.selectedIndex];
-var nomMaladiePEV = selectedOptionMaladiePEV.getAttribute('data-nom');  // Récupère le nom pour l'afficher
-if (nomMaladiePEV) {
-    desagregations.push("Maladies du PEV: " + nomMaladiePEV);
-}
-
-var selectMaladieInfectieuse = document.querySelector('select[name="nom_maladie_infectieuse"]');
-var selectedOptionMaladieInfectieuse = selectMaladieInfectieuse.options[selectMaladieInfectieuse.selectedIndex];
-var nomMaladieInfectieuse = selectedOptionMaladieInfectieuse.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomMaladieInfectieuse) {
-    desagregations.push("Maladies infectieuses: " + nomMaladieInfectieuse);
-}
-
-
-var selectInfectionRespiratoire = document.querySelector('select[name="nom_infection_respiratoire"]');
-var selectedOptionInfectionRespiratoire = selectInfectionRespiratoire.options[selectInfectionRespiratoire.selectedIndex];
-var nomInfectionRespiratoire = selectedOptionInfectionRespiratoire.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomInfectionRespiratoire) {
-    desagregations.push("Infection respiratoire: " + nomInfectionRespiratoire);
-}
-
-
-var selectMaladiesIST = document.querySelector('select[name="nom_maladies_ist"]');
-var selectedOptionMaladiesIST = selectMaladiesIST.options[selectMaladiesIST.selectedIndex];
-var nomMaladiesIST = selectedOptionMaladiesIST.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomMaladiesIST) {
-    desagregations.push("Maladies IST: " + nomMaladiesIST);
-}
-
-
-var selectTypeMaladies = document.querySelector('select[name="nom_type_maladies"]');
-var selectedOptionTypeMaladies = selectTypeMaladies.options[selectTypeMaladies.selectedIndex];
-var nomTypeMaladies = selectedOptionTypeMaladies.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomTypeMaladies) {
-    desagregations.push("Type de maladies: " + nomTypeMaladies);
-}
-
-
-var selectActivitesIEC = document.querySelector('select[name="nom_activites_iec"]');
-var selectedOptionActivitesIEC = selectActivitesIEC.options[selectActivitesIEC.selectedIndex];
-var nomActivitesIEC = selectedOptionActivitesIEC.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomActivitesIEC) {
-    desagregations.push("Activités IEC: " + nomActivitesIEC);
-}
-
-
-var selectServicesMedicaux = document.querySelector('select[name="nom_services_medicaux"]');
-var selectedOptionServicesMedicaux = selectServicesMedicaux.options[selectServicesMedicaux.selectedIndex];
-var nomServicesMedicaux = selectedOptionServicesMedicaux.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomServicesMedicaux) {
-    desagregations.push("Services médicaux: " + nomServicesMedicaux);
-}
-
-var selectInfrastructureOrganisation = document.querySelector('select[name="nom_infrastructure_organisation"]');
-var selectedOptionInfrastructureOrganisation = selectInfrastructureOrganisation.options[selectInfrastructureOrganisation.selectedIndex];
-var nomInfrastructureOrganisation = selectedOptionInfrastructureOrganisation.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomInfrastructureOrganisation) {
-    desagregations.push("Infrastructure/Organisation sportive: " + nomInfrastructureOrganisation);
-}
-
-var selectDisciplineSportive = document.querySelector('select[name="nom_discipline_sportive"]');
-var selectedOptionDisciplineSportive = selectDisciplineSportive.options[selectDisciplineSportive.selectedIndex];
-var nomDisciplineSportive = selectedOptionDisciplineSportive.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomDisciplineSportive) {
-    desagregations.push("Discipline sportive: " + nomDisciplineSportive);
-}
-
-var selectInfrastructureCulturelle = document.querySelector('select[name="nom_type_infrastructure_culturel"]');
-var selectedOptionInfrastructureCulturelle = selectInfrastructureCulturelle.options[selectInfrastructureCulturelle.selectedIndex];
-var nomInfrastructureCulturelle = selectedOptionInfrastructureCulturelle.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomInfrastructureCulturelle) {
-    desagregations.push("Type d'infrastructure culturelle: " + nomInfrastructureCulturelle);
-}
-
-var selectTypePatrimoineCulturel = document.querySelector('select[name="nom_type_patrimoine_culturel"]');
-var selectedOptionTypePatrimoineCulturel = selectTypePatrimoineCulturel.options[selectTypePatrimoineCulturel.selectedIndex];
-var nomTypePatrimoineCulturel = selectedOptionTypePatrimoineCulturel.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomTypePatrimoineCulturel) {
-    desagregations.push("Type de patrimoine culturel: " + nomTypePatrimoineCulturel);
-}
-
-var selectTypeActionsCulturelles = document.querySelector('select[name="nom_type_actions_culturelles"]');
-var selectedOptionTypeActionsCulturelles = selectTypeActionsCulturelles.options[selectTypeActionsCulturelles.selectedIndex];
-var nomTypeActionsCulturelles = selectedOptionTypeActionsCulturelles.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomTypeActionsCulturelles) {
-    desagregations.push("Type d'actions culturelles: " + nomTypeActionsCulturelles);
-}
-
-
-var selectTypeOperateurOeuvreEsprit = document.querySelector('select[name="nom_type_operateur_oeuvre_esprit"]');
-var selectedOptionTypeOperateurOeuvreEsprit = selectTypeOperateurOeuvreEsprit.options[selectTypeOperateurOeuvreEsprit.selectedIndex];
-var nomTypeOperateurOeuvreEsprit = selectedOptionTypeOperateurOeuvreEsprit.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomTypeOperateurOeuvreEsprit) {
-    desagregations.push("Type d'opérateur d'œuvres de l'esprit: " + nomTypeOperateurOeuvreEsprit);
-}
-
-var selectTypeGroupeCulturel = document.querySelector('select[name="nom_type_de_groupe_culturel"]');
-var selectedOptionTypeGroupeCulturel = selectTypeGroupeCulturel.options[selectTypeGroupeCulturel.selectedIndex];
-var nomTypeGroupeCulturel = selectedOptionTypeGroupeCulturel.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomTypeGroupeCulturel) {
-    desagregations.push("Type de groupe culturel: " + nomTypeGroupeCulturel);
-}
-
-var selectTypeManifestationCulturelle = document.querySelector('select[name="nom_type_de_manifestation_culturelle"]');
-var selectedOptionTypeManifestationCulturelle = selectTypeManifestationCulturelle.options[selectTypeManifestationCulturelle.selectedIndex];
-var nomTypeManifestationCulturelle = selectedOptionTypeManifestationCulturelle.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomTypeManifestationCulturelle) {
-    desagregations.push("Type de manifestation culturelle: " + nomTypeManifestationCulturelle);
-}
-
-
-var selectTrimestre = document.querySelector('select[name="nom_trimestre"]');
-var selectedOptionTrimestre = selectTrimestre.options[selectTrimestre.selectedIndex];
-var nomTrimestre = selectedOptionTrimestre.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomTrimestre) {
-    desagregations.push("Trimestre: " + nomTrimestre);
-}
-
-var selectEtatOeuvres = document.querySelector('select[name="nom_etat_des_oeuvres"]');
-var selectedOptionEtatOeuvres = selectEtatOeuvres.options[selectEtatOeuvres.selectedIndex];
-var nomEtatOeuvres = selectedOptionEtatOeuvres.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomEtatOeuvres) {
-    desagregations.push("État des œuvres: " + nomEtatOeuvres);
-}
-
-
-var selectTypeAbonnement = document.querySelector('select[name="nom_type_abonnement"]');
-var selectedOptionTypeAbonnement = selectTypeAbonnement.options[selectTypeAbonnement.selectedIndex];
-var nomTypeAbonnement = selectedOptionTypeAbonnement.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomTypeAbonnement) {
-    desagregations.push("Type d'abonnement: " + nomTypeAbonnement);
-}
-
-
-var selectTypeSuivi = document.querySelector('select[name="nom_type_de_suivi"]');
-var selectedOptionTypeSuivi = selectTypeSuivi.options[selectTypeSuivi.selectedIndex];
-var nomTypeSuivi = selectedOptionTypeSuivi.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomTypeSuivi) {
-    desagregations.push("Type de suivi: " + nomTypeSuivi);
-}
-
-
-var selectTypeVulnerabilite = document.querySelector('select[name="nom_type_de_vulnerabilite"]');
-var selectedOptionTypeVulnerabilite = selectTypeVulnerabilite.options[selectTypeVulnerabilite.selectedIndex];
-var nomTypeVulnerabilite = selectedOptionTypeVulnerabilite.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomTypeVulnerabilite) {
-    desagregations.push("Type de vulnérabilité: " + nomTypeVulnerabilite);
-}
-
-
-var selectTypePriseCharge = document.querySelector('select[name="nom_type_de_prise_charge"]');
-var selectedOptionTypePriseCharge = selectTypePriseCharge.options[selectTypePriseCharge.selectedIndex];
-var nomTypePriseCharge = selectedOptionTypePriseCharge.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomTypePriseCharge) {
-    desagregations.push("Type de prise en charge: " + nomTypePriseCharge);
-}
-
-
-var selectNiveau = document.querySelector('select[name="nom_niveau"]');
-var selectedOptionNiveau = selectNiveau.options[selectNiveau.selectedIndex];
-var nomNiveau = selectedOptionNiveau.getAttribute('data-nom'); // Récupère le nom pour l'afficher
-if (nomNiveau) {
-    desagregations.push("Niveau: " + nomNiveau);
-}
-
-
-
-
-        
-        
-
-
-
-
-
-
-
-
-        
-
-                                                
-
-                                               
-
-
-// Ici la somme des valeurs est captée 
-
-                                    {% if nom_groupe_age %}
-                                {% for id, nom in nom_groupe_age %}
-                                    var valeurGroupeAge = document.querySelector('input[name="id_{{ id }}"]').value;
-                                    if (valeurGroupeAge) {
-                                        desagregations.push("{{ nom }} ans: " + valeurGroupeAge);
-                                        sommeDesagregations += parseFloat(valeurGroupeAge); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-
-                                    // Récupère les valeurs des niveaux "Sexe"
-                            {% if nom_sexe %}
-                                {% for id, nom in nom_sexe %}
-                                    var valeurSexe = document.querySelector('input[name="sexe_{{ id }}"]').value;
-                                    if (valeurSexe) {
-                                        desagregations.push("{{ nom }}: " + valeurSexe);
-                                        sommeDesagregations += parseFloat(valeurSexe); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-
-                            // Récupère les valeurs des niveaux "Cycle"
-                            {% if nom_cycle %}
-                                {% for id, nom in nom_cycle %}
-                                    var valeurCycle = document.querySelector('input[name="idcycle_{{ id }}"]').value;
-                                    if (valeurCycle) {
-                                        desagregations.push("{{ nom }}: " + valeurCycle);
-                                        sommeDesagregations += parseFloat(valeurCycle); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-
-                            // Récupère les valeurs des niveaux "Primaire"
-                            {% if nom_primaire %}
-                                {% for id, nom in nom_primaire %}
-                                    var valeurPrimaire = document.querySelector('input[name="idprimaire_{{ id }}"]').value;
-                                    if (valeurPrimaire) {
-                                        desagregations.push("{{ nom }}: " + valeurPrimaire);
-                                        sommeDesagregations += parseFloat(valeurPrimaire); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            // Récupère les valeurs des niveaux "Prescolaire"
-                            {% if nom_prescolaire %}
-                                {% for id, nom in nom_prescolaire %}
-                                    var valeurPrescolaire = document.querySelector('input[name="idprescolaire_{{ id }}"]').value;
-                                    if (valeurPrescolaire) {
-                                        desagregations.push("{{ nom }}: " + valeurPrescolaire);
-                                        sommeDesagregations += parseFloat(valeurPrescolaire); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-
-                            {% if nom_secondaire_1er %}
-                                {% for id, nom in nom_secondaire_1er %}
-                                    var valeurSecondaire1 = document.querySelector('input[name="idsecondaire1_{{ id }}"]').value;
-                                    if (valeurSecondaire1) {
-                                        desagregations.push("{{ nom }}: " + valeurSecondaire1);
-                                        sommeDesagregations += parseFloat(valeurSecondaire1); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if nom_secondaire_2nd %}
-                                {% for id, nom in nom_secondaire_2nd %}
-                                    var valeurSecondaire2nd = document.querySelector('input[name="idsecondaire2_{{ id }}"]').value;
-                                    if (valeurSecondaire2nd) {
-                                        desagregations.push("{{ nom }}: " + valeurSecondaire2nd);
-                                        sommeDesagregations += parseFloat(valeurSecondaire2nd); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if nom_technique %}
-                                {% for id, nom in nom_technique %}
-                                    var valeurTechnique = document.querySelector('input[name="idtechnique_{{ id }}"]').value;
-                                    if (valeurTechnique) {
-                                        desagregations.push("{{ nom }}: " + valeurTechnique);
-                                        sommeDesagregations += parseFloat(valeurTechnique); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if nom_superieur %}
-                                {% for id, nom in nom_superieur %}
-                                    var valeurSuperieur = document.querySelector('input[name="idsuperieur_{{ id }}"]').value;
-                                    if (valeurSuperieur) {
-                                        desagregations.push("{{ nom }}: " + valeurSuperieur);
-                                        sommeDesagregations += parseFloat(valeurSuperieur); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if nom_professionnel %}
-                                {% for id, nom in nom_professionnel %}
-                                    var valeurProfessionnel = document.querySelector('input[name="idprofessionnel_{{ id }}"]').value;
-                                    if (valeurProfessionnel) {
-                                        desagregations.push("{{ nom }}: " + valeurProfessionnel);
-                                        sommeDesagregations += parseFloat(valeurProfessionnel); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-
-
-
-                            {% if nom_type_examen_scolaire %}
-                                {% for id, nom in nom_type_examen_scolaire %}
-                                    var valeurExamenScolaire = document.querySelector('input[name="idtypeexamenscolaire_{{ id }}"]').value;
-                                    if (valeurExamenScolaire) {
-                                        desagregations.push("{{ nom }}: " + valeurExamenScolaire);
-                                        sommeDesagregations += parseFloat(valeurExamenScolaire); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if nom_infrastructure_sanitaire %}
-                                {% for id, nom in nom_infrastructure_sanitaire %}
-                                    var valeurInfrastructureSanitaire = document.querySelector('input[name="idinfrastructure_{{ id }}"]').value;
-                                    if (valeurInfrastructureSanitaire) {
-                                        desagregations.push("{{ nom }}: " + valeurInfrastructureSanitaire);
-                                        sommeDesagregations += parseFloat(valeurInfrastructureSanitaire); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if nom_lieu_accouchement %}
-                                {% for id, nom in nom_lieu_accouchement %}
-                                    var valeurLieuAccouchement = document.querySelector('input[name="idlieuaccouchement_{{ id }}"]').value;
-                                    if (valeurLieuAccouchement) {
-                                        desagregations.push("{{ nom }}: " + valeurLieuAccouchement);
-                                        sommeDesagregations += parseFloat(valeurLieuAccouchement); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if nom_etat_vaccinal %}
-                                {% for id, nom in nom_etat_vaccinal %}
-                                    var valeurEtatVaccinal = document.querySelector('input[name="idetatvaccinal_{{ id }}"]').value;
-                                    if (valeurEtatVaccinal) {
-                                        desagregations.push("{{ nom }}: " + valeurEtatVaccinal);
-                                        sommeDesagregations += parseFloat(valeurEtatVaccinal); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if nom_type_vaccination %}
-                                {% for id, nom in nom_type_vaccination %}
-                                    var valeurTypeVaccination = document.querySelector('input[name="idtypevaccination_{{ id }}"]').value;
-                                    if (valeurTypeVaccination) {
-                                        desagregations.push("{{ nom }}: " + valeurTypeVaccination);
-                                        sommeDesagregations += parseFloat(valeurTypeVaccination); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if nom_pathologie %}
-                                {% for id, nom in nom_pathologie %}
-                                    var valeurPathologie = document.querySelector('input[name="idpathologie_{{ id }}"]').value;
-                                    if (valeurPathologie) {
-                                        desagregations.push("{{ nom }}: " + valeurPathologie);
-                                        sommeDesagregations += parseFloat(valeurPathologie); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-
-
-
-                            {% if nom_tranche_age %}
-                                {% for id, nom in nom_tranche_age %}
-                                    var valeurTrancheAge = document.querySelector('input[name="idtrancheage_{{ id }}"]').value;
-                                    if (valeurTrancheAge) {
-                                        desagregations.push("{{ nom }}: " + valeurTrancheAge);
-                                        sommeDesagregations += parseFloat(valeurTrancheAge); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if nom_maladie_pev %}
-                                {% for id, nom in nom_maladie_pev %}
-                                    var valeurMaladiePEV = document.querySelector('input[name="idmaladiepev_{{ id }}"]').value;
-                                    if (valeurMaladiePEV) {
-                                        desagregations.push("{{ nom }}: " + valeurMaladiePEV);
-                                        sommeDesagregations += parseFloat(valeurMaladiePEV); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if nom_maladie_infectieuse %}
-                                {% for id, nom in nom_maladie_infectieuse %}
-                                    var valeurMaladieInfectieuse = document.querySelector('input[name="idmaladieinfectieuse_{{ id }}"]').value;
-                                    if (valeurMaladieInfectieuse) {
-                                        desagregations.push("{{ nom }}: " + valeurMaladieInfectieuse);
-                                        sommeDesagregations += parseFloat(valeurMaladieInfectieuse); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if nom_infection_respiratoire %}
-                                {% for id, nom in nom_infection_respiratoire %}
-                                    var valeurInfectionRespiratoire = document.querySelector('input[name="idinfectionrespiratoire_{{ id }}"]').value;
-                                    if (valeurInfectionRespiratoire) {
-                                        desagregations.push("{{ nom }}: " + valeurInfectionRespiratoire);
-                                        sommeDesagregations += parseFloat(valeurInfectionRespiratoire); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if nom_maladie_sist %}
-                                {% for id, nom in nom_maladie_sist %}
-                                    var valeurMaladieSIST = document.querySelector('input[name="idmaladiesist_{{ id }}"]').value;
-                                    if (valeurMaladieSIST) {
-                                        desagregations.push("{{ nom }}: " + valeurMaladieSIST);
-                                        sommeDesagregations += parseFloat(valeurMaladieSIST); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if nom_type_maladie %}
-                                {% for id, nom in nom_type_maladie %}
-                                    var valeurTypeMaladie = document.querySelector('input[name="idtypemaladies_{{ id }}"]').value;
-                                    if (valeurTypeMaladie) {
-                                        desagregations.push("{{ nom }}: " + valeurTypeMaladie);
-                                        sommeDesagregations += parseFloat(valeurTypeMaladie); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if nom_activite_siec %}
-                                {% for id, nom in nom_activite_siec %}
-                                    var valeurActiviteSIEC = document.querySelector('input[name="idactivitesiec_{{ id }}"]').value;
-                                    if (valeurActiviteSIEC) {
-                                        desagregations.push("{{ nom }}: " + valeurActiviteSIEC);
-                                        sommeDesagregations += parseFloat(valeurActiviteSIEC); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-
-
-
-                            {% if nom_service_medical %}
-                                {% for id, nom in nom_service_medical %}
-                                    var valeurServiceMedical = document.querySelector('input[name="idservicesmedicaux_{{ id }}"]').value;
-                                    if (valeurServiceMedical) {
-                                        desagregations.push("{{ nom }}: " + valeurServiceMedical);
-                                        sommeDesagregations += parseFloat(valeurServiceMedical); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if nom_infrastructure_organisation %}
-                                {% for id, nom in nom_infrastructure_organisation %}
-                                    var valeurInfrastructureOrganisation = document.querySelector('input[name="idinfrastructureorganisation_{{ id }}"]').value;
-                                    if (valeurInfrastructureOrganisation) {
-                                        desagregations.push("{{ nom }}: " + valeurInfrastructureOrganisation);
-                                        sommeDesagregations += parseFloat(valeurInfrastructureOrganisation); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if nom_discipline_sportive %}
-                                {% for id, nom in nom_discipline_sportive %}
-                                    var valeurDisciplineSportive = document.querySelector('input[name="iddisciplinesportive_{{ id }}"]').value;
-                                    if (valeurDisciplineSportive) {
-                                        desagregations.push("{{ nom }}: " + valeurDisciplineSportive);
-                                        sommeDesagregations += parseFloat(valeurDisciplineSportive); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if nom_type_infrastructure_culturel %}
-                                {% for id, nom in nom_type_infrastructure_culturel %}
-                                    var valeurTypeInfrastructureCulturel = document.querySelector('input[name="idtypeinfrastructureculturel_{{ id }}"]').value;
-                                    if (valeurTypeInfrastructureCulturel) {
-                                        desagregations.push("{{ nom }}: " + valeurTypeInfrastructureCulturel);
-                                        sommeDesagregations += parseFloat(valeurTypeInfrastructureCulturel); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-
-                            {% if nom_type_patrimoine_culturel %}
-                                {% for id, nom in nom_type_patrimoine_culturel %}
-                                    var valeurTypePatrimoineCulturel = document.querySelector('input[name="idtypepatrimoineculturel_{{ id }}"]').value;
-                                    if (valeurTypePatrimoineCulturel) {
-                                        desagregations.push("{{ nom }}: " + valeurTypePatrimoineCulturel);
-                                        sommeDesagregations += parseFloat(valeurTypePatrimoineCulturel); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if nom_type_actions_culturelles %}
-                                {% for id, nom in nom_type_actions_culturelles %}
-                                    var valeurTypeActionsCulturelles = document.querySelector('input[name="idtypeactionsculturelles_{{ id }}"]').value;
-                                    if (valeurTypeActionsCulturelles) {
-                                        desagregations.push("{{ nom }}: " + valeurTypeActionsCulturelles);
-                                        sommeDesagregations += parseFloat(valeurTypeActionsCulturelles); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if nom_type_oeuvre_esprit %}
-                                {% for id, nom in nom_type_oeuvre_esprit %}
-                                    var valeurTypeOeuvreEsprit = document.querySelector('input[name="idtypeoperateuroeuvreesprit_{{ id }}"]').value;
-                                    if (valeurTypeOeuvreEsprit) {
-                                        desagregations.push("{{ nom }}: " + valeurTypeOeuvreEsprit);
-                                        sommeDesagregations += parseFloat(valeurTypeOeuvreEsprit); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if nom_type_groupe_culturel %}
-                                {% for id, nom in nom_type_groupe_culturel %}
-                                    var valeurTypeGroupeCulturel = document.querySelector('input[name="idtypedegroupeculturel_{{ id }}"]').value;
-                                    if (valeurTypeGroupeCulturel) {
-                                        desagregations.push("{{ nom }}: " + valeurTypeGroupeCulturel);
-                                        sommeDesagregations += parseFloat(valeurTypeGroupeCulturel); // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-
-
-                            {% if nom_type_manifestation_culturelle %}
-                                {% for id, nom in nom_type_manifestation_culturelle %}
-                                    var valeurTypeManifestationCulturelle = document.querySelector('input[name="idtypedemanifestationculturelle_{{ id }}"]').value;
-                                    if (valeurTypeManifestationCulturelle) {
-                                        desagregations.push("{{ nom }}: " + valeurTypeManifestationCulturelle);
-                                        sommeDesagregations += parseFloat(valeurTypeManifestationCulturelle) || 0; // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if nom_trimestre %}
-                                {% for id, nom in nom_trimestre %}
-                                    var valeurTrimestre = document.querySelector('input[name="idtrimestre_{{ id }}"]').value;
-                                    if (valeurTrimestre) {
-                                        desagregations.push("{{ nom }}: " + valeurTrimestre);
-                                        sommeDesagregations += parseFloat(valeurTrimestre) || 0; // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if nom_etat_oeuvres %}
-                                {% for id, nom in nom_etat_oeuvres %}
-                                    var valeurEtatOeuvres = document.querySelector('input[name="idetatdesoeuvres_{{ id }}"]').value;
-                                    if (valeurEtatOeuvres) {
-                                        desagregations.push("{{ nom }}: " + valeurEtatOeuvres);
-                                        sommeDesagregations += parseFloat(valeurEtatOeuvres) || 0; // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if nom_type_abonnement %}
-                                {% for id, nom in nom_type_abonnement %}
-                                    var valeurTypeAbonnement = document.querySelector('input[name="idtypeabonnement_{{ id }}"]').value;
-                                    if (valeurTypeAbonnement) {
-                                        desagregations.push("{{ nom }}: " + valeurTypeAbonnement);
-                                        sommeDesagregations += parseFloat(valeurTypeAbonnement) || 0; // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if nom_type_suivi %}
-                                {% for id, nom in nom_type_suivi %}
-                                    var valeurTypeSuivi = document.querySelector('input[name="idtypedesuivi_{{ id }}"]').value;
-                                    if (valeurTypeSuivi) {
-                                        desagregations.push("{{ nom }}: " + valeurTypeSuivi);
-                                        sommeDesagregations += parseFloat(valeurTypeSuivi) || 0; // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-
-
-
-                            // Récupère les valeurs des niveaux "Type Vulnérabilité"
-                            {% if nom_type_vulnerabilite %}
-                                {% for id, nom in nom_type_vulnerabilite %}
-                                    var valeurTypeVulnerabilite = document.querySelector('input[name="idtypedevulnerabilite_{{ id }}"]').value;
-                                    if (valeurTypeVulnerabilite) {
-                                        desagregations.push("{{ nom }}: " + valeurTypeVulnerabilite);
-                                        sommeDesagregations += parseFloat(valeurTypeVulnerabilite) || 0; // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            // Récupère les valeurs des niveaux "Type Prise en Charge"
-                            {% if nom_type_prise_charge %}
-                                {% for id, nom in nom_type_prise_charge %}
-                                    var valeurTypePriseCharge = document.querySelector('input[name="idtypedeprisecharge_{{ id }}"]').value;
-                                    if (valeurTypePriseCharge) {
-                                        desagregations.push("{{ nom }}: " + valeurTypePriseCharge);
-                                        sommeDesagregations += parseFloat(valeurTypePriseCharge) || 0; // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-                            // Récupère les valeurs des niveaux "Niveau"
-                            {% if nom_niveau %}
-                                {% for id, nom in nom_niveau %}
-                                    var valeurNiveau = document.querySelector('input[name="idniveau_{{ id }}"]').value;
-                                    if (valeurNiveau) {
-                                        desagregations.push("{{ nom }}: " + valeurNiveau);
-                                        sommeDesagregations += parseFloat(valeurNiveau) || 0; // Ajouter la valeur à la somme
-                                    }
-                                {% endfor %}
-                            {% endif %}
-
-
-
-
-       // Insère les valeurs dans le tableau de confirmation
-        document.getElementById('confirm-id-indicateur').textContent = idIndicateur;
-        document.getElementById('confirm-id-code-entite').textContent = idCodeEntite;
-        document.getElementById('confirm-anne').textContent = anne;
-        document.getElementById('confirm-desagregations').innerHTML = desagregations.join('<br>');
-
-        // Affiche la somme des désagrégations
-        document.getElementById('confirm-somme-desagregations').textContent = "Total : " + sommeDesagregations;
-
-        // Affiche la fenêtre modale
-        var modal = document.getElementById('confirmation-modal');
-        modal.style.display = 'flex';
-
-        // Gère les boutons de confirmation et d'annulation
-        document.getElementById('confirm-button').onclick = function() {
-            document.querySelector('.form-container').submit(); // Soumet le formulaire si confirmé
-        };
-
-        document.getElementById('cancel-button').onclick = function() {
-            modal.style.display = 'none'; // Ferme la fenêtre modale si annulé
-        };
-
-        return false; // Empêche la soumission immédiate du formulaire
-    };
-});
 // JavaScript pour afficher/masquer le bloc "Plusieurs niveaux"
 document.getElementById('multiple_levels').addEventListener('change', function() {
     var block = document.getElementById('multiple_levels_block');
@@ -1847,6 +594,36 @@ document.getElementById('multiple_levels').addEventListener('change', function()
         block.style.display = 'none';
     }
 });
+
+document.getElementById('niveau_desagregation').addEventListener('change', function() {
+    var selectedValue = this.value;
+
+    // Mappe les listes aux valeurs correspondantes
+    var lists = {{ lists | tojson }};
+
+    // Cache toutes les listes
+    var allLists = {{ all_lists | tojson | safe}};
+    allLists.forEach(function(id) {
+        var element = document.getElementById(id);
+        if (element) {
+            element.style.display = 'none';
+        }
+    });
+
+    // Affiche la liste correspondante à la valeur sélectionnée
+    var listToShow = lists[selectedValue];
+    if (listToShow) {
+        var elementToShow = document.getElementById(listToShow);
+        if (elementToShow) {
+            elementToShow.style.display = 'block';
+        } else {
+            console.error('Élément non trouvé:', listToShow);
+        }
+    } else {
+        console.error('Valeur sélectionnée non trouvée dans la liste:', selectedValue);
+    }
+});
+
 </script>
 </body>
 </html>

@@ -7,6 +7,7 @@ from flask import Flask,g
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import os
+from sqlalchemy import create_engine, MetaData, Table, delete, or_, Float
 
 import mysql.connector
 
@@ -145,20 +146,20 @@ migrate = Migrate(app, db)
 
 def fonction_suprression_vide():
     
-    
     try:
         # Création de l'engine et de la session
         engine = create_engine(url=f"mysql+pymysql://{os.getenv('MYSQL_USER')}:{os.getenv('MYSQL_PASSWORD')}@{os.getenv('MYSQL_HOST')}/{os.getenv('MYSQL_DATABASE')}")
         Session = sessionmaker(bind=engine)
         session = Session()
-
         # Chargement de la table avec autoload
         meta = MetaData()
         valeur_indicateurs = Table('ValeursIndicateurs', meta, autoload_with=engine)
-
-        # Suppression des lignes avec des valeurs NULL
         supprime_vide = delete(valeur_indicateurs).where(valeur_indicateurs.c.Valeur==valeur_indicateurs.c.Annee)
         session.execute(supprime_vide)
+        supprime_vide2 = delete(valeur_indicateurs).where(valeur_indicateurs.c.Valeur==valeur_indicateurs.c.f_indicateur_id)
+        session.execute(supprime_vide2)
+        supprime_vide3 = delete(valeur_indicateurs).where(valeur_indicateurs.c.Valeur<=20)
+        session.execute(supprime_vide3)
         session.commit()
 
         print('Connexion réussie avec suppression')
@@ -169,3 +170,50 @@ def fonction_suprression_vide():
     finally:
         # Nettoyage de la session
         pass
+
+
+#Fonction de suppression de valeurs null et autres
+def fonction_suppression_automatique():
+    try:
+        # Création de l'engine et de la session
+        engine = create_engine(url=f"mysql+pymysql://{os.getenv('MYSQL_USER')}:{os.getenv('MYSQL_PASSWORD')}@{os.getenv('MYSQL_HOST')}/{os.getenv('MYSQL_DATABASE')}")
+        Session = sessionmaker(bind=engine)
+        session = Session()
+        
+        # Chargement de la table avec autoload
+        meta = MetaData()
+        valeur_indicateurs = Table('ValeursIndicateurs', meta, autoload_with=engine)
+        
+        # Récupérer toutes les colonnes de la table
+        columns = valeur_indicateurs.columns.keys()
+        
+        # Filtrer uniquement les lignes où la colonne Valeur est numérique
+        filtre_valeur_numerique = valeur_indicateurs.c.Valeur.cast(Float) != None
+        
+        # Construire la condition de suppression dynamique
+        conditions = []
+        for column in columns:
+            if column not in ['Valeur', 'id','f_region_id','f_departement_id','f_sous_prefecture_id']:  # Exclure les colonnes 'Valeur' et 'id'
+                conditions.append(valeur_indicateurs.c.Valeur == valeur_indicateurs.c[column])
+        
+        # Supprimer les lignes où la Valeur correspond à d'autres colonnes
+        if conditions:
+            delete_query = delete(valeur_indicateurs).where(filtre_valeur_numerique).where(or_(*conditions))
+            session.execute(delete_query)
+        
+        # Supprimer les lignes où Valeur est None
+        delete_none_query = delete(valeur_indicateurs).where(valeur_indicateurs.c.Valeur == None)
+        session.execute(delete_none_query)
+        
+        # Commit les suppressions
+        session.commit()
+
+        print('Connexion réussie avec suppression automatique')
+
+    except Exception as e:
+        print(f"Erreur lors de la connexion: {e}")
+
+    finally:
+        # Nettoyage de la session
+        session.close()
+

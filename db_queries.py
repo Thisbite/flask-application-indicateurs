@@ -3,8 +3,7 @@ import pandas as pd
 import config as cf
 from mysql.connector import Error
 import mysql.connector
-
-
+import bcrypt  # Utiliser bcrypt pour le hachage des mots de passe (ou une autre librairie sécurisée)
 
 def get_indicators(id_indicateur):
     try:
@@ -197,10 +196,6 @@ def get_geographical_entity_name(code_entite):
         return None, None
 
 
-
-
-import bcrypt  # Utiliser bcrypt pour le hachage des mots de passe (ou une autre librairie sécurisée)
-
 def get_user_role_email(user_email, user_password):
     try:
         with cf.create_connection() as conn:
@@ -235,11 +230,6 @@ def get_user_role_email(user_email, user_password):
     except Exception as e:
         print(f"Exception in get_user_role_email: {e}")
         return None, None
-
-
-
-
-
 
 def get_cycle():
     try:
@@ -702,8 +692,6 @@ def get_type_de_manifestations_culturelles():
     return types_manifestations_culturelles
 
 
-import sqlite3
-
 
 def get_trimestre():
     try:
@@ -1085,8 +1073,6 @@ def insert_into_valeur_indicateur_libelle():
     print('Insertion pour libellé indicateur ok')
     conn.close()
 
-
-
 def insert_rejet():
     try:
         conn = cf.create_connection()
@@ -1119,10 +1105,7 @@ def insert_rejet():
         cursor.close()
         conn.close()
 
-
-
-cf.fonction_suprression_vide()
-cf.fonction_suprression_vide()
+cf.fonction_suppression_automatique()
 insert_into_valeur_indicateur_libelle()
 
 #insert_rejet()

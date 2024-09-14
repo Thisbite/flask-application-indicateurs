@@ -231,110 +231,51 @@ def questionnaire():
     nom_type_de_prise_charge_A = fm.desagregation_map["39"]()
     nom_niveau_A = fm.desagregation_map["40"]()
 # Fin bloc
-
+    import parametre as pa
 # Fin bloc 
+    indicator=None
+    id_indicateurT=None
+    niveau_choix=None
+    cod_indicateur_comparaison=None
+    all_lists=[]
+    lists=pa.lists #Menu deroulant
+    all_lists=pa.lists_all #Affichage dans java
 
     if request.method == 'POST':
         id_indicateur = request.form.get('id_indicateur')
         id_code_entite = request.form.get('id_code_entite')
-        id_niveau_desagregation = request.form.get('id_niveau_desagregation')
+        
+        # Récupération des paramètres pour l'id_indicateur donné
+        config = pa.indicateur_config.get(id_indicateur, {})
 
-        if id_indicateur and id_niveau_desagregation:
-            indicator = ag.get_indicators(id_indicateur)
-            entite_geog = ag.get_geographical_entity_name(id_code_entite)
-            
-            # Logique d'affectation en fonction du niveau de désagrégation
-            if id_niveau_desagregation == "1":  # Groupe âge
-                nom_groupe_age = fm.desagregation_map["1"]()
-            elif id_niveau_desagregation == "2":  # Sexe
-                nom_sexe =fm.desagregation_map["2"]()
-            elif id_niveau_desagregation == "4":  # Cycle scolaire
-                nom_cycle = fm.desagregation_map["4"]()
-            elif id_niveau_desagregation == "5":  # Prescolaire
-                nom_prescolaire = fm.desagregation_map["5"]()
-            elif id_niveau_desagregation == "6":  # Primaire
-                nom_primaire = fm.desagregation_map["6"]()
-            elif id_niveau_desagregation == "7":  # secondaire 1er cycle
-                nom_secondaire_1er = fm.desagregation_map["7"]()
-            elif id_niveau_desagregation == "8":  # Secondaire 2nd cycle
-                nom_secondaire_2nd = fm.desagregation_map["8"]()
-            elif id_niveau_desagregation == "9":  # Technique
-                nom_technique =fm.desagregation_map["9"]()
-            elif id_niveau_desagregation == "10":  # Supérieur
-                nom_superieur = fm.desagregation_map["10"]()
-            elif id_niveau_desagregation == "11":  # Professionnel
-                nom_professionnel =fm.desagregation_map["11"]()
-            elif id_niveau_desagregation == "12":  # Type examen scolaire
-                nom_type_examen_scolaire =fm.desagregation_map["12"]()
-            elif id_niveau_desagregation == "13":  # Infrastructure sanitaire
-                nom_infrastructure_sanitaire = fm.desagregation_map["13"]()
-            elif id_niveau_desagregation == "14":  # Lieu d'accouchement
-                nom_lieu_accouchement = fm.desagregation_map["14"]()
-            elif id_niveau_desagregation == "15":  # Etat vaccinal
-                nom_etat_vaccinal = fm.desagregation_map["15"]()
-            elif id_niveau_desagregation == "16":  # Type de vaccination
-                nom_type_vaccination = fm.desagregation_map["16"]()
-            elif id_niveau_desagregation == "17":  # Pathologie
-                nom_pathologie = fm.desagregation_map["17"]()
-            elif id_niveau_desagregation == "18":  # Tranche d'âge
-                nom_tranche_age = fm.desagregation_map["18"]()
-            elif id_niveau_desagregation == "19":  # Maladies du PEV
-                nom_maladie_pev = fm.desagregation_map["19"]()
-            elif id_niveau_desagregation == "20":  # Maladies infectieuses
-                nom_maladie_infectieuse = fm.desagregation_map["20"]()
-            elif id_niveau_desagregation == "21":  # Infection respiratoire
-                nom_infection_respiratoire =fm.desagregation_map["21"]()
-            elif id_niveau_desagregation == "22":  # Maladie IST
-                nom_maladies_ist = fm.desagregation_map["22"]()
-            elif id_niveau_desagregation == "23":  # Type de maladies
-                nom_type_maladies = fm.desagregation_map["23"]()
-            elif id_niveau_desagregation == "24":  # Activités IEC
-                nom_activites_iec =fm.desagregation_map["24"]()
-            elif id_niveau_desagregation == "25":  # Services médicaux
-                nom_services_medicaux = fm.desagregation_map["25"]()
-            elif id_niveau_desagregation == "26":  # Infrastructure ou organisation sportive
-                nom_infrastructure_organisation =fm.desagregation_map["26"]()
-            elif id_niveau_desagregation == "27":  # Discipline sportive
-                nom_discipline_sportive = fm.desagregation_map["27"]()
-            elif id_niveau_desagregation == "28":  # Type infrastructure culturelle
-                nom_type_infrastructure_culturel = fm.desagregation_map["28"]()
-            elif id_niveau_desagregation == "29":  # Type de patrimoines culturel
-                nom_type_patrimoine_culturel =fm.desagregation_map["29"]()
-            elif id_niveau_desagregation == "30":  # Type actions culturelle
-                nom_type_actions_culturelles =fm.desagregation_map["30"]()
-            elif id_niveau_desagregation == "31":  # Type opérateurs oeuvres et esprit
-                nom_type_operateur_oeuvre_esprit = fm.desagregation_map["31"]()
-            elif id_niveau_desagregation == "32":  # Type de groupe culturel
-                nom_type_de_groupe_culturel = fm.desagregation_map["32"]()
-            elif id_niveau_desagregation == "33":  # Type de manifestation culturelle
-                nom_type_de_manifestation_culturelle = fm.desagregation_map["33"]()
-            elif id_niveau_desagregation == "34":  # Trimestre
-                nom_trimestre = fm.desagregation_map["34"]()
-            elif id_niveau_desagregation == "35":  # Etat des oeuvres
-                nom_etat_des_oeuvres =fm.desagregation_map["35"]()
-            elif id_niveau_desagregation == "36":  # Type d'abonnements
-                nom_type_abonnement = fm.desagregation_map["36"]()
-            elif id_niveau_desagregation == "37":  # Type de suivi
-                nom_type_de_suivi = fm.desagregation_map["37"]()
-            elif id_niveau_desagregation == "38":  # Type de vulnérabilités
-                nom_type_de_vulnerabilite = fm.desagregation_map["38"]()
-            elif id_niveau_desagregation == "39":  # Type de prise en charge
-                nom_type_de_prise_charge =fm.desagregation_map["39"]()
-            elif id_niveau_desagregation == "40":  # Niveau
-                nom_niveau = fm.desagregation_map["40"]()
+        # Extraction des valeurs communes
+        if config.get('fetch_indicateur'):
+            _, nom_ind = ag.get_indicators(id_indicateur)
+        if config.get('fetch_sexe'):
+            nom_sexe = ag.get_sexes()
+        if config.get('fetch_groupe_age'):
+            nom_groupe_age = ag.get_groupe_age()
+        if config.get('fetch_cycle_scolaire'):
+            nom_cycle = ag.get_cycle()
 
-            if indicator:
-                mon_id_indicateur, nom_ind = indicator
-            else:
-                nom_ind = "Indicateur non trouvé"
-            if entite_geog:
-                id_entite, nom_entite = entite_geog
+        # Extraction des valeurs spécifiques
+        entite_geog = ag.get_geographical_entity_name(id_code_entite)
+        cod_indicateur_comparaison = id_indicateur
+        id_entite, nom_entite = entite_geog
+        niveau_choix = config.get('niveau_choix', {})
+
+        
+       
 
     return render_template('questionnaire.html',
-                nom_ind=nom_ind,
-                id_entite=id_entite,
-                nom_entite=nom_entite,
-                id_code_entite=id_code_entite,
+                all_lists=all_lists,
+                lists =lists ,
+                cod_indicateur_comparaison=cod_indicateur_comparaison,#Il sert à comparer
+                niveau_choix=niveau_choix,# Niveau desagregation  
+                nom_ind=nom_ind,#Nom de l'indicateur
+                id_entite=id_entite, #Type entité géographie
+                nom_entite=nom_entite, #Nom de l'entité geographie
+                id_code_entite=id_code_entite, #Code Identifiant géographique 
                 id_indicateur=id_indicateur,
                 nom_groupe_age = nom_groupe_age,
                 nom_groupe_age_A = nom_groupe_age_A,
@@ -740,30 +681,6 @@ def submit_correction():
 
 
 
-
-""" 
-**********************************************Fin
-"""
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 unique_key=None
 @app.route('/submit', methods=['POST'])
 def submit():
@@ -771,7 +688,7 @@ def submit():
         flash('Vous n\'êtes pas autorisé à accéder à cette page.')
         return redirect(url_for('home')) 
     email_agent=current_user.email
-    # Récupère les données passées à la route submit
+    # Récupère les données passées à la route submit pour le deuxieme choix
     mon_id_indicateur = request.form.get('id_indicateur2')
     id_code_entite = request.form.get('id_code_entite2')
     
@@ -1054,7 +971,7 @@ def submit():
         )
 
     # Ajout d'un message flash pour informer l'utilisateur
-    flash(f"Données envoyées avec succès!{  idprimaire }")
+    flash(f"Données envoyées avec succès!")
 
     # Redirection vers la route d'affichage du formulaire
     return redirect(url_for('questionnaire'))

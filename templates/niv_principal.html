@@ -1,0 +1,457 @@
+<div id="Groupe-list2" style="display: none;">
+    <ul class="align-list">
+        {% if nom_groupe_age %}
+            {% for id, nom in nom_groupe_age %}
+            <li>
+                <em>{{ nom }} ans</em>
+                <input type="text" name="id_{{ id }}" placeholder="Entrez une valeur">
+            </li>
+            {% endfor %}
+        {% endif %}
+    </ul>
+</div>
+
+<div id="Sexe-list1" style="display: none;">
+{% if nom_sexe %}
+<ul class="align-list">
+    {% for id, nom in nom_sexe %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="sexe_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+</div>
+
+
+
+
+<div id='Cycle-list11' style='display: none;'>
+{% if nom_cycle %}
+<ul class="align-list">
+    {% for id, nom in nom_cycle %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idcycle_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+</div>
+
+{% if nom_prescolaire %}
+<ul class="align-list">
+    {% for id, nom in nom_prescolaire %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idprescolaire_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% if nom_primaire %}
+<ul class="align-list">
+    {% for id, nom in nom_primaire %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idprimaire_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+
+{% if nom_secondaire_1er %}
+<ul class="align-list">
+    {% for id, nom in nom_secondaire_1er %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idsecondaire1_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_secondaire_2nd %}
+<ul class="align-list">
+    {% for id, nom in nom_secondaire_2nd %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idsecondaire2_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_technique %}
+<ul class="align-list">
+    {% for id, nom in nom_technique %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idtechnique_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_superieur %}
+<ul class="align-list">
+    {% for id, nom in nom_superieur %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idsuperieur_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_professionnel %}
+<ul class="align-list">
+    {% for id, nom in nom_professionnel %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idprofessionnel_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_type_examen_scolaire %}
+<ul class="align-list">
+    {% for id, nom in nom_type_examen_scolaire %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idtypeexamenscolaire_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+        {% if nom_infrastructure %}
+<ul class="align-list">
+    {% for id, nom in nom_infrastructure %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idinfrastructure_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_lieu_accouchement %}
+<ul class="align-list">
+    {% for id, nom in nom_lieu_accouchement %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idlieuaccouchement_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_etat_vaccinal %}
+<ul class="align-list">
+    {% for id, nom in nom_etat_vaccinal %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idetatvaccinal_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_type_vaccination %}
+<ul class="align-list">
+    {% for id, nom in nom_type_vaccination %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idtypevaccination_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_pathologie %}
+<ul class="align-list">
+    {% for id, nom in nom_pathologie %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idpathologie_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_tranche_age %}
+<ul class="align-list">
+    {% for id, nom in nom_tranche_age %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idtrancheage_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_maladie_pev %}
+<ul class="align-list">
+    {% for id, nom in nom_maladie_pev %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idmaladiepev_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_maladie_infectieuse %}
+<ul class="align-list">
+    {% for id, nom in nom_maladie_infectieuse %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idmaladieinfectieuse_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_infection_respiratoire %}
+<ul class="align-list">
+    {% for id, nom in nom_infection_respiratoire %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idinfectionrespiratoire_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_maladies_ist %}
+<ul class="align-list">
+    {% for id, nom in nom_maladies_ist %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idmaladiesist_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_type_maladies %}
+<ul class="align-list">
+    {% for id, nom in nom_type_maladies %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idtypemaladies_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_activites_iec %}
+<ul class="align-list">
+    {% for id, nom in nom_activites_iec %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idactivitesiec_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_services_medicaux %}
+<ul class="align-list">
+    {% for id, nom in nom_services_medicaux %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idservicesmedicaux_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_infrastructure_organisation %}
+<ul class="align-list">
+    {% for id, nom in nom_infrastructure_organisation %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idinfrastructureorganisation_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_discipline_sportive %}
+<ul class="align-list">
+    {% for id, nom in nom_discipline_sportive %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="iddisciplinesportive_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_type_infrastructure_culturel %}
+<ul class="align-list">
+    {% for id, nom in nom_type_infrastructure_culturel %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idtypeinfrastructureculturel_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_type_patrimoine_culturel %}
+<ul class="align-list">
+    {% for id, nom in nom_type_patrimoine_culturel %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idtypepatrimoineculturel_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_type_actions_culturelles %}
+<ul class="align-list">
+    {% for id, nom in nom_type_actions_culturelles %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idtypeactionsculturelles_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_type_operateur_oeuvre_esprit %}
+<ul class="align-list">
+    {% for id, nom in nom_type_operateur_oeuvre_esprit %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idtypeoperateuroeuvreesprit_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_type_de_groupe_culturel %}
+<ul class="align-list">
+    {% for id, nom in nom_type_de_groupe_culturel %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idtypedegroupeculturel_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_type_de_manifestation_culturelle %}
+<ul class="align-list">
+    {% for id, nom in nom_type_de_manifestation_culturelle %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idtypedemanifestationculturelle_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_trimestre %}
+<ul class="align-list">
+    {% for id, nom in nom_trimestre %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idtrimestre_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_etat_des_oeuvres %}
+<ul class="align-list">
+    {% for id, nom in nom_etat_des_oeuvres %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idetatdesoeuvres_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_type_abonnement %}
+<ul class="align-list">
+    {% for id, nom in nom_type_abonnement %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idtypeabonnement_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+        {% if nom_type_de_suivi %}
+<ul class="align-list">
+    {% for id, nom in nom_type_de_suivi %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idtypedesuivi_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_type_de_vulnerabilite %}
+<ul class="align-list">
+    {% for id, nom in nom_type_de_vulnerabilite %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idtypedevulnerabilite_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_type_de_prise_charge %}
+<ul class="align-list">
+    {% for id, nom in nom_type_de_prise_charge %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idtypedeprisecharge_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% if nom_niveau %}
+<ul class="align-list">
+    {% for id, nom in nom_niveau %}
+    <li>
+        <em>{{ nom }}</em>
+        <input type="text" name="idniveau_{{ id }}" placeholder="Entrez une valeur">
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+
+
+        <button type="submit">Envoyer</button>
+    </form>
+</div>
+{% endif %}
+
+
+
+    <!-- Affichage des messages flash -->
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="flash-messages">
+            {% for message in messages %}
+                <div class="flash-message">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}

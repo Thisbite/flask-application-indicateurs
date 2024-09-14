@@ -122,8 +122,74 @@ button[type="submit"]:hover,
     margin: 20px;
     display: inline-block;
     border-radius: 10px;
-    background-color: #fff3e0; /* Fond légèrement orange */
+    background-color: #fff3e0;
+    width: 100%; /* Assurez-vous que le conteneur prend toute la largeur disponible */
+    box-sizing: border-box; /* Gérer les marges et padding pour ne pas dépasser la largeur */
 }
+
+/* Styles des labels pour éviter le retour à la ligne */
+.orange-frame label {
+    display: inline-block;
+    margin-right: 10px;
+    width: 150px; /* Largeur fixe pour éviter que les labels soient trop courts */
+    vertical-align: middle;
+    text-align: right;
+}
+
+/* Styles des champs d'entrée */
+.orange-frame input[type="text"], .orange-frame select {
+    width: 200px; /* Ajustez selon vos besoins */
+    padding: 5px;
+    margin-left: 10px; /* Espace entre le label et le champ */
+    box-sizing: border-box;
+}
+
+/* Ajustement du style des cases à cocher */
+.orange-frame input[type="checkbox"] {
+    margin-left: 5px;
+}
+
+
+
+/* Espacement supplémentaire */
+.orange-frame br {
+    margin-bottom: 10px; /* Ajoute de l'espace entre les lignes */
+}
+
+
+
+.blue-frame {
+    border: 2px solid blue;
+    padding: 20px;
+    margin: 10px 0;
+    border-radius: 10px;
+    background-color: #f0f8ff;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column; /* Pour aligner les éléments verticalement */
+    gap: 15px; /* Espacement entre les éléments */
+}
+
+/* Assurez-vous que les labels et inputs du cadre bleu soient en pleine largeur */
+.blue-frame label, 
+.blue-frame input[type="text"], 
+.blue-frame select {
+    width: 100%; /* Les éléments prennent toute la largeur du cadre bleu */
+    display: block; /* Pour s'assurer qu'ils soient disposés sur des lignes séparées */
+    margin: 5px 0; /* Un petit espacement entre chaque élément */
+}
+
+/* Ajustement pour les checkboxes dans le cadre bleu */
+.blue-frame input[type="checkbox"] {
+    width: auto; /* Les cases à cocher doivent avoir leur taille normale */
+    margin-left: 0;
+}
+
+
+
+
+
 
 /* Styles des messages flash */
 .flash-messages {
@@ -221,107 +287,8 @@ button[type="submit"]:hover,
     margin: 0 auto;
 }
 
-/* Styles du contenu de confirmation */
-/* Styles pour la modale de confirmation */
-#confirmation-modal {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Fond sombre semi-transparent */
-    z-index: 1000;
-}
-
-/* Styles pour le contenu de la modale */
-#confirmation-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    max-width: 500px;
-    width: 100%;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-    text-align: center;
-}
-
-/* Styles pour le titre de la modale */
-#confirmation-content h2 {
-    color: #0056b3; /* Bleu */
-    margin-bottom: 20px;
-    font-size: 20px;
-    font-weight: bold;
-}
-
-/* Styles pour le tableau */
-#confirmation-content table {
-    width: 100%;
-    border-collapse: collapse; /* Supprime les espaces entre les cellules */
-    margin-bottom: 20px;
-}
-
-#confirmation-content th,
-#confirmation-content td {
-    padding: 10px;
-    border: 1px solid #ddd;
-    text-align: left;
-    font-size: 16px;
-}
-
-#confirmation-content th {
-    background-color: #f4f4f9;
-    color: #0056b3; /* Bleu */
-    font-weight: bold;
-}
-
-#confirmation-content tr:nth-child(even) {
-    background-color: #f9f9f9; /* Couleur alternative pour les lignes paires */
-}
-
-/* Styles pour le total */
-#confirmation-content td[colspan="2"] {
-    text-align: right;
-    font-weight: bold;
-}
-
-/* Styles pour les boutons */
-#confirm-button,
-#cancel-button {
-    background-color: #0056b3; /* Bleu */
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    margin: 5px;
-}
-
-#confirm-button:hover,
-#cancel-button:hover {
-    background-color: #004494; /* Bleu plus foncé au survol */
-}
-
-/* Style pour le bouton de refus */
-#cancel-button {
-    background-color: #ff4d4d; /* Rouge */
-}
-
-#cancel-button:hover {
-    background-color: #cc0000; /* Rouge plus foncé au survol */
-}
 
 
-.blue-frame {
-    border: 2px solid blue;
-    padding: 20px;
-    margin: 20px 0;
-    border-radius: 10px;
-    background-color: #f0f8ff;
-    width: flex;
-}
 
 h2 {
     color: blue;
