@@ -19,8 +19,8 @@
             </div>
 
             <div class="form-group">
-                <label for="sheet-select">Sélectionner la feuille :</label>
-                <select id="sheet-select" name="sheet" class="form-control" required></select>
+                <label for="sheet-select">Sélectionner les feuilles :</label>
+                <div id="sheet-select" class="form-control" style="height:auto;"></div>
             </div>
 
             <button type="submit" class="btn btn-primary">Charger le fichier</button>
@@ -54,7 +54,9 @@
                             var sheetSelect = $('#sheet-select');
                             sheetSelect.empty();
                             response.sheets.forEach(function(sheet) {
-                                sheetSelect.append(new Option(sheet, sheet));
+                                sheetSelect.append(
+                                    '<label><input type="checkbox" name="sheets" value="' + sheet + '"> ' + sheet + '</label><br>'
+                                );
                             });
                         },
                         error: function(xhr) {
@@ -64,7 +66,7 @@
                 }
             });
 
-            // Soumettre le formulaire pour afficher les données de la feuille sélectionnée
+            // Soumettre le formulaire pour afficher les données des feuilles sélectionnées
             $('#upload-form').on('submit', function(e) {
                 e.preventDefault();  // Empêche la soumission normale
 
@@ -90,24 +92,31 @@
             });
 
             // Confirmation de l'insertion
-            $('#confirm-button').on('click', function() {
-                var formData = new FormData($('#upload-form')[0]);
+           // Confirmation de l'insertion
+                $('#confirm-button').on('click', function() {
+                    var formData = new FormData($('#upload-form')[0]);
 
-                $.ajax({
-                    url: "{{ url_for('confirm_insert_questionnaire') }}",  // Vue pour confirmer l'insertion
-                    type: 'POST',
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function(response) {
-                        alert('Données insérées avec succès.');
-                        window.location.reload();  // Recharger la page après confirmation
-                    },
-                    error: function(xhr) {
-                        alert('Erreur lors de l\'insertion : ' + xhr.responseText);
-                    }
-                });
-            });
+                    $.ajax({
+                        url: "{{ url_for('confirm_insert_questionnaire') }}",  // Vue pour confirmer l'insertion
+                        type: 'POST',
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function(response) {
+                            // Afficher le message renvoyé par le serveur
+                            if (response.message) {
+                                alert(response.message);  // Message dynamique
+                            } else {
+                                alert('Données insérées avec succès.');  // Message par défaut si pas de message dans la réponse
+                            }
+                            window.location.reload();  // Recharger la page après confirmation
+                        },
+                        error: function(xhr) {
+                            alert('Erreur lors de l\'insertion : ' + xhr.responseText);
+                        }
+                    });
+});
+
         });
     </script>
 </body>

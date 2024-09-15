@@ -438,87 +438,104 @@ def get_sheets():
 @login_required
 def preview_data():
     try:
-        if 'file' not in request.files or 'sheet' not in request.form:
-            return jsonify({'error': 'Fichier ou feuille manquant.'}), 400
+        if 'file' not in request.files or 'sheets' not in request.form:
+            return jsonify({'error': 'Fichier ou feuilles manquants.'}), 400
 
         file = request.files['file']
-        sheet_name = request.form['sheet']
+        sheet_names = request.form.getlist('sheets')  # Récupérer la liste des feuilles sélectionnées
 
         if file.filename == '':
             return jsonify({'error': 'Aucun fichier sélectionné.'}), 400
 
-        # Lire les données de la feuille sélectionnée
-        df = pd.read_excel(file, sheet_name=sheet_name)
-        table_html = df.to_html(classes='table table-striped', index=False)
+        # Créer une chaîne HTML pour afficher les tableaux de toutes les feuilles sélectionnées
+        all_tables_html = ""
 
-        return jsonify({'table_html': table_html}), 200
+        for sheet_name in sheet_names:
+            # Lire les données de la feuille sélectionnée
+            df = pd.read_excel(file, sheet_name=sheet_name)
+            table_html = df.to_html(classes='table table-striped', index=False)
+
+            # Ajouter un titre pour chaque feuille et son tableau correspondant
+            all_tables_html += f"<h3>Feuille : {sheet_name}</h3>{table_html}<hr>"
+
+        return jsonify({'table_html': all_tables_html}), 200
 
     except Exception as e:
         return jsonify({'error': f"Erreur lors de la lecture des données : {str(e)}"}), 500
+
+
+
 
 #Confirmer avant validation
 @app.route('/confirm_insert_questionnaire', methods=['POST'])
 @login_required
 def confirm_insert_questionnaire():
     try:
-        # Vérification de la présence du fichier et de la feuille
-        if 'file' not in request.files or 'sheet' not in request.form or 'indicator' not in request.form:
-            return jsonify({'error': 'Fichier, feuille ou indicateur manquant.'}), 400
+        if 'file' not in request.files or 'sheets' not in request.form:
+            return jsonify({'error': 'Fichier ou feuilles manquants.'}), 400
 
         file = request.files['file']
-        sheet_name = request.form['sheet']
-        _,indicator = sheet_name.split('-')
+        sheet_names = request.form.getlist('sheets')  # Liste des feuilles sélectionnées
+        processed_sheets = []  # Liste pour suivre les feuilles traitées
 
-        # Extraire le code de la feuille
-        sheet_code = sheet_name.split('-')[-1]
-
-        df = pd.read_excel(file, sheet_name=sheet_name)
+        # Charger le fichier Excel une fois
+        excel_file = pd.ExcelFile(file)
 
         conn = cf.create_connection()
         cursor = conn.cursor()
 
-        # Définir les colonnes et requêtes en fonction de l'indicateur
-        if indicator == '1001':
-            sql = """
-                INSERT INTO valeur_indicateur_libelle (
-                    id, nom_region, nom_departement, nom_sousprefecture, sexe, groupe_age, age, Valeur, Annee
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """
-            for _, row in df.iterrows():
-                id = cf.generate_unique_key()
-                region = row['Région']
-                departement = row['Département']
-                sous_prefecture = row['Sous-prefecture']
-                sexe = row['Sexe']
-                groupe_age = row['Groupe d\'age']
-                age = row['Age']
-                valeur = row['Valeur']
-                annee = row['Annee']
-                cursor.execute(sql, (id, region, departement, sous_prefecture, sexe, groupe_age, age, valeur, annee))
+        for sheet_name in sheet_names:
+            # Vérifier que la feuille existe
+            if sheet_name in excel_file.sheet_names:
+                # Lire la feuille spécifique
+                df = pd.read_excel(excel_file, sheet_name=sheet_name)
 
-        elif indicator == 'indicateur_autre':  # Ajoute ici d'autres conditions selon l'indicateur
-            sql = """
-                INSERT INTO valeur_indicateur_autre (
-                    id, autre_colonne_1, autre_colonne_2
-                ) VALUES (%s, %s, %s)
-            """
-            for _, row in df.iterrows():
-                id = cf.generate_unique_key()
-                autre_colonne_1 = row['Colonne1']
-                autre_colonne_2 = row['Colonne2']
-                cursor.execute(sql, (id, autre_colonne_1, autre_colonne_2))
+                # Vérifier que le nom de la feuille contient bien un tiret ('-')
+                if '-' in sheet_name:
+                    parts = sheet_name.split('-')
+                    # Vérifier que la partie après le tiret existe bien et correspond à '1001'
+                    if len(parts) > 1 and parts[1] == '1001':
+                        # Insérer les données dans la base pour chaque feuille sélectionnée
+                        for _, row in df.iterrows():
+                            id = cf.generate_unique_key()
+                            region = row['Région']
+                            departement = row['Département']
+                            sous_prefecture = row['Sous-prefecture']
+                            sexe = row['Sexe']
+                            groupe_age = row['Groupe d\'age']
+                            age = row['Age']
+                            valeur = row['Valeur']
+                            annee = row['Annee']
 
-        else:
-            return jsonify({'error': 'Indicateur non reconnu.'}), 400
+                            sql = """
+                                INSERT INTO valeur_indicateur_libelle (
+                                    id, nom_region, nom_departement, nom_sousprefecture, sexe, groupe_age, age, Valeur, Annee
+                                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                            """
+                            cursor.execute(sql, (id, region, departement, sous_prefecture, sexe, groupe_age, age, valeur, annee))
+                        
+                        # Ajouter le nom de la feuille à la liste des feuilles traitées
+                        processed_sheets.append(sheet_name)
 
+        # Commit des données dans la base
         conn.commit()
-        return jsonify({'message': 'Données insérées avec succès.'}), 200
+
+        # Retourner un message avec les feuilles traitées
+        if processed_sheets:
+            message = f"Données insérées avec succès pour les feuilles : {', '.join(processed_sheets)}"
+        else:
+            message = "Aucune donnée n'a été insérée car aucune feuille ne correspondait à l'indicateur '1001'."
+        
+        return jsonify({'message': message}), 200
 
     except Exception as e:
         return jsonify({'error': f"Erreur lors de l'insertion des données : {str(e)}"}), 500
+
     finally:
         if conn:
             conn.close()
+
+
 
 
 
