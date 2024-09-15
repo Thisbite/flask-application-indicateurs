@@ -21,7 +21,7 @@ form {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
     max-width: 400px;
-    width: 100%;
+    width: 600px;
     box-sizing: border-box;
 }
 
@@ -32,6 +32,14 @@ label {
 }
 
 input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+input[type="password"] {
     width: 100%;
     padding: 10px;
     margin-bottom: 20px;
@@ -56,7 +64,7 @@ button {
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: #290ed7;
 }
 
 h1 {

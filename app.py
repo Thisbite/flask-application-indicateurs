@@ -5,10 +5,13 @@ import os
 import logging
 import config as cf
 import db_queries as ag
-from models import Agent,Administrateur,Superviseur
 
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_login import UserMixin
 import pandas as pd
 app = Flask(__name__)
+# Configuration du logging
+logging.basicConfig(level=logging.DEBUG)
 
 # Configuration de la clé secrète pour les sessions Flask
 app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY', '774d8fe18f818cdb0f03a7d2471d55797c709a6aede6289dcc24481a7a92f40a')
@@ -19,29 +22,12 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-
-# Configuration du logging
-logging.basicConfig(level=logging.DEBUG)
-
-
-
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'user_login'
 
 
 
-
-""" 
-Pour la connexion et parametre de gestion utilisateur
-"""
-
-from flask import Flask, render_template, request, redirect, url_for, flash
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from flask_login import UserMixin
 
 
 """ 
@@ -50,94 +36,119 @@ from flask_login import UserMixin
 
 
 
+
+
+# Fonction pour charger l'utilisateur selon l'ID
 @login_manager.user_loader
 def load_user(user_id):
-    # Charger l'utilisateur en fonction de l'ID
-    return Agent.query.get(int(user_id)) or Superviseur.query.get(int(user_id)) or Administrateur.query.get(int(user_id))
+    # Charger l'utilisateur en fonction de l'ID dans les trois tables
+    return (Agent.query.get(int(user_id)) or 
+            Superviseur.query.get(int(user_id)) or 
+            Administrateur.query.get(int(user_id)))
+
 # Modèles SQLAlchemy
 class Superviseur(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    id_direction_statistique = db.Column(db.Integer, db.ForeignKey('direction_statistique.direction_id'))
+    id_direction_statistique = db.Column(db.Integer, db.ForeignKey('direction_statistique.id'))
     nom = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
-    role = db.Column(db.String(50), default='superviseur')  # Ajout du champ role
+    password = db.Column(db.String(100), nullable=False)
+    role = db.Column(db.String(50), default='superviseur')
 
 class Agent(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    id_sup = db.Column(db.Integer, db.ForeignKey('superviseur.id'))
+    id_sup = db.Column(db.Integer, db.ForeignKey('superviseur.id'))  # Corrigé pour correspondre à la clé étrangère
     nom = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
-    role = db.Column(db.String(50), default='agent')  # Ajout du champ role
+    password = db.Column(db.String(100), nullable=False)
+    role = db.Column(db.String(50), default='agent')
 
 class Administrateur(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nom = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
-    role = db.Column(db.String(50), default='administrateur')  # Ajout du champ role
+    password = db.Column(db.String(100), nullable=False)
+    role = db.Column(db.String(50), default='administrateur')
 
-
+# Route pour la page d'accueil
 @app.route('/')
 def home():
     return render_template('login.html')
 
+# Route de connexion
 @app.route('/login', methods=['GET', 'POST'])
 def user_login():
-    email = request.form.get('email')
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
 
-    # Check if the email belongs to an Agent
-    agent = Agent.query.filter_by(email=email).first()
-    if agent:
-        login_user(agent)  # Authentifie l'agent
-        return redirect(url_for('agents'))
+        # Rechercher l'utilisateur parmi les trois tables
+        user = (Agent.query.filter_by(email=email).first() or
+                Superviseur.query.filter_by(email=email).first() or
+                Administrateur.query.filter_by(email=email).first())
 
-    # Check if the email belongs to a Superviseur
-    superviseur = Superviseur.query.filter_by(email=email).first()
-    if superviseur:
-        login_user(superviseur)  # Authentifie le superviseur
-        return redirect(url_for('superviseurs'))
+        if user:
+            # Comparer directement le mot de passe sans hachage
+            if user.password == password:
+                login_user(user)
+                # Redirection selon le rôle de l'utilisateur
+                if isinstance(user, Agent):
+                    return redirect(url_for('agents'))
+                elif isinstance(user, Superviseur):
+                    return redirect(url_for('superviseurs'))
+                elif isinstance(user, Administrateur):
+                    return redirect(url_for('administrateurs'))
+            else:
+                flash('Mot de passe incorrect.', 'danger')
+        else:
+            flash('Email non reconnu.', 'danger')
+        return redirect(url_for('home'))
+    
+    return render_template('login.html')
 
-    # Check if the email belongs to an Administrateur
-    administrateur = Administrateur.query.filter_by(email=email).first()
-    if administrateur:
-        login_user(administrateur)  # Authentifie l'administrateur
-        return redirect(url_for('administrateurs'))
-
-    flash('Email not recognized.')
+#Deconnexion 
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()  # Déconnecte l'utilisateur actuel
+    flash('Vous avez été déconnecté avec succès.', 'success')
     return redirect(url_for('home'))
+
 
 
 @app.route('/agents')
 def agents():
+    if not isinstance(current_user, Agent):
+        flash("Accès refusé : Vous devez être connecté en tant qu'agent pour accéder à cette page.", "danger")
+        return redirect(url_for('home'))
     return render_template('agents.html')
 
 @app.route('/superviseurs')
 def superviseurs():
+    if not isinstance(current_user, Superviseur):
+        flash("Accès refusé : Vous devez être connecté en tant que superviseur pour accéder à cette page.", "danger")
+        return redirect(url_for('home'))
     return render_template('superviseurs.html')
 
 @app.route('/administrateurs')
 def administrateurs():
+    if not isinstance(current_user,Administrateur):
+        flash("Accès refusé : Vous devez être connecté en tant qu'administrateur pour accéder à cette page.", "danger")
+        return redirect(url_for('home'))
     return render_template('administrateurs.html')
 
 
-""" 
-++++++++++++++++++++ Fin de section connexion
-"""
 
-
-
-
-
-
-""" 
-*****************Début de section questionnaire
-"""
 import forms as fm
+# Questionnaire de saisie de données
+
 @app.route('/questionnaire', methods=['GET', 'POST'])
 @login_required
 def questionnaire():
-    if current_user.role !='agent':
-        flash('Vous n\'êtes pas autorisé à accéder à cette page.')
-        return redirect(url_for('home')) 
+    if not isinstance(current_user, Agent):
+        flash("Accès refusé : Vous devez être connecté en tant qu'agent pour accéder à cette page.", "danger")
+        return redirect(url_for('home'))
+   
     nom_entite = ""
     nom_ind = None
     id_entite = None
@@ -363,13 +374,6 @@ def questionnaire():
                 nom_age_A=nom_age_A
             )
     
-   
-   
-   
-   
-
-
-
 # Importation
 @app.route('/upload_questionnaire', methods=['GET'])
 @login_required
@@ -407,7 +411,7 @@ def handle_upload_questionnaire():
     return redirect(url_for('upload_questionnaire'))
 
 
-
+#Importation des données par excel
 import pandas as pd
 from flask import request, jsonify
 
@@ -433,7 +437,7 @@ def get_sheets():
         return jsonify({'error': f"Erreur lors de la récupération des feuilles : {str(e)}"}), 500
     
     
-# view des données imùporter
+# view des données importer
 @app.route('/preview_data', methods=['POST'])
 @login_required
 def preview_data():
@@ -466,7 +470,7 @@ def preview_data():
 
 
 
-#Confirmer avant validation
+#Confirmer avant validation et c'est la section d'insertion de données dans la base
 @app.route('/confirm_insert_questionnaire', methods=['POST'])
 @login_required
 def confirm_insert_questionnaire():

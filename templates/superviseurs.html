@@ -31,6 +31,10 @@
         .btn-green:hover {
             background-color: #218838; /* Vert plus foncé au survol */
         }
+        .btn-red {
+            background-color: red;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -40,6 +44,7 @@
     
     <!-- Lien vers la page d'upload de fichier -->
     <a href="{{ url_for('upload_page') }}" class="btn btn-green">Importer fichier de rejets</a>
+    <a href="{{ url_for('logout') }}" class="btn btn-red">Déconnexion</a>
 
 </body>
 </html>
