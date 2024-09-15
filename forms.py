@@ -3,6 +3,7 @@ import db_queries as ag
 desagregation_map = {
     "1": ag.get_groupe_age,
     "2": ag.get_sexes,
+    "3":ag.get_age,
     "4": ag.get_cycle,
     "5": ag.get_niveau_prescolaire,
     "6": ag.get_niveau_primaire,

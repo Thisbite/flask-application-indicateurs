@@ -3,46 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Importer des données</title>
-    
-    <!-- Lien vers votre propre fichier CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='questionnaire_importer.css') }}">
-
-    <!-- Ajout d'un CDN Bootstrap si vous souhaitez utiliser Bootstrap -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
+    <title>Importer un fichier Excel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/questionnaire_importer.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <div class="container mt-5">
-        <h1 class="text-center mb-4">Importation des données pour les indicateurs</h1>
-        
-        <!-- Formulaire d'importation -->
-        <form action="{{ url_for('upload_questionnaire') }}" method="POST" enctype="multipart/form-data" class="shadow p-4 rounded bg-light">
+    <div class="container">
+        <h1>Importer un fichier Excel</h1>
+        <!-- Formulaire pour le téléchargement et la prévisualisation -->
+        <form id="upload-form" enctype="multipart/form-data" class="shadow">
+            <input type="hidden" name="indicator" value="indicateur_effectif_1001"> <!-- Champ caché pour l'indicateur -->
+            
             <div class="form-group">
-                <label for="file">Sélectionnez un fichier Excel (.xlsx) :</label>
-                <input type="file" id="file" name="file" class="form-control" accept=".xlsx" required>
+                <input type="file" name="file" id="file-input" accept=".xlsx" required class="form-control">
             </div>
 
-            <!-- Bouton d'importation -->
-            <div class="text-center">
-                <button type="submit" class="btn btn-primary">Importer</button>
+            <div class="form-group">
+                <label for="sheet-select">Sélectionner la feuille :</label>
+                <select id="sheet-select" name="sheet" class="form-control" required></select>
             </div>
+
+            <button type="submit" class="btn btn-primary">Charger le fichier</button>
         </form>
-        
-        <!-- Affichage des messages flash -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            <div class="mt-4">
-              {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">{{ message }}</div>
-              {% endfor %}
-            </div>
-          {% endif %}
-        {% endwith %}
+
+        <!-- Zone d'aperçu des données -->
+        <div id="data-preview" class="mt-4"></div>
+
+        <!-- Bouton de confirmation -->
+        <div id="confirm-section" class="mt-4" style="display:none;">
+            <button id="confirm-button" class="btn btn-success">Confirmer l'insertion</button>
+        </div>
     </div>
 
-    <!-- Script Bootstrap si nécessaire -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Charger le fichier et lister les feuilles
+            $('#file-input').on('change', function() {
+                var file = this.files[0];
+                if (file) {
+                    var formData = new FormData();
+                    formData.append('file', file);
+
+                    $.ajax({
+                        url: "{{ url_for('get_sheets') }}",  // Appel pour obtenir les feuilles Excel
+                        type: 'POST',
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function(response) {
+                            var sheetSelect = $('#sheet-select');
+                            sheetSelect.empty();
+                            response.sheets.forEach(function(sheet) {
+                                sheetSelect.append(new Option(sheet, sheet));
+                            });
+                        },
+                        error: function(xhr) {
+                            alert('Erreur lors de la récupération des feuilles : ' + xhr.responseText);
+                        }
+                    });
+                }
+            });
+
+            // Soumettre le formulaire pour afficher les données de la feuille sélectionnée
+            $('#upload-form').on('submit', function(e) {
+                e.preventDefault();  // Empêche la soumission normale
+
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: "{{ url_for('preview_data') }}",  // Vue pour prévisualiser les données
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        // Afficher l'aperçu des données
+                        $('#data-preview').html(response.table_html);
+
+                        // Afficher le bouton de confirmation
+                        $('#confirm-section').show();
+                    },
+                    error: function(xhr) {
+                        alert('Erreur lors du chargement du fichier : ' + xhr.responseText);
+                    }
+                });
+            });
+
+            // Confirmation de l'insertion
+            $('#confirm-button').on('click', function() {
+                var formData = new FormData($('#upload-form')[0]);
+
+                $.ajax({
+                    url: "{{ url_for('confirm_insert_questionnaire') }}",  // Vue pour confirmer l'insertion
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        alert('Données insérées avec succès.');
+                        window.location.reload();  // Recharger la page après confirmation
+                    },
+                    error: function(xhr) {
+                        alert('Erreur lors de l\'insertion : ' + xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

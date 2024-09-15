@@ -1,3 +1,4 @@
+/* Corps de la page */
 body {
     font-family: Arial, sans-serif;
     background-color: #f8f9fa;
@@ -5,30 +6,65 @@ body {
     padding: 0;
 }
 
+/* Conteneur principal */
 .container {
     max-width: 600px;
     margin: 50px auto;
+    padding: 20px;
 }
 
+/* Titre de la page */
 h1 {
     font-size: 2rem;
     color: #343a40;
+    margin-bottom: 20px;
 }
 
+/* Style pour les groupes de formulaire */
 .form-group {
     margin-bottom: 1.5rem;
 }
 
+/* Style pour le champ de fichier */
+input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+}
+
+/* Boutons */
 .btn {
     padding: 10px 20px;
     font-size: 1rem;
     border-radius: 5px;
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    text-align: center;
 }
 
+.btn:hover {
+    background-color: #138496;
+}
+
+/* Alertes */
 .alert {
     margin-top: 20px;
 }
 
+/* Ombre pour les éléments */
 .shadow {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+    .container {
+        padding: 15px;
+    }
 }

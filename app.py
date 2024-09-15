@@ -186,13 +186,14 @@ def questionnaire():
     nom_type_de_vulnerabilite = []
     nom_type_de_prise_charge = []
     nom_niveau = []
+    nom_age=[]
 
 
 # Cette partie est pour les indicateurs à plusieurs niveaux 
-   # Cette partie est pour les indicateurs à plusieurs niveaux 
-
+# Cette partie est pour les indicateurs à plusieurs niveaux 
     nom_groupe_age_A = fm.desagregation_map["1"]()
     nom_sexe_A = fm.desagregation_map["2"]()
+    nom_age_A=fm.desagregation_map["3"]()
     nom_cycle_A = fm.desagregation_map["4"]()
     nom_prescolaire_A = fm.desagregation_map["5"]()
     nom_primaire_A = fm.desagregation_map["6"]()
@@ -230,6 +231,7 @@ def questionnaire():
     nom_type_de_vulnerabilite_A = fm.desagregation_map["38"]()
     nom_type_de_prise_charge_A = fm.desagregation_map["39"]()
     nom_niveau_A = fm.desagregation_map["40"]()
+   
 # Fin bloc
     import parametre as pa
 # Fin bloc 
@@ -257,6 +259,8 @@ def questionnaire():
             nom_groupe_age = ag.get_groupe_age()
         if config.get('fetch_cycle_scolaire'):
             nom_cycle = ag.get_cycle()
+        if config.get('fetch_age'):
+            nom_age=ag.get_age()
 
         # Extraction des valeurs spécifiques
         entite_geog = ag.get_geographical_entity_name(id_code_entite)
@@ -354,7 +358,9 @@ def questionnaire():
                 nom_type_de_prise_charge = nom_type_de_prise_charge,
                 nom_type_de_prise_charge_A = nom_type_de_prise_charge_A,
                 nom_niveau = nom_niveau,
-                nom_niveau_A = nom_niveau_A
+                nom_niveau_A = nom_niveau_A,
+                nom_age=nom_age,
+                nom_age_A=nom_age_A
             )
     
    
@@ -364,114 +370,243 @@ def questionnaire():
 
 
 
-
-@app.route('/questionnaire_importer', methods=['GET'])
+# Importation
+@app.route('/upload_questionnaire', methods=['GET'])
 @login_required
 def upload_questionnaire():
     return render_template('questionnaire_importer.html')
 
 # Route pour gérer l'importation et l'insertion dans la base de données
-@app.route('/upload_questionnaire', methods=['POST'])
+@app.route('/handle_upload_questionnaire', methods=['POST'])
 @login_required
 def handle_upload_questionnaire():
     conn = None
-    cursor = None
     try:
         # Vérification de la présence du fichier
         if 'file' not in request.files:
             flash('Aucun fichier sélectionné.', 'danger')
             return redirect(url_for('upload_questionnaire'))
-
-        file = request.files['file']
-        
+        file = request.files['file']  
         # Vérification du nom du fichier
         if file.filename == '':
             flash('Aucun fichier sélectionné.', 'danger')
-            return redirect(url_for('upload_questionnaire'))
-        
+            return redirect(url_for('upload_questionnaire'))        
         # Vérification de l'extension du fichier
         if file and file.filename.endswith('.xlsx'):
             try:
                 df = pd.read_excel(file)
             except Exception as e:
                 flash(f"Erreur lors de la lecture du fichier Excel : {str(e)}", 'danger')
-                print(f'Erreur lors de l\'importation du questionnaire : {str(e)}')
-                return redirect(url_for('upload_questionnaire'))
-            
-            try:
-                # Connexion à la base de données
-                conn = mysql.connect(
-                    host="localhost",
-                    user="root",
-                    password="your_password",
-                    database="your_database"
-                )
-                cursor = conn.cursor()
 
-                # Insertion des données du fichier Excel dans la table
-                for index, row in df.iterrows():
-                    sql = """
-                    INSERT INTO valeur_indicateur_libelle (
-                        id, nom_region, nom_departement, nom_sousprefecture, nom_indicateur, Valeur, Annee, sexe, groupe_age, age,
-                        nom_cycle, nom_prescolaire, nom_primaire, nom_secondaire_1er_cycle, nom_secondaire_2nd_cycle, nom_technique,
-                        nom_superieur, nom_professionnel, nom_type_examen, nom_infrastructures_sanitaires, nom_lieu_accouchement,
-                        nom_etat_vaccinal, nom_types_de_vaccination, nom_pathologie, nom_tranche_age, nom_maladies_du_pev,
-                        nom_maladies_infectieuses, nom_infectieuses_respiratoire, nom_maladies_ist, nom_type_de_maladie, nom_activites_iec, 
-                        nom_service_medicaux, nom_type_infrastructures_sportives, nom_disciplines_sportives, nom_type_infrastructures_culturelles,
-                        nom_type_patrimoines_culturels_immatériels, nom_type_actions_culturelles_artistiques, nom_type_operateurs_oeuvres_esprit,
-                        nom_type_groupes_culturels, nom_type_manifestations_culturelles, nom_trimestre, nom_etat_des_ouvrages,
-                        nom_type_abonnement, nom_type_suivi, nom_type_de_vulnerabilite, nom_type_de_prise_charge, nom_niveau
-                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    """
-                    data = (
-                        row['ID'], row['Nom région'], row['Nom département'], row['Nom sous-préfecture'], row['Nom indicateur'], row['Valeur'], 
-                        row['Année'], row['Sexe'], row['Groupe age'], row['Âge'], row['Nom cycle'], row['Nom préscolaire'], row['Nom primaire'],
-                        row['Nom secondaire 1er cycle'], row['Nom secondaire 2nd cycle'], row['Nom technique'], row['Nom supérieur'], 
-                        row['Nom professionnel'], row['Nom type examen'], row['Nom infrastructures sanitaires'], row['Nom lieu accouchement'], 
-                        row['Nom état vaccinal'], row['Nom types de vaccination'], row['Nom pathologie'], row['Nom tranche âge'], 
-                        row['Nom maladies du PEV'], row['Nom maladies infectieuses'], row['Nom infectieuses respiratoire'], 
-                        row['Nom maladies IST'], row['Nom type de maladie'], row['Nom activités IEC'], row['Nom services médicaux'], 
-                        row['Nom type infrastructures sportives'], row['Nom disciplines sportives'], row['Nom type infrastructures culturelles'], 
-                        row['Nom patrimoines culturels immatériels'], row['Nom actions culturelles artistiques'], 
-                        row['Nom opérateurs œuvres esprit'], row['Nom groupes culturels'], row['Nom manifestations culturelles'], 
-                        row['Nom trimestre'], row['Nom état des ouvrages'], row['Nom type abonnement'], row['Nom suivi'], 
-                        row['Nom vulnérabilité'], row['Nom prise en charge'], row['Nom niveau']
-                    )
-                    cursor.execute(sql, data)
-
-                conn.commit()
-                flash('Données importées et insérées avec succès.', 'success')
-            except Exception as e:
-                flash(f"Erreur lors de l'insertion des données : {str(e)}", 'danger')
-            finally:
-                if conn:
-                    conn.close()
+                return redirect(url_for('upload_questionnaire'))    
         else:
             flash('Format de fichier non valide. Veuillez télécharger un fichier .xlsx.', 'danger')
 
     except Exception as e:
-        flash(f"Erreur générale lors de l'importation du fichier : {str(e)}", 'danger')
-    
+        flash(f"Erreur générale lors de l\'importation du fichier : {str(e)}", 'danger')
     return redirect(url_for('upload_questionnaire'))
- 
-""" 
-Fin section questionnaire
-"""
 
 
 
+import pandas as pd
+from flask import request, jsonify
+
+#Obtenir la list des feuilles excel
+@app.route('/get_sheets', methods=['POST'])
+@login_required
+def get_sheets():
+    try:
+        if 'file' not in request.files:
+            return jsonify({'error': 'Aucun fichier sélectionné.'}), 400
+
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'error': 'Aucun fichier sélectionné.'}), 400
+
+        # Charger les feuilles de l'Excel
+        excel_file = pd.ExcelFile(file)
+        sheets = excel_file.sheet_names
+
+        return jsonify({'sheets': sheets}), 200
+
+    except Exception as e:
+        return jsonify({'error': f"Erreur lors de la récupération des feuilles : {str(e)}"}), 500
     
     
-"""
-############################Fin de section questionnaire
-"""
+# view des données imùporter
+@app.route('/preview_data', methods=['POST'])
+@login_required
+def preview_data():
+    try:
+        if 'file' not in request.files or 'sheet' not in request.form:
+            return jsonify({'error': 'Fichier ou feuille manquant.'}), 400
+
+        file = request.files['file']
+        sheet_name = request.form['sheet']
+
+        if file.filename == '':
+            return jsonify({'error': 'Aucun fichier sélectionné.'}), 400
+
+        # Lire les données de la feuille sélectionnée
+        df = pd.read_excel(file, sheet_name=sheet_name)
+        table_html = df.to_html(classes='table table-striped', index=False)
+
+        return jsonify({'table_html': table_html}), 200
+
+    except Exception as e:
+        return jsonify({'error': f"Erreur lors de la lecture des données : {str(e)}"}), 500
+
+#Confirmer avant validation
+@app.route('/confirm_insert_questionnaire', methods=['POST'])
+@login_required
+def confirm_insert_questionnaire():
+    try:
+        # Vérification de la présence du fichier et de la feuille
+        if 'file' not in request.files or 'sheet' not in request.form or 'indicator' not in request.form:
+            return jsonify({'error': 'Fichier, feuille ou indicateur manquant.'}), 400
+
+        file = request.files['file']
+        sheet_name = request.form['sheet']
+        _,indicator = sheet_name.split('-')
+
+        # Extraire le code de la feuille
+        sheet_code = sheet_name.split('-')[-1]
+
+        df = pd.read_excel(file, sheet_name=sheet_name)
+
+        conn = cf.create_connection()
+        cursor = conn.cursor()
+
+        # Définir les colonnes et requêtes en fonction de l'indicateur
+        if indicator == '1001':
+            sql = """
+                INSERT INTO valeur_indicateur_libelle (
+                    id, nom_region, nom_departement, nom_sousprefecture, sexe, groupe_age, age, Valeur, Annee
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """
+            for _, row in df.iterrows():
+                id = cf.generate_unique_key()
+                region = row['Région']
+                departement = row['Département']
+                sous_prefecture = row['Sous-prefecture']
+                sexe = row['Sexe']
+                groupe_age = row['Groupe d\'age']
+                age = row['Age']
+                valeur = row['Valeur']
+                annee = row['Annee']
+                cursor.execute(sql, (id, region, departement, sous_prefecture, sexe, groupe_age, age, valeur, annee))
+
+        elif indicator == 'indicateur_autre':  # Ajoute ici d'autres conditions selon l'indicateur
+            sql = """
+                INSERT INTO valeur_indicateur_autre (
+                    id, autre_colonne_1, autre_colonne_2
+                ) VALUES (%s, %s, %s)
+            """
+            for _, row in df.iterrows():
+                id = cf.generate_unique_key()
+                autre_colonne_1 = row['Colonne1']
+                autre_colonne_2 = row['Colonne2']
+                cursor.execute(sql, (id, autre_colonne_1, autre_colonne_2))
+
+        else:
+            return jsonify({'error': 'Indicateur non reconnu.'}), 400
+
+        conn.commit()
+        return jsonify({'message': 'Données insérées avec succès.'}), 200
+
+    except Exception as e:
+        return jsonify({'error': f"Erreur lors de l'insertion des données : {str(e)}"}), 500
+    finally:
+        if conn:
+            conn.close()
 
 
 
-""" 
-************************************************Début de section approbation
 
-"""
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#Approbation
 @app.route('/approbation', methods=['GET'])
 @login_required
 def approbation():
@@ -539,9 +674,10 @@ def upload_page():
 
 @app.route('/upload_file', methods=['POST'])
 @login_required
+#Fonction de rejet
 def upload_file():
-    conn = None
-    cursor = None
+    conn = cf.create_connection()
+    cursor = conn.cursor()
     try:
         # Vérification de la présence du fichier
         if 'file' not in request.files:
@@ -586,7 +722,6 @@ def upload_file():
                 print('Insertion des importations de rejetées ok')
             except Exception as e:
                 flash(f"Erreur lors de la mise à jour des données : {str(e)}", 'danger')
-                print(f"Erreur lors de la mise à jour des données : {str(e)}")  # Affiche l'erreur dans la console
             finally:
                 if conn:
                     conn.close()
@@ -604,16 +739,8 @@ def upload_file():
     
     return redirect(url_for('upload_page'))
 
-""" 
-********************************Fin de section approbation
-"""
 
 
-
-"""
-*********************************************Debut de section correction
-Cette partie est centrée sur les correction
-"""
 @app.route('/correction', methods=['GET'])
 @login_required
 def correction():
@@ -695,6 +822,7 @@ def submit():
     idprimaire = request.form.get('nom_primaire')
     idsexe=request.form.get('nom_sexe')
     idgroupe_age = request.form.get('nom_groupe_age')
+    idage=request.form.get('nom_age')
     idcycle = request.form.get('nom_cycle')
     idprescolaire = request.form.get('nom_prescolaire')
     idsecondaire_1er = request.form.get('nom_secondaire_1er')
@@ -754,7 +882,8 @@ def submit():
     # Liste des préfixes que vous pourriez rencontrer
     prefixes = [
         'idprimaire_',
-        'id_',
+        'id_groupe_age_',
+        'idages_',
         'sexe_',
         'idcycle_',
         'idprescolaire_',
@@ -799,6 +928,7 @@ def submit():
         # Initialiser toutes les variables à None
         primaire = None
         id_grpe_age = None
+        age=None
         sexe = None
         cycle = None
         prescolaire = None
@@ -842,8 +972,10 @@ def submit():
             if key.startswith(prefix):
                 if prefix == 'idprimaire_':
                     primaire = key.split('_')[1]
-                elif prefix == 'id_':
+                elif prefix == 'id_groupe_age_':
                     id_grpe_age = key.split('_')[1]
+                elif prefix == 'idages_':
+                    age= key.split('_')[1]
                 elif prefix == 'sexe_':
                     sexe = key.split('_')[1]
                 elif prefix == 'idcycle_':
@@ -930,6 +1062,7 @@ def submit():
             annee=annee,
             groupe_age_id=idgroupe_age if idgroupe_age else id_grpe_age,
             niveau_primaire_id = idprimaire if idprimaire else primaire,
+            age_id=idage if idage else age,
             sexe_id = idsexe if idsexe else sexe,
             cycle_id = idcycle if idcycle else cycle,
             niveau_prescolaire_id = idprescolaire if idprescolaire else prescolaire,

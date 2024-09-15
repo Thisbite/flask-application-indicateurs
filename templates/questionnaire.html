@@ -72,13 +72,29 @@
             {% for id, nom in nom_groupe_age %}
             <li>
                 <em>{{ nom }} ans</em>
-                <input type="text" name="id_{{ id }}" placeholder="Entrez une valeur">
+                <input type="text" name="id_groupe_age_{{ id }}" placeholder="Entrez une valeur">
             </li>
             {% endfor %}
         {% endif %}
     </ul>
 </div>
 
+<!-- Age -->
+<div id="ages-list3" style="display: none;">
+    <ul class="align-list">
+        {% if nom_age %}
+            {% for id, nom in nom_age %}
+            <li>
+                <em>{{ nom }} ans</em>
+                <input type="text" name="idages_{{ id }}" placeholder="Entrez une valeur">
+            </li>
+            {% endfor %}
+        {% endif %}
+    </ul>
+</div>
+
+
+<!-- Sexe -->
 <div id="Sexe-list1" style="display: none;">
 {% if nom_sexe %}
 <ul class="align-list">

@@ -71,6 +71,20 @@ def get_groupe_age():
         return []
     return groupe_age
 
+def get_age():
+    try:
+        with cf.create_connection()as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT age_id, age FROM Age")
+            age = cursor.fetchall()
+    except mysql.connector.Error as e:
+        print(f"Database error: {e}")
+        return []
+    except Exception as e:
+        print(f"Exception in get_age: {e}")
+        return []
+    return age
+
 def get_regions():
     try:
         with cf.create_connection() as conn:

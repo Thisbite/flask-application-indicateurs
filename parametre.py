@@ -4,6 +4,7 @@ indicateur_config = {
         'fetch_indicateur': True,
         'fetch_sexe': True,
         'fetch_groupe_age': True,
+        'fetch_age':True,
         'niveau_choix': {'1': 'Sexe', '2': 'Groupe Age', '3': 'Âge'}
     },
     '1002': {
@@ -104,7 +105,7 @@ indicateur_config = {
 
 #Cette liste permet de suivre le choix de l'agent et le niveau de desagregation
 lists={
-    "1":"Sexe-list1",
+"1":"Sexe-list1",
 "2":"Groupe-list2",
 "3":"ages-list3",
 "4":"Type-list4",
@@ -238,7 +239,7 @@ lists={
 #Cette permet la vue des champs
 
 lists_all=[
-    "Sexe-list1",
+"Sexe-list1",
 "Groupe-list2",
 "ages-list3",
 "Type-list4",

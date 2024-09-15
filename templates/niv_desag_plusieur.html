@@ -3,6 +3,7 @@
 <!-- C'est l'ensemble des elements de bloc bleu c'est à dire les croisements -->
 
 <ul class="align-list2">
+
     {% if cod_indicateur_comparaison=='1001' %}
 <!-- Liste déroulante pour Sexe -->
 <li>
@@ -19,8 +20,8 @@
     <label for="nom_groupe_age">Groupe d'âge :</label>
     <select id="nom_groupe_age" name="nom_groupe_age">
         <option value="">Sélectionnez</option>
-        {% for idage, nom in nom_groupe_age_A %}
-        <option value="{{ idage }}"  data-nom="{{nom}}">{{ nom }}</option>
+        {% for id_groupe_age, nom in nom_groupe_age_A %}
+        <option value="{{ id_groupe_age }}"  data-nom="{{nom}}">{{ nom }}</option>
         {% endfor %}
     </select>
 </li>
